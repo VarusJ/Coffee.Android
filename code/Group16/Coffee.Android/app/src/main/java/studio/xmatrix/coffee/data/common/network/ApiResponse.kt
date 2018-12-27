@@ -1,5 +1,3 @@
-package studio.xmatrix.coffee.data.common.adapter
-
 /*
  * Copyright (C) 2017 The Android Open Source Project
  *
@@ -15,6 +13,8 @@ package studio.xmatrix.coffee.data.common.adapter
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package studio.xmatrix.coffee.data.common.network
 
 import retrofit2.Response
 import timber.log.Timber

@@ -56,6 +56,7 @@ dependencies {
     // Retrofit
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
 
     // ObjectBox
     implementation 'io.objectbox:objectbox-kotlin:2.2.0'
