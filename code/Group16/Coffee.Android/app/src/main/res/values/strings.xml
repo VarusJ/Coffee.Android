@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Coffee</string>
+	<string name="login_title">Coffee</string>
+	<string name="login_hint_username">username</string>
+	<string name="login_hint_password">password</string>
+	<string name="login_text">Log in</string>
 </resources>
