@@ -9,7 +9,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -18,7 +17,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -28,7 +26,7 @@ import studio.xmatrix.coffee.ui.admin.AdminActivity;
 import studio.xmatrix.coffee.ui.home.HomeFragment;
 import studio.xmatrix.coffee.ui.notif.NotifFragment;
 import studio.xmatrix.coffee.ui.person.PersonActivity;
-import studio.xmatrix.coffee.ui.setting.SettingActivity;
+import studio.xmatrix.coffee.ui.setting.SettingsActivity;
 import studio.xmatrix.coffee.ui.square.SquareFragment;
 
 import java.util.Objects;
@@ -161,7 +159,7 @@ public class NavActivity extends AppCompatActivity
         } else if (id == R.id.nav_person) {
             startActivity(new Intent(this, PersonActivity.class));
         } else if (id == R.id.nav_setting) {
-            startActivity(new Intent(this, SettingActivity.class));
+            startActivity(new Intent(this, SettingsActivity.class));
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
