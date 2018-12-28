@@ -1,19 +1,26 @@
 package studio.xmatrix.coffee.ui.person;
 
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
 import studio.xmatrix.coffee.R;
-import studio.xmatrix.coffee.databinding.PersonActivityBinding;
 import studio.xmatrix.coffee.ui.BaseActionBarActivity;
 
-import java.util.Objects;
-
 public class PersonActivity extends BaseActionBarActivity {
+
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        PersonActivityBinding binding = DataBindingUtil.setContentView(this, R.layout.person_activity);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("个人设置");
+        setContentView(R.layout.person_activity);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        setSupportActionBar(toolbar);
+
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show());
     }
 }

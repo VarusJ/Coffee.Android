@@ -26,8 +26,15 @@
         <activity android:name=".ui.admin.AdminActivity"/>
         <activity android:name=".ui.add.AddActivity"/>
         <activity android:name=".ui.detail.DetailActivity"/>
-        <activity android:name=".ui.person.PersonActivity"/>
-        <activity android:name=".ui.setting.SettingActivity"/>
+        <activity
+                android:name=".ui.setting.SettingsActivity"
+                android:label="@string/title_activity_settings">
+        </activity>
+        <activity
+                android:name=".ui.person.PersonActivity"
+                android:label="@string/title_activity_person"
+                android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>
