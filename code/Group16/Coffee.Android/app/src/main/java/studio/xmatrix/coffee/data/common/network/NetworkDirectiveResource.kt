@@ -1,10 +1,11 @@
 package studio.xmatrix.coffee.data.common.network
 
-import androidx.annotation.MainThread
-import androidx.annotation.WorkerThread
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MediatorLiveData
+import android.arch.lifecycle.MutableLiveData
+import android.support.annotation.MainThread
+import android.support.annotation.WorkerThread
+
 
 abstract class NetworkDirectiveResource<Type>
 @MainThread constructor(private val appExecutors: AppExecutors) {
