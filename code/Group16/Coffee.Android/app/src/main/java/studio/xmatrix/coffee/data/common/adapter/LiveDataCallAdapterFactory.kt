@@ -16,7 +16,7 @@
 
 package studio.xmatrix.coffee.data.common.adapter
 
-import androidx.lifecycle.LiveData
+import android.arch.lifecycle.LiveData
 import retrofit2.CallAdapter
 import retrofit2.CallAdapter.Factory
 import retrofit2.Retrofit
