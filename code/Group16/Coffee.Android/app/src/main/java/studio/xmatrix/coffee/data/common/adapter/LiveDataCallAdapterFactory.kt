@@ -1,5 +1,3 @@
-package studio.xmatrix.coffee.data.common.adapter
-
 /*
  * Copyright (C) 2017 The Android Open Source Project
  *
@@ -16,10 +14,13 @@ package studio.xmatrix.coffee.data.common.adapter
  * limitations under the License.
  */
 
-import androidx.lifecycle.LiveData
+package studio.xmatrix.coffee.data.common.adapter
+
+import android.arch.lifecycle.LiveData
 import retrofit2.CallAdapter
 import retrofit2.CallAdapter.Factory
 import retrofit2.Retrofit
+import studio.xmatrix.coffee.data.common.network.ApiResponse
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 

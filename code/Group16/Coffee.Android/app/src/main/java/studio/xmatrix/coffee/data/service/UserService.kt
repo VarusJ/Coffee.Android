@@ -1,8 +1,9 @@
 package studio.xmatrix.coffee.data.service
 
-import okhttp3.ResponseBody
-import retrofit2.Call
+import android.arch.lifecycle.LiveData
+import retrofit2.http.Body
 import retrofit2.http.POST
+import studio.xmatrix.coffee.data.common.network.ApiResponse
 import javax.inject.Singleton
 
 @Singleton
@@ -12,6 +13,8 @@ interface UserService {
         const val BASE_URL = "https://coffee.zhenly.cn/api/"
     }
 
+    data class LoginReq(val name: String, val password: String)
+
     @POST("user/login/pass")
-    fun loginByPassword(): Call<ResponseBody>
+    fun loginByPassword(@Body body: LoginReq): LiveData<ApiResponse<CommonRes>>
 }
