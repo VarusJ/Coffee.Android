@@ -1,7 +1,9 @@
 package studio.xmatrix.coffee.ui.nav;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
@@ -18,10 +20,18 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 import studio.xmatrix.coffee.R;
+import studio.xmatrix.coffee.ui.add.AddActivity;
+import studio.xmatrix.coffee.ui.admin.AdminActivity;
 import studio.xmatrix.coffee.ui.home.HomeFragment;
 import studio.xmatrix.coffee.ui.notif.NotifFragment;
+import studio.xmatrix.coffee.ui.person.PersonActivity;
+import studio.xmatrix.coffee.ui.setting.SettingActivity;
 import studio.xmatrix.coffee.ui.square.SquareFragment;
+
+import java.util.Objects;
 
 public class NavActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener {
@@ -55,7 +65,7 @@ public class NavActivity extends AppCompatActivity
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
-            // TODO
+            startActivity(new Intent(this, AddActivity.class));
         });
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -77,6 +87,9 @@ public class NavActivity extends AppCompatActivity
             item.setTitle("夜间模式");
             item.setIcon(getDrawable(R.drawable.ic_night));
         }
+        View header = navigationView.getHeaderView(0);
+        View headerLayout = header.findViewById(R.id.imageView);
+        headerLayout.setOnClickListener(v -> startActivity(new Intent(this, AdminActivity.class)));
 
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -126,7 +139,6 @@ public class NavActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
         if (id == R.id.nav_night) {
             int currentMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
             if (currentMode != Configuration.UI_MODE_NIGHT_YES) {
@@ -142,14 +154,15 @@ public class NavActivity extends AppCompatActivity
                 item.setIcon(getDrawable(R.drawable.ic_night));
                 item.setTitle("夜间模式");
             }
-
-            recreate();//需要recreate才能生效
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_send) {
-
+            //需要recreate才能生效
+            (new Handler()).postDelayed(this::recreate, 300);
+        } else if (id == R.id.nav_logout) {
+            Toast.makeText(this, "退出登陆", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.nav_person) {
+            startActivity(new Intent(this, PersonActivity.class));
+        } else if (id == R.id.nav_setting) {
+            startActivity(new Intent(this, SettingActivity.class));
         }
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -161,6 +174,18 @@ public class NavActivity extends AppCompatActivity
 
     @Override
     public void onPageSelected(int i) {
+        switch (i) {
+            case 0:
+                Objects.requireNonNull(getSupportActionBar()).setTitle("我的");
+                break;
+            case 1:
+                Objects.requireNonNull(getSupportActionBar()).setTitle("广场");
+                break;
+            case 2:
+                Objects.requireNonNull(getSupportActionBar()).setTitle("通知");
+                break;
+
+        }
         navigation.getMenu().getItem(i).setChecked(true);
     }
 

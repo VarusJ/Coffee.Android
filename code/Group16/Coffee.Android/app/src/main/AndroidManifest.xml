@@ -23,8 +23,11 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.admin.AdminActivity">
-        </activity>
+        <activity android:name=".ui.admin.AdminActivity"/>
+        <activity android:name=".ui.add.AddActivity"/>
+        <activity android:name=".ui.detail.DetailActivity"/>
+        <activity android:name=".ui.person.PersonActivity"/>
+        <activity android:name=".ui.setting.SettingActivity"/>
     </application>
 
 </manifest>
