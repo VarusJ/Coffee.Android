@@ -32,6 +32,15 @@ public class AdminActivity extends AppCompatActivity implements Injectable {
                         Toast.makeText(this, "State: " + res.getData().getState(), Toast.LENGTH_SHORT).show();
                         Toast.makeText(this, "Data: " + res.getData().getData(), Toast.LENGTH_SHORT).show();
                     }
+                    userRepository.getInfo().observe(this, res1 -> {
+                        Timber.d("CoffeeAAA: %s, %s", res1.getMessage(), res1.getStatus().toString());
+                        switch (res1.getStatus()) {
+                            case SUCCESS:
+                                if (res1.getData() != null) {
+                                    Toast.makeText(this, "User: " + res1.getData().getName(), Toast.LENGTH_SHORT).show();
+                                }
+                        }
+                    });
             }
         });
     }

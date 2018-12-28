@@ -1,8 +1,8 @@
-package studio.xmatrix.coffee.data.service
+package studio.xmatrix.coffee.data.service.response
 
 import com.google.gson.annotations.SerializedName
 
-data class CommonRes(
+data class CommonResponse(
     @SerializedName("State")
     val state: String,
     @SerializedName("Data")
