@@ -4,10 +4,9 @@ import android.app.Application
 import android.support.v7.app.AppCompatDelegate
 import io.objectbox.BoxStore
 import io.objectbox.android.AndroidObjectBrowser
-import studio.xmatrix.coffee.inject.AppInjector
 import studio.xmatrix.coffee.data.model.MyObjectBox
-import studio.xmatrix.coffee.data.model.User
 import studio.xmatrix.coffee.ui.NightModeConfig
+import studio.xmatrix.coffee.inject.AppInjector
 import timber.log.Timber
 
 class App : Application() {
