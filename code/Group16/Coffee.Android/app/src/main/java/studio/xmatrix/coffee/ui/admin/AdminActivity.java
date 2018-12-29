@@ -24,7 +24,7 @@ public class AdminActivity extends AppCompatActivity implements Injectable {
         DataBindingUtil.setContentView(this, R.layout.admin_activity);
 
         AppInjector.Companion.inject(this);
-        userRepository.login("MegaShow", "123456c").observe(this, res -> {
+        userRepository.login("MegaShow", "1234561  ").observe(this, res -> {
             Timber.d("CoffeeAAA: %s, %s", res.getMessage(), res.getStatus().toString());
             switch (res.getStatus()) {
                 case SUCCESS:

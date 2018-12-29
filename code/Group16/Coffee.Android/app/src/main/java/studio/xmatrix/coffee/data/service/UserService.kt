@@ -22,7 +22,7 @@ import javax.inject.Singleton
 @Singleton
 interface UserService {
     companion object {
-        const val BASE_URL = "https://coffee.zhenly.cn/api/user/"
+        const val BASE_URL = "$SERVICE_BASE_URL/user/"
     }
 
     @POST("login/pass")
@@ -60,7 +60,9 @@ class UserDatabase @Inject constructor(app: App, private val executors: AppExecu
     }
 
     fun saveInfo(user: User) {
-        box.query().equal(User_.id, user.id).build().remove()
-        box.put(user)
+        user.id?.let {
+            box.query().equal(User_.id, it).build().remove()
+            box.put(user)
+        }
     }
 }

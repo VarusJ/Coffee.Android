@@ -9,20 +9,20 @@ data class User(
     @Id
     var _id: Long = 0,
     @Unique
-    val id: String,
+    val id: String?,
     val state: String,
-    val email: String,
-    val userClass: Int,
+    val email: String?,
+    val userClass: Int?,
 
     // UserInfo
-    var name: String,
-    val avatar: String,
-    val bio: String,
-    val gender: Int,
+    var name: String?,
+    val avatar: String?,
+    val bio: String?,
+    val gender: Int?,
 
-    val maxSize: Long,
-    val usedSize: Long,
-    val singleSize: Long
+    val maxSize: Long?,
+    val usedSize: Long?,
+    val singleSize: Long?
 ) {
     companion object {
         // User Class
