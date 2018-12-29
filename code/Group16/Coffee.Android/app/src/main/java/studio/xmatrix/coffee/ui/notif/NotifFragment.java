@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import studio.xmatrix.coffee.R;
-import studio.xmatrix.coffee.databinding.HomeFragmentBinding;
 import studio.xmatrix.coffee.databinding.NotifFragmentBinding;
 
 public class NotifFragment extends Fragment {
