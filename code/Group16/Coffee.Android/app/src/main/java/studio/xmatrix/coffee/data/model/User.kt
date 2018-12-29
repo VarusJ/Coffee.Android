@@ -2,15 +2,19 @@ package studio.xmatrix.coffee.data.model
 
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
+import io.objectbox.annotation.Transient
 import io.objectbox.annotation.Unique
 
 @Entity
 data class User(
     @Id
     var _id: Long = 0,
+
+    @Transient
+    val state: String,
+
     @Unique
     val id: String?,
-    val state: String,
     val email: String?,
     val userClass: Int?,
 
