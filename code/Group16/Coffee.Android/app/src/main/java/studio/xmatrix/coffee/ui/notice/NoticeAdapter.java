@@ -4,8 +4,11 @@ import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import q.rorbin.badgeview.Badge;
+import q.rorbin.badgeview.QBadgeView;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.databinding.NoticeItemBinding;
 
@@ -25,7 +28,7 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-
+        viewHolder.bind();
     }
 
     @Override
@@ -35,6 +38,7 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder
 
     class ViewHolder extends RecyclerView.ViewHolder {
         private final NoticeItemBinding binding;
+        Badge badge;
 
         ViewHolder(NoticeItemBinding binding) {
             super(binding.getRoot());
@@ -42,6 +46,16 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder
         }
 
         void bind() {
+            if (badge == null) {
+                badge = new QBadgeView(activity)
+                    .bindTarget(binding.noticeRemove)
+                    .setBadgeGravity(Gravity.CENTER)
+                    .setBadgeText("New");
+            }
+            badge.setOnDragStateChangedListener((dragState, badge, targetView) -> {
+                // todo
+            });
+            // badge.hide(true);
             // binding.setModel(i);
         }
     }
