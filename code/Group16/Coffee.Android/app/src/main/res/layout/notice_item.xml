@@ -10,8 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        app:cardElevation="0dp"
-        app:cardUseCompatPadding="false">
+        app:cardElevation="1dp"
+        app:cardBackgroundColor="@color/colorWhite"
+        app:cardCornerRadius="3dp">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -24,23 +25,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="30分钟前"
+                android:text="收到了一条评论"
+                android:textSize="12sp"
+
+
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/notice_new"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_dot"
-                app:layout_constraintBottom_toTopOf="@id/notice_title"
-                app:layout_constraintEnd_toEndOf="@id/notice_title"
-                app:layout_constraintStart_toEndOf="@id/notice_title"
-                app:layout_constraintTop_toTopOf="@id/notice_title" />
+            <!--<ImageView-->
+                <!--android:id="@+id/notice_new"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:src="@drawable/ic_dot"-->
+                <!--app:layout_constraintBottom_toTopOf="@id/notice_action"-->
+                <!--app:layout_constraintEnd_toEndOf="@id/notice_action"-->
+                <!--app:layout_constraintStart_toEndOf="@id/notice_action"-->
+                <!--app:layout_constraintTop_toTopOf="@id/notice_action" />-->
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
                 android:layout_margin="10dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
@@ -52,7 +56,8 @@
                 android:id="@+id/notice_user_avatar"
                 android:layout_width="46dp"
                 android:layout_height="46dp"
-                android:layout_margin="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="20dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:src="@mipmap/ic_launcher_round"
@@ -64,19 +69,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="3dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:text="MegaShow"
-                android:textSize="18sp"
+                android:textSize="17sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@id/notice_user_avatar"
                 app:layout_constraintTop_toTopOf="@id/notice_user_avatar" />
 
             <TextView
+                android:id="@+id/notice_action"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
+                android:textSize="12sp"
                 android:layout_marginTop="5dp"
                 android:text="评论了你的内容"
                 app:layout_constraintStart_toEndOf="@id/notice_user_name"
@@ -85,9 +91,10 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginBottom="30dp"
+                android:layout_marginTop="6dp"
+                android:maxLines="2"
+                android:layout_marginEnd="40dp"
+                android:layout_marginBottom="20dp"
                 android:text="你可是太强了你可是太强了你可是太强了你可是太强了你可是太强了你可是太强了你可是太强了"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
