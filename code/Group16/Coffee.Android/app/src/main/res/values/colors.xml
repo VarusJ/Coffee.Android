@@ -4,7 +4,8 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#16ceb4</color>
     <color name="colorWhite">#fefefe</color>
-    <color name="colorBackground">#f1f1f1</color>
+    <color name="colorBackground">#f4f4fe</color>
+    <color name="colorTitle">#767676</color>
     <color name="colorSubTitle">#bcbcbc</color>
-    <color name="colorDivider">#f7f7f7</color>
+    <color name="colorDivider">#ededed</color>
 </resources>
