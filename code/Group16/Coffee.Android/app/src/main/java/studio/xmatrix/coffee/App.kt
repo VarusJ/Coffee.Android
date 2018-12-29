@@ -27,6 +27,8 @@ class App : Application() {
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO)
         }
 
         boxStore = MyObjectBox.builder().androidContext(this).build()

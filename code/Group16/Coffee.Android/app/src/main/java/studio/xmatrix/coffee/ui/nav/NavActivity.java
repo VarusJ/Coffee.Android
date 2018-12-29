@@ -32,22 +32,6 @@ import studio.xmatrix.coffee.ui.square.SquareFragment;
 public class NavActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    //    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-//            = item -> {
-//        switch (item.getItemId()) {
-//            case R.id.navigation_home:
-//                viewPager.setCurrentItem(0);
-//                return true;
-//            case R.id.navigation_dashboard:
-//                viewPager.setCurrentItem(1);
-//                return true;
-//            case R.id.navigation_notifications:
-//                viewPager.setCurrentItem(2);
-//                return true;
-//        }
-//        return false;
-//    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,24 +53,23 @@ public class NavActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         // 夜间模式菜单
         MenuItem item = navigationView.getMenu().findItem(R.id.nav_night);
-        boolean isNightMode = NightModeConfig.getInstance().getNightMode(getApplicationContext());
-        if (isNightMode) {
-            item.setTitle("日间模式");
-            item.setIcon(getDrawable(R.drawable.ic_day));
-        }else {
-            item.setTitle("夜间模式");
+
+
+        int currentMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        if (currentMode != Configuration.UI_MODE_NIGHT_YES) {
             item.setIcon(getDrawable(R.drawable.ic_night));
+            item.setTitle("夜间模式");
+        } else {
+            item.setIcon(getDrawable(R.drawable.ic_day));
+            item.setTitle("日间模式");
         }
+
         View header = navigationView.getHeaderView(0);
         View headerLayout = header.findViewById(R.id.imageView);
         headerLayout.setOnClickListener(v -> startActivity(new Intent(this, AdminActivity.class)));
 
-        // navigation = findViewById(R.id.navigation);
-        // navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
         TabLayout tabLayout = findViewById(R.id.tabLayout);
         ViewPager viewPager = findViewById(R.id.home_view);
-        // viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             private HomeFragment homeActivity;
             private NotifFragment notifFragment;
@@ -175,30 +158,4 @@ public class NavActivity extends AppCompatActivity
         }
         return true;
     }
-//
-//    @Override
-//    public void onPageScrolled(int i, float v, int i1) {
-//    }
-//
-//    @Override
-//    public void onPageSelected(int i) {
-//        switch (i) {
-//            case 0:
-//                Objects.requireNonNull(getSupportActionBar()).setTitle("我的");
-//                break;
-//            case 1:
-//                Objects.requireNonNull(getSupportActionBar()).setTitle("广场");
-//                break;
-//            case 2:
-//                Objects.requireNonNull(getSupportActionBar()).setTitle("通知");
-//                break;
-//
-//        }
-//        navigation.getMenu().getItem(i).setChecked(true);
-//    }
-//
-//    @Override
-//    public void onPageScrollStateChanged(int i) {
-//
-//    }
 }

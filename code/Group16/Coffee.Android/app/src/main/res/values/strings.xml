@@ -41,22 +41,31 @@
     <!-- Example settings for General -->
     <string name="pref_header_general">通用</string>
 
-    <string name="pref_title_sync_frequency">Sync frequency</string>
-    <string-array name="pref_sync_frequency_titles">
-        <item>15 minutes</item>
-        <item>30 minutes</item>
-        <item>1 hour</item>
-        <item>3 hours</item>
-        <item>6 hours</item>
-        <item>Never</item>
+    <string-array name="pref_font_size_titles">
+        <item>小</item>
+        <item>偏小</item>
+        <item>中</item>
+        <item>偏大</item>
+        <item>大</item>
     </string-array>
-    <string-array name="pref_sync_frequency_values">
+    <string-array name="pref_font_size_values">
+        <item>13</item>
+        <item>14</item>
         <item>15</item>
-        <item>30</item>
-        <item>60</item>
-        <item>180</item>
-        <item>360</item>
-        <item>-1</item>
+        <item>16</item>
+        <item>17</item>
+    </string-array>
+
+
+    <string-array name="pref_image_display_titles">
+        <item>始终加载</item>
+        <item>WiFi下加载</item>
+        <item>手动加载</item>
+    </string-array>
+    <string-array name="pref_image_display_values">
+        <item>always</item>
+        <item>wifi</item>
+        <item>never</item>
     </string-array>
 
     <string-array name="list_preference_entries">
@@ -78,7 +87,7 @@
     <!-- Example settings for Notifications -->
     <string name="pref_header_notifications">通知</string>
 
-    <string name="pref_title_new_message_notifications">New message notifications</string>
+    <string name="pref_title_new_message_notifications">开启通知</string>
 
     <string name="pref_title_ringtone">Ringtone</string>
     <string name="pref_ringtone_silent">Silent</string>

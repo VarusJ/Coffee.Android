@@ -5,16 +5,19 @@
     <header
             android:fragment="studio.xmatrix.coffee.ui.setting.SettingsActivity$NotificationPreferenceFragment"
             android:title="@string/pref_header_notifications"
-            android:icon="@drawable/ic_notifications_black_24dp"/>
+            android:icon="@drawable/ic_notifications_black_24dp"
+            android:summary="管理应用通知"/>
+
+    <header
+            android:fragment="studio.xmatrix.coffee.ui.setting.SettingsActivity$DisplayPreferenceFragment"
+            android:title="@string/pref_header_display"
+            android:icon="@drawable/ic_display"
+            android:summary="调节应用显示"/>
 
     <header
             android:fragment="studio.xmatrix.coffee.ui.setting.SettingsActivity$GeneralPreferenceFragment"
-            android:title="@string/pref_header_display"
-            android:icon="@drawable/ic_info_black_24dp"/>
-
-    <header
-            android:fragment="studio.xmatrix.coffee.ui.setting.SettingsActivity$DataSyncPreferenceFragment"
             android:title="@string/pref_header_general"
-            android:icon="@drawable/ic_sync_black_24dp"/>
+            android:icon="@drawable/ic_general"
+            android:summary="应用通用设置"/>
 
 </preference-headers>
