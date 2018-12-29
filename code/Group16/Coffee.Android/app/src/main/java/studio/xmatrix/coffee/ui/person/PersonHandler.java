@@ -2,6 +2,7 @@ package studio.xmatrix.coffee.ui.person;
 
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Toast;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.databinding.PersonActivityBinding;
 
@@ -35,6 +36,11 @@ class PersonHandler {
 
                 // Somewhere in between
             }
+        });
+
+        binding.include.findViewById(R.id.person_btn_name).setOnClickListener(v -> {
+            Toast.makeText(activity, "修改昵称", Toast.LENGTH_SHORT).show();
+            // TODO
         });
     }
 }
