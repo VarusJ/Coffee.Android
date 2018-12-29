@@ -16,14 +16,16 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".ui.nav.NavActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".ui.admin.AdminActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".ui.admin.AdminActivity" />
+        <activity android:name=".ui.admin.SignUpActivity"/>
+        <activity android:name=".ui.admin.ValidActivity"/>
         <activity android:name=".ui.add.AddActivity" />
         <activity android:name=".ui.detail.DetailActivity" />
         <activity
