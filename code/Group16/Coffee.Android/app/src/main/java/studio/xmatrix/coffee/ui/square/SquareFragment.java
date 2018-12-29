@@ -19,6 +19,7 @@ public class SquareFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         binding = DataBindingUtil.inflate(LayoutInflater.from(getActivity()), R.layout.square_fragment, null, false);
+        SquareHandler handler = new SquareHandler(getActivity(), binding);
     }
 
     @Nullable

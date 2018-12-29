@@ -14,7 +14,10 @@ public class NightModeConfig {
     private static NightModeConfig sModeConfig;
 
     public static NightModeConfig getInstance(){
-        return sModeConfig !=null?sModeConfig : new NightModeConfig();
+        if(sModeConfig == null) {
+            sModeConfig = new NightModeConfig();
+        }
+        return sModeConfig;
     }
 
     public boolean getNightMode(Context context){

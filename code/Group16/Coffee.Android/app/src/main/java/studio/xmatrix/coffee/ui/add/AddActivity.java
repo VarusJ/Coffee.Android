@@ -10,10 +10,11 @@ import studio.xmatrix.coffee.ui.BaseActionBarActivity;
 import java.util.Objects;
 
 public class AddActivity extends BaseActionBarActivity {
+    AddActivityBinding binding;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AddActivityBinding binding = DataBindingUtil.setContentView(this, R.layout.add_activity);
+        binding = DataBindingUtil.setContentView(this, R.layout.add_activity);
         Objects.requireNonNull(getSupportActionBar()).setTitle("发布");
     }
 }

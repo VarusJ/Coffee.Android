@@ -24,7 +24,7 @@ import studio.xmatrix.coffee.ui.NightModeConfig;
 import studio.xmatrix.coffee.ui.add.AddActivity;
 import studio.xmatrix.coffee.ui.admin.AdminActivity;
 import studio.xmatrix.coffee.ui.home.HomeFragment;
-import studio.xmatrix.coffee.ui.notif.NotifFragment;
+import studio.xmatrix.coffee.ui.notice.NoticeFragment;
 import studio.xmatrix.coffee.ui.person.PersonActivity;
 import studio.xmatrix.coffee.ui.setting.SettingsActivity;
 import studio.xmatrix.coffee.ui.square.SquareFragment;
@@ -72,7 +72,7 @@ public class NavActivity extends AppCompatActivity
         ViewPager viewPager = findViewById(R.id.home_view);
         viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             private HomeFragment homeActivity;
-            private NotifFragment notifFragment;
+            private NoticeFragment noticeFragment;
             private SquareFragment squareFragment;
             @Override
             public Fragment getItem(int position) {
@@ -84,8 +84,8 @@ public class NavActivity extends AppCompatActivity
                         if (squareFragment == null) squareFragment = new SquareFragment();
                         return squareFragment;
                     case 2:
-                        if (notifFragment == null) notifFragment = new NotifFragment();
-                        return notifFragment;
+                        if (noticeFragment == null) noticeFragment = new NoticeFragment();
+                        return noticeFragment;
                 }
                 return null;
             }

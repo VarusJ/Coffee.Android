@@ -1,11 +1,13 @@
 package studio.xmatrix.coffee.ui;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.view.WindowCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+@SuppressLint("Registered")
 public class BaseActionBarActivity extends AppCompatActivity {
 
     @Override

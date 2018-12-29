@@ -1,4 +1,4 @@
-package studio.xmatrix.coffee.ui.notif;
+package studio.xmatrix.coffee.ui.notice;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -9,17 +9,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import studio.xmatrix.coffee.R;
-import studio.xmatrix.coffee.databinding.HomeFragmentBinding;
-import studio.xmatrix.coffee.databinding.NotifFragmentBinding;
+import studio.xmatrix.coffee.databinding.NoticeFragmentBinding;
 
-public class NotifFragment extends Fragment {
+public class NoticeFragment extends Fragment {
 
-    NotifFragmentBinding binding;
+    NoticeFragmentBinding binding;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        binding = DataBindingUtil.inflate(LayoutInflater.from(getActivity()), R.layout.notif_fragment, null, false);
+        binding = DataBindingUtil.inflate(LayoutInflater.from(getActivity()), R.layout.notice_fragment, null, false);
+        NoticeHandler handler = new NoticeHandler(getActivity(), binding);
     }
 
     @Nullable
