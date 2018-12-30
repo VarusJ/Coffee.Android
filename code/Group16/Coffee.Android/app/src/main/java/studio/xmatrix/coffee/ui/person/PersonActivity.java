@@ -2,9 +2,6 @@ package studio.xmatrix.coffee.ui.person;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.Toolbar;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.databinding.PersonActivityBinding;
 import studio.xmatrix.coffee.ui.BaseActionBarActivity;
