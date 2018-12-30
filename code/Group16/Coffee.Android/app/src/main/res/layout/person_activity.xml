@@ -1,48 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         tools:context=".ui.person.PersonActivity">
 
-    <android.support.design.widget.AppBarLayout
+        <android.support.design.widget.AppBarLayout
             android:id="@+id/app_bar"
-            android:fitsSystemWindows="true"
-            android:layout_height="240dp"
             android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:fitsSystemWindows="true"
             android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.design.widget.CollapsingToolbarLayout
+            <android.support.design.widget.CollapsingToolbarLayout
                 android:id="@+id/toolbar_layout"
-                android:fitsSystemWindows="true"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:toolbarId="@+id/toolbar"
+                android:fitsSystemWindows="true"
+                app:contentScrim="?attr/colorPrimary"
+                app:expandedTitleGravity="end|bottom"
+                app:expandedTitleMarginBottom="15dp"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:contentScrim="?attr/colorPrimary">
+                app:toolbarId="@+id/toolbar">
 
-            <android.support.v7.widget.Toolbar
+                <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
-                    android:layout_height="?attr/actionBarSize"
                     android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
                     app:layout_collapseMode="pin"
-                    app:popupTheme="@style/AppTheme.PopupOverlay"/>
+                    app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-        </android.support.design.widget.CollapsingToolbarLayout>
-    </android.support.design.widget.AppBarLayout>
+            </android.support.design.widget.CollapsingToolbarLayout>
+        </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_person"/>
-
-    <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/person_avatar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/fab_margin"
-            app:layout_anchor="@id/app_bar"
-            app:layout_anchorGravity="bottom|end"
-            app:srcCompat="@android:drawable/ic_dialog_email"/>
+            android:layout_marginStart="30dp"
+            android:src="@mipmap/ic_launcher_round"
+            app:layout_anchor="@+id/app_bar"
+            app:layout_anchorGravity="left|bottom" />
 
-</android.support.design.widget.CoordinatorLayout>
+        <TextView
+            android:id="@+id/person_bio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:maxWidth="300dp"
+            android:maxLines="2"
+            android:paddingTop="30dp"
+            android:text="我好强啊！！我好强啊！！我好强啊！！"
+            app:layout_anchor="@+id/include"
+            app:layout_anchorGravity="right|top" />
+
+
+        <include
+            android:id="@+id/include"
+            layout="@layout/content_person" />
+
+    </android.support.design.widget.CoordinatorLayout>
+</layout>
