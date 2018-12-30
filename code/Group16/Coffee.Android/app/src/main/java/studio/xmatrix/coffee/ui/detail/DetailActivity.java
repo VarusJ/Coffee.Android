@@ -15,6 +15,7 @@ public class DetailActivity extends BaseActionBarActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.detail_activity);
+        DetailHandler handler = new DetailHandler(this, binding);
         Objects.requireNonNull(getSupportActionBar()).setTitle("内容详情");
     }
 }

@@ -6,6 +6,7 @@
     <color name="colorWhite">#fefefe</color>
     <color name="colorBackground">#f4f4fe</color>
     <color name="colorTitle">#767676</color>
+    <color name="colorBlack">#202020</color>
     <color name="colorSubTitle">#bcbcbc</color>
     <color name="colorDivider">#ededed</color>
 </resources>

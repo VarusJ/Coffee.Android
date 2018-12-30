@@ -16,8 +16,8 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = DataBindingUtil.inflate(LayoutInflater.from(getActivity()), R.layout.home_fragment, null, false);
+        HomeHandler handler = new HomeHandler(getActivity(), binding);
     }
 
     @Nullable
