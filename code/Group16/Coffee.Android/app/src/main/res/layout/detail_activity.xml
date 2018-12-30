@@ -8,41 +8,11 @@
         <variable
             name="handler"
             type="studio.xmatrix.coffee.ui.detail.DetailHandler" />
-
     </data>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-
-        <LinearLayout
-            android:id="@+id/comment_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorWhite"
-            android:clickable="true"
-            android:foreground="?attr/selectableItemBackgroundBorderless"
-            android:gravity="center_vertical"
-            android:onClick="@{handler::onClickAddComment}"
-            android:orientation="horizontal"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="6dp"
-            android:translationZ="10dp"
-            app:layout_constraintBottom_toBottomOf="parent">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/detail_comment_avatar"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@mipmap/ic_launcher_round" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:text="添加评论..." />
-        </LinearLayout>
 
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -63,7 +33,7 @@
                     android:id="@+id/reply_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart ="10dp"
+                    android:layout_marginStart="10dp"
                     android:text="回复"
                     android:textSize="16sp" />
 
@@ -71,10 +41,40 @@
                     android:id="@+id/comment_list"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1"
-                    tools:layoutManager="LinearLayoutManager"
-                    tools:listitem="@layout/comment_item" />
+                    android:layout_weight="1"/>
+                    <!--tools:layoutManager="LinearLayoutManager"-->
+                    <!--tools:listitem="@layout/comment_item" />-->
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
+
+        <LinearLayout
+            android:id="@+id/comment_layout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/colorWhite"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="10dp"
+            android:translationZ="10dp"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/detail_comment_avatar"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@mipmap/ic_launcher_round" />
+
+            <TextView
+                android:id="@+id/add_title"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:paddingVertical="10dp"
+                android:layout_marginStart="10dp"
+                android:paddingHorizontal="10dp"
+                android:text="添加评论..." />
+        </LinearLayout>
     </android.support.constraint.ConstraintLayout>
 </layout>

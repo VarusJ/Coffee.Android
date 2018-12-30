@@ -8,13 +8,13 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp">
 
         <TextView
             android:id="@+id/reply_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
             android:text="ZhenlyChen:"
             android:textColor="@color/colorBlack"
             app:layout_constraintBottom_toTopOf="@id/reply_content"
@@ -80,7 +80,6 @@
             android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@id/comment_like"
             app:layout_constraintTop_toTopOf="parent" />
-
 
         <ImageView
             android:id="@+id/reply_divider"

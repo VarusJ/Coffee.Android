@@ -4,6 +4,7 @@ import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.databinding.CommentItemBinding;
@@ -25,7 +26,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        viewHolder.bind();
+        viewHolder.bind(i);
     }
 
     @Override
@@ -41,8 +42,10 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
             this.binding = binding;
         }
 
-        public void bind() {
-
+        public void bind(int pos) {
+            if (pos == getItemCount() - 1) {
+                binding.replyDivider.setVisibility(View.GONE);
+            }
         }
     }
 }
