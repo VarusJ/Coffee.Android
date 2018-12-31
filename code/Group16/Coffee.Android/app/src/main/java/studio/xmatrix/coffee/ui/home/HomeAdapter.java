@@ -50,15 +50,18 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             mTimelineView = binding.timeline;
             this.binding = binding;
             mTimelineView.initLine(viewType);
+            if (viewType == 1 || viewType == 3) {
+                binding.homeFather.setPadding(0, 30, 0, 0);
+            }
         }
 
         public void bind() {
-            binding.homeText.setOnClickListener(this);
+            binding.homeClickLayout.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            if (v.getId() == binding.homeText.getId()) {
+            if (v.getId() == binding.homeClickLayout.getId()) {
                 activity.startActivity(new Intent(activity, DetailActivity.class));
             }
         }

@@ -50,14 +50,14 @@ public class SquareAdapter extends RecyclerView.Adapter<SquareAdapter.ViewHolder
         void bind() {
             binding.userAvatar.setOnClickListener(this);
             binding.userName.setOnClickListener(this);
-            binding.contentText.setOnClickListener(this);
+            binding.cardLayout.setOnClickListener(this);
             // binding.setModel(i);
         }
         @Override
         public void onClick(View v) {
             if (v.getId() == binding.userAvatar.getId() || v.getId() == binding.userName.getId()) {
                 activity.startActivity(new Intent(activity, UserActivity.class));
-            } else if (v.getId() == binding.contentText.getId()) {
+            } else if (v.getId() == binding.cardLayout.getId()) {
                 activity.startActivity(new Intent(activity, DetailActivity.class));
             }
         }

@@ -28,6 +28,8 @@ public class DetailHandler {
         binding.commentList.setNestedScrollingEnabled(false);
         binding.addTitle.setOnClickListener(this::onClickAddComment);
         binding.detailContent.btnComment.setOnClickListener(this::onClickAddComment);
+        binding.detailContent.btnEdit.setVisibility(View.VISIBLE);
+        binding.detailContent.btnRemove.setVisibility(View.VISIBLE);
     }
 
     public void onClickAddComment(View v) {
