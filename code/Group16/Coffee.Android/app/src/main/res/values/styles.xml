@@ -13,5 +13,9 @@
     </style>
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+    <style name="toggleStyle">
+        <item name="sb_checked">true</item>
+        <item name="sb_show_indicator">false</item>
+    </style>
 
 </resources>
