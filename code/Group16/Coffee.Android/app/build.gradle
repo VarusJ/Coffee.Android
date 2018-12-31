@@ -58,6 +58,8 @@ dependencies {
     implementation  'com.beloo.widget:ChipsLayoutManager:0.3.7@aar'
     // 九宫格图片
     implementation 'com.lzy.widget:ninegridview:0.2.0'
+    // 侧滑布局
+    implementation "com.daimajia.swipelayout:library:1.2.0@aar"
 
     // AAC
     implementation 'android.arch.lifecycle:extensions:1.1.1'
