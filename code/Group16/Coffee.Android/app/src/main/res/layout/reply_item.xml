@@ -8,13 +8,13 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp">
 
         <TextView
             android:id="@+id/reply_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
             android:text="ZhenlyChen:"
             android:textColor="@color/colorBlack"
             app:layout_constraintBottom_toTopOf="@id/reply_content"
@@ -36,26 +36,28 @@
             android:id="@+id/reply_content"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingVertical="10dp"
-            android:paddingHorizontal="16dp"
-
+            android:layout_marginEnd="8dp"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
+            android:paddingHorizontal="8dp"
+            android:layout_marginHorizontal="8dp"
+            android:paddingVertical="10dp"
             android:text="Hello,world.Hello,world.Hello,world.Hello,world.Hello,world."
-            app:layout_constraintBottom_toBottomOf="parent"
 
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/comment_like"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/reply_name" />
 
         <ImageView
             android:id="@+id/comment_like"
             android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_height="0dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:padding="10dp"
             android:src="@drawable/ic_like_none"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/like_num"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -69,18 +71,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/comment_like" />
 
-        <ImageView
-            android:id="@+id/comment_delete"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:padding="10dp"
-            android:src="@drawable/ic_delete"
-            android:visibility="gone"
-            app:layout_constraintEnd_toStartOf="@id/comment_like"
-            app:layout_constraintTop_toTopOf="parent" />
-
+        <!--<ImageView-->
+            <!--android:id="@+id/comment_delete"-->
+            <!--android:layout_width="40dp"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:background="?attr/selectableItemBackgroundBorderless"-->
+            <!--android:clickable="true"-->
+            <!--android:padding="10dp"-->
+            <!--android:src="@drawable/ic_delete"-->
+            <!--app:layout_constraintBottom_toBottomOf="parent"-->
+            <!--app:layout_constraintTop_toTopOf="parent" />-->
 
         <ImageView
             android:id="@+id/reply_divider"

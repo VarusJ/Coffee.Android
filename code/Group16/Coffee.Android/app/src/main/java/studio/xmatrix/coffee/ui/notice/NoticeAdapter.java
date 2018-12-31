@@ -1,5 +1,6 @@
 package studio.xmatrix.coffee.ui.notice;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
@@ -11,6 +12,7 @@ import q.rorbin.badgeview.Badge;
 import q.rorbin.badgeview.QBadgeView;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.databinding.NoticeItemBinding;
+import studio.xmatrix.coffee.ui.detail.DetailActivity;
 
 public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder> {
     private FragmentActivity activity;
@@ -33,7 +35,7 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return 10;
+        return 3;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -52,6 +54,9 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder
                     .setBadgeGravity(Gravity.CENTER)
                     .setBadgeText("New");
             }
+            binding.noticeLayout.setOnClickListener(v -> {
+                activity.startActivity(new Intent(activity, DetailActivity.class));
+            });
             badge.setOnDragStateChangedListener((dragState, badge, targetView) -> {
                 // todo
             });
