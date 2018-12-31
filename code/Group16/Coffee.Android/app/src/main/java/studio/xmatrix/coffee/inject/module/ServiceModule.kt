@@ -10,26 +10,24 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import studio.xmatrix.coffee.App
 import studio.xmatrix.coffee.data.common.adapter.LiveDataCallAdapterFactory
-import studio.xmatrix.coffee.data.service.ContentService
-import studio.xmatrix.coffee.data.service.UserService
+import studio.xmatrix.coffee.data.service.*
 import javax.inject.Singleton
-
 
 @Module
 class ServiceModule {
 
     @Singleton
     @Provides
-    fun provideUserService(app: App): UserService {
+    fun provideCommentService(app: App): CommentService {
         val cookieJar = PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(app))
         val okHttpClient = OkHttpClient.Builder().cookieJar(cookieJar).build()
         val retrofit = Retrofit.Builder()
             .addCallAdapterFactory(LiveDataCallAdapterFactory())
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(UserService.BASE_URL)
+            .baseUrl(CommentService.BASE_URL)
             .client(okHttpClient)
             .build()
-        return retrofit.create(UserService::class.java)
+        return retrofit.create(CommentService::class.java)
     }
 
     @Singleton
@@ -44,5 +42,47 @@ class ServiceModule {
             .client(okHttpClient)
             .build()
         return retrofit.create(ContentService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideLikeService(app: App): LikeService {
+        val cookieJar = PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(app))
+        val okHttpClient = OkHttpClient.Builder().cookieJar(cookieJar).build()
+        val retrofit = Retrofit.Builder()
+            .addCallAdapterFactory(LiveDataCallAdapterFactory())
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(LikeService.BASE_URL)
+            .client(okHttpClient)
+            .build()
+        return retrofit.create(LikeService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideNotificationService(app: App): NotificationService {
+        val cookieJar = PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(app))
+        val okHttpClient = OkHttpClient.Builder().cookieJar(cookieJar).build()
+        val retrofit = Retrofit.Builder()
+            .addCallAdapterFactory(LiveDataCallAdapterFactory())
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(NotificationService.BASE_URL)
+            .client(okHttpClient)
+            .build()
+        return retrofit.create(NotificationService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideUserService(app: App): UserService {
+        val cookieJar = PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(app))
+        val okHttpClient = OkHttpClient.Builder().cookieJar(cookieJar).build()
+        val retrofit = Retrofit.Builder()
+            .addCallAdapterFactory(LiveDataCallAdapterFactory())
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(UserService.BASE_URL)
+            .client(okHttpClient)
+            .build()
+        return retrofit.create(UserService::class.java)
     }
 }

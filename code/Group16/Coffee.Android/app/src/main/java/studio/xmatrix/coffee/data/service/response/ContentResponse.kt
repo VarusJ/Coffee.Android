@@ -2,14 +2,15 @@ package studio.xmatrix.coffee.data.service.response
 
 import com.google.gson.annotations.SerializedName
 import studio.xmatrix.coffee.data.model.*
+import studio.xmatrix.coffee.data.service.resource.ContentResource
 
 data class ContentResponse(
     @SerializedName("State")
     val state: String,
     @SerializedName("Data")
-    val data: ContentInfo,
+    val data: ContentInfo?,
     @SerializedName("User")
-    val user: UserBaseInfo
+    val user: UserBaseInfo?
 ) {
     data class ContentInfo(
         @SerializedName("ID")
@@ -139,31 +140,36 @@ data class ContentResponse(
         val gender: Int
     )
 
-    fun toContent(): Content {
-        return Content(
-            userName = user.name,
-            userAvatar = user.avatar,
-            userGender = user.gender,
-            id = data.id,
-            name = data.name,
-            detail = data.detail,
-            ownId = data.ownId,
-            publishDate = data.publishDate,
-            editDate = data.editDate,
-            likeNum = data.likeNum,
-            commentNum = data.commentNum,
-            publicContent = data.public,
-            nativeContent = data.native,
-            type = data.type,
-            subType = data.subType,
-            remarks = data.remarks,
-            tags = data.tags
-        ).apply {
-            data.images?.forEach { images.add(it.toImage()) }
-            data.files?.forEach { files.add(it) }
-            movie.target = if (data.movie?.file?.file.isNullOrEmpty()) null else data.movie?.toMovie()
-            album.target = if (data.album?.title.isNullOrEmpty()) null else data.album?.toAlbum()
-            app.target = if (data.app?.file?.file.isNullOrEmpty()) null else data.app?.toApp()
+    fun toContentResource(): ContentResource {
+        if (data == null || user == null || data.id.isEmpty() || user.name.isEmpty()) {
+            return ContentResource(state = state, resource = null)
         }
+        return ContentResource(
+            state = state, resource = Content(
+                userName = user.name,
+                userAvatar = user.avatar,
+                userGender = user.gender,
+                id = data.id,
+                name = data.name,
+                detail = data.detail,
+                ownId = data.ownId,
+                publishDate = data.publishDate,
+                editDate = data.editDate,
+                likeNum = data.likeNum,
+                commentNum = data.commentNum,
+                publicContent = data.public,
+                nativeContent = data.native,
+                type = data.type,
+                subType = data.subType,
+                remarks = data.remarks,
+                tags = data.tags
+            ).apply {
+                data.images?.forEach { images.add(it.toImage()) }
+                data.files?.forEach { files.add(it) }
+                movie.target = if (data.movie?.file?.file.isNullOrEmpty()) null else data.movie?.toMovie()
+                album.target = if (data.album?.title.isNullOrEmpty()) null else data.album?.toAlbum()
+                app.target = if (data.app?.file?.file.isNullOrEmpty()) null else data.app?.toApp()
+            }
+        )
     }
 }
