@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.databinding.AdminActivityBinding;
 
+import java.util.Objects;
+
 public class AdminActivity extends AppCompatActivity {
 
     AdminActivityBinding binding;
@@ -16,5 +18,6 @@ public class AdminActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.binding = DataBindingUtil.setContentView(this, R.layout.admin_activity);
         binding.setHandler(new AdminActivityHandler(this, binding));
+        Objects.requireNonNull(getSupportActionBar()).setTitle("用户登录");
     }
 }

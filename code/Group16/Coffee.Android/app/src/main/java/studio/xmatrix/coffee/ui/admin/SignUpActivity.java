@@ -7,6 +7,7 @@ import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.databinding.SignupActivityBinding;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -17,5 +18,6 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.binding = DataBindingUtil.setContentView(this, R.layout.signup_activity);
         binding.setHandler(new SignUpActivityHandler(this, binding));
+        Objects.requireNonNull(getSupportActionBar()).setTitle("用户注册");
     }
 }
