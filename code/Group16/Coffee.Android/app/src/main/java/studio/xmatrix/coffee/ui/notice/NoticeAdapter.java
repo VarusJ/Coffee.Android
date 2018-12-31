@@ -31,7 +31,7 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        viewHolder.bind();
+
     }
 
     @Override
@@ -41,7 +41,7 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder
 
     class ViewHolder extends RecyclerView.ViewHolder {
         private final NoticeItemBinding binding;
-        Badge badge;
+        private Badge badge;
 
         ViewHolder(NoticeItemBinding binding) {
             super(binding.getRoot());

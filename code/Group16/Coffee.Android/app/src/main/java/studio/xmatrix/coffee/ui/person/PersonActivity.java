@@ -3,11 +3,11 @@ package studio.xmatrix.coffee.ui.person;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import studio.xmatrix.coffee.R;
-import studio.xmatrix.coffee.databinding.PersonActivityBinding;
 import studio.xmatrix.coffee.ui.BaseActionBarActivity;
+import studio.xmatrix.coffee.databinding.PersonActivityBinding;
 
 public class PersonActivity extends BaseActionBarActivity {
-    PersonActivityBinding binding;
+    private PersonActivityBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

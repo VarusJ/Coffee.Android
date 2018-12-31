@@ -6,7 +6,6 @@
     <data>
 
     </data>
-
     <android.support.design.card.MaterialCardView
         android:id="@+id/content_card"
         android:layout_width="match_parent"
