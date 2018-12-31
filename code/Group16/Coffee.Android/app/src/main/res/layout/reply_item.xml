@@ -40,6 +40,7 @@
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:paddingHorizontal="8dp"
+            android:textColor="@color/colorText"
             android:layout_marginHorizontal="8dp"
             android:paddingVertical="10dp"
             android:text="Hello,world.Hello,world.Hello,world.Hello,world.Hello,world."

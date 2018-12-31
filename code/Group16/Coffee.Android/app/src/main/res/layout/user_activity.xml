@@ -22,8 +22,8 @@
                 android:id="@+id/user_toolbar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="280dp"
-                android:translationZ="3dp"
                 android:fitsSystemWindows="true"
+                android:translationZ="3dp"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
                 <FrameLayout
@@ -46,8 +46,9 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom|center_horizontal"
                             android:text="MegaShow"
-                            android:textColor="@color/colorWhite"
-                            android:textSize="30sp" />
+                            android:textColor="@color/colorAvatar"
+                            android:textSize="30sp"
+                            android:transitionName="userName" />
 
                         <TextView
                             android:id="@+id/user_bio"
@@ -58,7 +59,7 @@
                             android:maxWidth="300dp"
                             android:maxLines="2"
                             android:text="我好强啊！！我好强啊！！我好强啊！！"
-                            android:textColor="@color/colorBackground" />
+                            android:textColor="@color/colorSubTitle" />
                     </LinearLayout>
                 </FrameLayout>
             </android.support.design.widget.CollapsingToolbarLayout>
@@ -96,7 +97,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:text="MegaShow"
-                    android:textColor="@color/colorWhite"
+                    android:textColor="@color/colorAvatar"
                     android:textSize="20sp" />
             </LinearLayout>
         </android.support.v7.widget.Toolbar>
@@ -108,10 +109,11 @@
             android:layout_gravity="top|center_horizontal"
             android:layout_marginTop="70dp"
             android:src="@mipmap/ic_launcher"
+            android:transitionName="userAvatar"
             android:translationZ="6dp"
             app:civ_border_color="@color/colorAvatar"
-            app:civ_border_width="2dp"
             app:civ_border_overlay="true"
+            app:civ_border_width="2dp"
             app:finalHeight="@dimen/image_final_width"
             app:finalToolbarHeight="?attr/actionBarSize"
             app:finalXPosition="54dp"

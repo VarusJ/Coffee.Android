@@ -3,7 +3,9 @@ package studio.xmatrix.coffee.ui.notice;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -59,6 +61,7 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder
                         .setBadgeText("New");
             }
             binding.noticeLayout.setOnClickListener(v -> {
+
                 activity.startActivity(new Intent(activity, DetailActivity.class));
             });
             binding.noticeUserAvatar.setOnClickListener(this::goToUser);
@@ -76,7 +79,13 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder
         }
 
         public void goToUser(View v) {
-            activity.startActivity(new Intent(activity, UserActivity.class));
+
+            Intent intent = new Intent(activity, UserActivity.class);
+            ActivityOptionsCompat options = ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(activity,
+                            Pair.create(binding.noticeUserAvatar, "userAvatar"),
+                            Pair.create(binding.noticeUserName, "userName"));
+            activity.startActivity(intent, options.toBundle());
         }
     }
 }
