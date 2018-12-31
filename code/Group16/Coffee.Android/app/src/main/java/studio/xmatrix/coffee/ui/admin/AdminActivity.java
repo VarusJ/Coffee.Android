@@ -14,6 +14,7 @@ import studio.xmatrix.coffee.inject.Injectable;
 import timber.log.Timber;
 
 import javax.inject.Inject;
+import java.util.Objects;
 
 public class AdminActivity extends AppCompatActivity implements Injectable {
 
@@ -35,5 +36,6 @@ public class AdminActivity extends AppCompatActivity implements Injectable {
                 Timber.d("AAAA %s", res.getData().getState());
             }
         });
+        Objects.requireNonNull(getSupportActionBar()).setTitle("用户登录");
     }
 }

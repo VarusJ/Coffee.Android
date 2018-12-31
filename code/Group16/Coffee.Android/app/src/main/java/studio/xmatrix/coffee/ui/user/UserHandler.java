@@ -1,5 +1,6 @@
 package studio.xmatrix.coffee.ui.user;
 
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -7,7 +8,14 @@ import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.databinding.UserActivityBinding;
 import studio.xmatrix.coffee.ui.home.HomeAdapter;
 
-class UserHandler {
+import static studio.xmatrix.coffee.ui.AvatarImageBehavior.startAlphaAnimation;
+
+class UserHandler implements AppBarLayout.OnOffsetChangedListener {
+    private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR = 0.6f;
+    private static final float PERCENTAGE_TO_HIDE_TITLE_DETAILS = 0.3f;
+    private static final int ALPHA_ANIMATIONS_DURATION = 200;
+    private boolean mIsTheTitleVisible = false;
+    private boolean mIsTheTitleContainerVisible = true;
     private UserActivity activity;
     private UserActivityBinding binding;
 
@@ -23,21 +31,35 @@ class UserHandler {
 
         Toolbar toolbar = binding.userToolbar;
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
-        toolbar.setTitle("MegaShow");
+        toolbar.setTitle("");
         activity.setSupportActionBar(toolbar);
 
-        binding.userAppBar.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
-            if (Math.abs(verticalOffset) == appBarLayout.getTotalScrollRange()) {
-                binding.userBio.setVisibility(View.GONE);
-                // Collapsed (make button visible and fab invisible)
-            } else if (verticalOffset == 0) {
+        binding.userAppBar.addOnOffsetChangedListener(this);
+        startAlphaAnimation(binding.userToolbarTitle, 0, View.INVISIBLE);
+    }
 
-                // Expanded (make fab visible and toolbar button invisible)
-            } else {
-                binding.userBio.setVisibility(View.VISIBLE);
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int offset) {
+        int maxScroll = appBarLayout.getTotalScrollRange();
+        float percentage = (float) Math.abs(offset) / (float) maxScroll;
 
-                // Somewhere in between
+        if (percentage >= PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR) {
+            if (!mIsTheTitleVisible) {
+                startAlphaAnimation(binding.userToolbarTitle, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
+                mIsTheTitleVisible = true;
             }
-        });
+        } else if (mIsTheTitleVisible) {
+            startAlphaAnimation(binding.userToolbarTitle, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
+            mIsTheTitleVisible = false;
+        }
+        if (percentage >= PERCENTAGE_TO_HIDE_TITLE_DETAILS) {
+            if (mIsTheTitleContainerVisible) {
+                startAlphaAnimation(binding.userLinear, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
+                mIsTheTitleContainerVisible = false;
+            }
+        } else if (!mIsTheTitleContainerVisible) {
+            startAlphaAnimation(binding.userLinear, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
+            mIsTheTitleContainerVisible = true;
+        }
     }
 }

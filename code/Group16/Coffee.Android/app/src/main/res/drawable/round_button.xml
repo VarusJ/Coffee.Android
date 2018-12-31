@@ -1,7 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-	<!-- 矩形的圆角弧度 -->
-	<corners android:radius="10dp" />
-	<!-- 矩形的填充色 -->
-	<solid android:color="@color/colorPrimary" />
-</shape>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:state_pressed="true" android:state_enabled="true">
+		<shape >
+			<!-- 矩形的圆角弧度 -->
+			<corners android:radius="10dp" />
+			<!-- 矩形的填充色 -->
+			<solid android:color="#FFFF" />
+			
+			<stroke android:width="3dp" android:color="@color/colorPrimaryDark"/>
+		</shape>
+	</item>
+	<!--正常状态-->
+	<item android:state_pressed="false" android:state_enabled="false">
+		<shape >
+			<!-- 矩形的圆角弧度 -->
+			<corners android:radius="10dp" />
+			<!-- 矩形的填充色 -->
+			<solid android:color="#FFFF" />
+			
+			<stroke android:width="2dp" android:color="@color/colorPrimary" />
+		</shape>
+	</item>
+</selector>
