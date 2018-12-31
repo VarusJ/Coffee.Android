@@ -2,6 +2,7 @@ package studio.xmatrix.coffee.data.service.response
 
 import com.google.gson.annotations.SerializedName
 import studio.xmatrix.coffee.data.model.User
+import studio.xmatrix.coffee.data.service.resource.UserResource
 
 data class UserInfoResponse(
     @SerializedName("ID")
@@ -36,19 +37,24 @@ data class UserInfoResponse(
         // val nickname: String
     )
 
-    fun toUser(): User {
-        return User(
-            id = id,
-            state = state,
-            email = email,
-            userClass = userClass,
-            name = info?.name,
-            avatar = info?.avatar,
-            bio = info?.bio,
-            gender = info?.gender,
-            maxSize = maxSize,
-            usedSize = usedSize,
-            singleSize = singleSize
+    fun toUserResource(): UserResource {
+        if (id.isNullOrEmpty()) {
+            return UserResource(state, null)
+        }
+        return UserResource(
+            state, User(
+                id = id,
+                state = state,
+                email = email,
+                userClass = userClass,
+                name = info?.name,
+                avatar = info?.avatar,
+                bio = info?.bio,
+                gender = info?.gender,
+                maxSize = maxSize,
+                usedSize = usedSize,
+                singleSize = singleSize
+            )
         )
     }
 }

@@ -1,6 +1,5 @@
 package studio.xmatrix.coffee.ui.admin;
 
-import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import studio.xmatrix.coffee.App;

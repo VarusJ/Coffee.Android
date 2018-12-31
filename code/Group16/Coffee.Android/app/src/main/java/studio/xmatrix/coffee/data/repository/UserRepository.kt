@@ -1,13 +1,14 @@
 package studio.xmatrix.coffee.data.repository
 
 import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.preference.PreferenceManager
 import studio.xmatrix.coffee.App
 import studio.xmatrix.coffee.data.common.network.*
-import studio.xmatrix.coffee.data.model.User
 import studio.xmatrix.coffee.data.service.UserDatabase
 import studio.xmatrix.coffee.data.service.UserService
 import studio.xmatrix.coffee.data.service.resource.CommonResource
+import studio.xmatrix.coffee.data.service.resource.UserResource
 import studio.xmatrix.coffee.data.service.response.UserInfoResponse
 import java.security.MessageDigest
 import javax.inject.Inject
@@ -63,27 +64,45 @@ class UserRepository @Inject constructor(
         }.asLiveData()
     }
 
-    fun getInfo(): LiveData<Resource<User>> {
+    fun getInfo(): LiveData<Resource<UserResource>> {
         val pref = PreferenceManager.getDefaultSharedPreferences(app)
-        return object : NetworkBoundResource<User, UserInfoResponse>(executors) {
+        var state = CommonResource.StatusSuccess
+        return object : NetworkBoundResource<UserResource, UserInfoResponse>(executors) {
             override fun saveCallResult(item: UserInfoResponse) {
-                val editor = pref.edit()
-                editor.putString("id", item.id)
-                editor.apply()
-                database.saveInfo(item.toUser())
+                state = item.state
+                val res = item.toUserResource()
+                if (item.state == CommonResource.StatusSuccess && res.resource != null) {
+                    val editor = pref.edit()
+                    editor.putString("id", item.id)
+                    editor.apply()
+                    database.saveInfo(res.resource)
+                } else {
+                    val editor = pref.edit()
+                    editor.remove("id")
+                    editor.apply()
+                }
             }
 
-            override fun shouldFetch(data: User?) = true
-            override fun loadFromDb() = database.loadInfoById(pref.getString("id", null))
+            override fun shouldFetch(data: UserResource?) = true
+
+            override fun loadFromDb(): LiveData<UserResource> {
+                val id = pref.getString("id", null)
+                return if (state == CommonResource.StatusSuccess && id != null) {
+                    database.loadInfoById(id)
+                } else {
+                    val data = MutableLiveData<UserResource>()
+                    executors.diskIO().execute { data.postValue(UserResource(state, null)) }
+                    data
+                }
+            }
+
             override fun createCall() = service.getById("self")
         }.asLiveData()
     }
 
-    fun getInfoById(id: String): LiveData<Resource<User>> {
-        return object : NetworkBoundResource<User, UserInfoResponse>(executors) {
-            override fun saveCallResult(item: UserInfoResponse) = database.saveInfo(item.toUser())
-            override fun shouldFetch(data: User?) = true
-            override fun loadFromDb() = database.loadInfoById(id)
+    fun getInfoById(id: String): LiveData<Resource<UserResource>> {
+        return object : NetworkDirectiveResource<UserResource, UserInfoResponse>(executors) {
+            override fun convertToResource(data: UserInfoResponse) = data.toUserResource()
             override fun createCall() = service.getById(id)
         }.asLiveData()
     }
