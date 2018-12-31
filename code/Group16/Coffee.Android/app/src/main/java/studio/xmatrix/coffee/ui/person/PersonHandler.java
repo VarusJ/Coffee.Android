@@ -32,7 +32,7 @@ class PersonHandler implements AppBarLayout.OnOffsetChangedListener {
         toolbar.setTitle("");
         activity.setSupportActionBar(toolbar);
 
-        binding.personInclude.findViewById(R.id.person_btn_name).setOnClickListener(v -> {
+        binding.personNameEdit.setOnClickListener(v -> {
             Toast.makeText(activity, "修改昵称", Toast.LENGTH_SHORT).show();
             // TODO
         });

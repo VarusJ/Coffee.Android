@@ -8,9 +8,12 @@
 
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/notice_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
+        android:background="@color/colorWhite"
+        android:translationZ="1dp"
         android:foreground="?attr/selectableItemBackgroundBorderless"
         android:paddingTop="8dp">
 
@@ -49,13 +52,17 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/notice_user_avatar"
-            android:layout_width="46dp"
-            android:layout_height="46dp"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:padding="5dp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
-            android:src="@mipmap/ic_launcher_round"
+            app:civ_border_color="@color/colorWhite"
+            app:civ_border_width="2dp"
+            android:translationZ="3dp"
+            app:civ_border_overlay="true"
+            android:src="@mipmap/ic_launcher"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/notice_title" />
 
@@ -70,6 +77,7 @@
             android:textColor="@color/colorTitle"
             android:textSize="18sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/notice_user_avatar"
             app:layout_constraintStart_toEndOf="@id/notice_user_avatar"
             app:layout_constraintTop_toTopOf="@id/notice_user_avatar" />
 
@@ -88,18 +96,17 @@
             android:id="@+id/notice_content"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="40dp"
             android:layout_marginBottom="20dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
             android:lineSpacingExtra="3dp"
             android:maxLines="2"
             android:text="你可是太强了你可是太强了你可是太强了你可是太强了你可是太强了你可是太强了你可是太强了"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/notice_user_name"
-            app:layout_constraintTop_toBottomOf="@id/notice_user_name" />
+            app:layout_constraintStart_toStartOf="@+id/notice_user_avatar"
+            app:layout_constraintTop_toBottomOf="@+id/notice_user_avatar" />
 
         <ImageView
             android:id="@+id/card_divider"

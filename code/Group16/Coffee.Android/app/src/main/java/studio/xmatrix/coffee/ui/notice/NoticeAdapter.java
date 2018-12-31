@@ -35,7 +35,7 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return 10;
+        return 3;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -54,7 +54,7 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder
                     .setBadgeGravity(Gravity.CENTER)
                     .setBadgeText("New");
             }
-            binding.noticeContent.setOnClickListener(v -> {
+            binding.noticeLayout.setOnClickListener(v -> {
                 activity.startActivity(new Intent(activity, DetailActivity.class));
             });
             badge.setOnDragStateChangedListener((dragState, badge, targetView) -> {

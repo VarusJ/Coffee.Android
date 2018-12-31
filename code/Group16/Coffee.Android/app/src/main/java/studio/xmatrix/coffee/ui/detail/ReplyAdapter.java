@@ -2,16 +2,17 @@ package studio.xmatrix.coffee.ui.detail;
 
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import studio.xmatrix.coffee.R;
-import studio.xmatrix.coffee.databinding.CommentItemBinding;
 import studio.xmatrix.coffee.databinding.ReplyItemBinding;
 
 public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> {
-    private  DetailActivity activity;
+    private DetailActivity activity;
 
     public ReplyAdapter(DetailActivity activity) {
         this.activity = activity;
@@ -46,6 +47,21 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
             if (pos == getItemCount() - 1) {
                 binding.replyDivider.setVisibility(View.GONE);
             }
+            binding.replyContent.setOnLongClickListener(v -> {
+                final AlertDialog.Builder normalDialog =
+                        new AlertDialog.Builder(activity);
+                normalDialog.setTitle("操作确认");
+                normalDialog.setMessage("删除这条回复?");
+                normalDialog.setPositiveButton("确定", (dialog, which) -> {
+                    Toast.makeText(activity, "删除", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                });
+                normalDialog.setNegativeButton("取消", (dialog, which) -> {
+                    dialog.dismiss();
+                });
+                normalDialog.show();
+                return true;
+            });
         }
     }
 }

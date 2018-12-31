@@ -5,13 +5,21 @@ import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
+import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration;
 import com.github.vipulasri.timelineview.TimelineView;
+import com.lzy.ninegrid.ImageInfo;
+import com.lzy.ninegrid.preview.NineGridViewClickAdapter;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.databinding.HomeItemBinding;
 import studio.xmatrix.coffee.ui.detail.DetailActivity;
+import studio.xmatrix.coffee.ui.square.TagAdapter;
+
+import java.util.ArrayList;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     private FragmentActivity activity;
@@ -57,6 +65,28 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
         public void bind() {
             binding.homeClickLayout.setOnClickListener(this);
+
+
+            TagAdapter adapter = new TagAdapter(activity);
+            binding.homeTagLayout.setAdapter(adapter);
+            ChipsLayoutManager chipsLayoutManager = ChipsLayoutManager.newBuilder(activity)
+                    .setChildGravity(Gravity.TOP)
+                    .setScrollingEnabled(true)
+                    .setGravityResolver(position -> Gravity.START)
+                    .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                    .build();
+            binding.homeTagLayout.setLayoutManager(chipsLayoutManager);
+            binding.homeTagLayout.addItemDecoration(new SpacingItemDecoration(10, 10));
+
+
+            ArrayList<ImageInfo> imageInfos = new ArrayList<>();
+            for (int i = 0; i < 2; i++) {
+                ImageInfo info = new ImageInfo();
+                info.setThumbnailUrl("test" + i);
+                info.setBigImageUrl("test2" + i);
+                imageInfos.add(info);
+            }
+            binding.homeNineGridImage.setAdapter(new NineGridViewClickAdapter(activity, imageInfos));
         }
 
         @Override
