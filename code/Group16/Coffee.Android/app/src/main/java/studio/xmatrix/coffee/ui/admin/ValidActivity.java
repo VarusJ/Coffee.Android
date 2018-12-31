@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.databinding.ValidActivityBinding;
 
+import java.util.Objects;
+
 public class ValidActivity extends AppCompatActivity {
     ValidActivityBinding binding;
 
@@ -15,6 +17,7 @@ public class ValidActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.binding = DataBindingUtil.setContentView(this, R.layout.valid_activity);
         binding.setHandler(new ValidActivityHandler(this, binding));
+        Objects.requireNonNull(getSupportActionBar()).setTitle("邮箱验证");
     }
 
 }

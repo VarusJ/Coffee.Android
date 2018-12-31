@@ -30,5 +30,6 @@ public class AdminActivity extends AppCompatActivity implements Injectable {
         AppInjector.Companion.inject(this);
         repository.getPublicByPage(1, 7).observe(this, res -> {
         });
+        Objects.requireNonNull(getSupportActionBar()).setTitle("用户登录");
     }
 }
