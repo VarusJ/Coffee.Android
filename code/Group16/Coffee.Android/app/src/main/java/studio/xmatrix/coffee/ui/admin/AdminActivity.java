@@ -28,7 +28,7 @@ public class AdminActivity extends AppCompatActivity implements Injectable {
         binding.setHandler(new AdminActivityHandler(this, binding));
 
         AppInjector.Companion.inject(this);
-        repository.getPublic().observe(this, res -> {
+        repository.getPublicByPage(1, 7).observe(this, res -> {
         });
     }
 }
