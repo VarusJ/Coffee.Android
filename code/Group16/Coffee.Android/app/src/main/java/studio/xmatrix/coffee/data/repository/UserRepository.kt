@@ -22,7 +22,7 @@ class UserRepository @Inject constructor(
 ) {
 
     fun login(name: String, password: String): LiveData<Resource<CommonResponse>> {
-        return object : NetworkDirectiveResource<CommonResponse>(executors) {
+        return object : NetworkDirectiveResource<CommonResponse, CommonResponse>(executors) {
             override fun createCall(): LiveData<ApiResponse<CommonResponse>> {
                 val bytes = password.toByteArray()
                 val md = MessageDigest.getInstance("SHA-512")
@@ -30,11 +30,13 @@ class UserRepository @Inject constructor(
                 val hash = digest.fold("") { str, it -> str + "%02x".format(it) }
                 return service.loginByPassword(UserService.LoginRequestBody(name, hash))
             }
+
+            override fun convertToResource(data: CommonResponse) = data
         }.asLiveData()
     }
 
     fun register(name: String, email: String, password: String): LiveData<Resource<CommonResponse>> {
-        return object : NetworkDirectiveResource<CommonResponse>(executors) {
+        return object : NetworkDirectiveResource<CommonResponse, CommonResponse>(executors) {
             override fun createCall(): LiveData<ApiResponse<CommonResponse>> {
                 val bytes = password.toByteArray()
                 val md = MessageDigest.getInstance("SHA-512")
@@ -42,18 +44,22 @@ class UserRepository @Inject constructor(
                 val hash = digest.fold("") { str, it -> str + "%02x".format(it) }
                 return service.register(UserService.RegisterRequestBody(name, email, hash))
             }
+
+            override fun convertToResource(data: CommonResponse) = data
         }.asLiveData()
     }
 
     fun getEmailValidCode(): LiveData<Resource<CommonResponse>> {
-        return object : NetworkDirectiveResource<CommonResponse>(executors) {
+        return object : NetworkDirectiveResource<CommonResponse, CommonResponse>(executors) {
             override fun createCall() = service.getEmailValidCode()
+            override fun convertToResource(data: CommonResponse) = data
         }.asLiveData()
     }
 
     fun validEmail(vcode: String): LiveData<Resource<CommonResponse>> {
-        return object : NetworkDirectiveResource<CommonResponse>(executors) {
+        return object : NetworkDirectiveResource<CommonResponse, CommonResponse>(executors) {
             override fun createCall() = service.validEmail(UserService.EmailValidRequestBody(vcode))
+            override fun convertToResource(data: CommonResponse) = data
         }.asLiveData()
     }
 

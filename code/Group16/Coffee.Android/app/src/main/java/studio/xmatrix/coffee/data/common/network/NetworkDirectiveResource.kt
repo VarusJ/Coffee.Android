@@ -7,10 +7,10 @@ import android.support.annotation.MainThread
 import android.support.annotation.WorkerThread
 
 
-abstract class NetworkDirectiveResource<Type>
+abstract class NetworkDirectiveResource<ResultType, RequestType>
 @MainThread constructor(private val appExecutors: AppExecutors) {
 
-    private val result = MediatorLiveData<Resource<Type>>()
+    private val result = MediatorLiveData<Resource<ResultType>>()
 
     init {
         result.value = Resource.loading(null)
@@ -18,7 +18,7 @@ abstract class NetworkDirectiveResource<Type>
     }
 
     @MainThread
-    private fun setValue(newValue: Resource<Type>) {
+    private fun setValue(newValue: Resource<ResultType>) {
         if (result.value != newValue) {
             result.value = newValue
         }
@@ -30,8 +30,8 @@ abstract class NetworkDirectiveResource<Type>
             when (response) {
                 is ApiSuccessResponse -> {
                     appExecutors.mainThread().execute {
-                        val liveData = MutableLiveData<Type>()
-                        liveData.value = processResponse(response)
+                        val liveData = MutableLiveData<ResultType>()
+                        liveData.value = convertToResource(processResponse(response))
                         result.addSource(liveData) { newData ->
                             setValue(Resource.success(newData))
                         }
@@ -39,7 +39,7 @@ abstract class NetworkDirectiveResource<Type>
                 }
                 is ApiEmptyResponse -> {
                     appExecutors.mainThread().execute {
-                        val liveData = MutableLiveData<Type>()
+                        val liveData = MutableLiveData<ResultType>()
                         liveData.value = null
                         result.addSource(liveData) { newData ->
                             setValue(Resource.success(newData))
@@ -49,7 +49,7 @@ abstract class NetworkDirectiveResource<Type>
                 }
                 is ApiErrorResponse -> {
                     onFetchFailed()
-                    val liveData = MutableLiveData<Type>()
+                    val liveData = MutableLiveData<ResultType>()
                     liveData.value = null
                     result.addSource(liveData) { newData ->
                         setValue(Resource.error(response.errorMessage, newData))
@@ -61,11 +61,14 @@ abstract class NetworkDirectiveResource<Type>
 
     protected open fun onFetchFailed() {}
 
-    fun asLiveData() = result as LiveData<Resource<Type>>
+    fun asLiveData() = result as LiveData<Resource<ResultType>>
 
     @WorkerThread
-    protected open fun processResponse(response: ApiSuccessResponse<Type>) = response.body
+    protected open fun processResponse(response: ApiSuccessResponse<RequestType>) = response.body
+
+    @WorkerThread
+    protected abstract fun convertToResource(data: RequestType): ResultType
 
     @MainThread
-    protected abstract fun createCall(): LiveData<ApiResponse<Type>>
+    protected abstract fun createCall(): LiveData<ApiResponse<RequestType>>
 }

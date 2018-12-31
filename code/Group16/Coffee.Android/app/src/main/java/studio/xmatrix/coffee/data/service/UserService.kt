@@ -61,8 +61,9 @@ class UserDatabase @Inject constructor(app: App, private val executors: AppExecu
 
     fun saveInfo(user: User) {
         user.id?.let {
-            box.query().equal(User_.id, it).build().remove()
+            box.query { equal(User_.id, it) }.remove()
             box.put(user)
+            return
         }
     }
 }

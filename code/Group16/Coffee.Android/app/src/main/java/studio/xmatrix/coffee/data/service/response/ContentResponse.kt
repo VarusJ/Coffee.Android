@@ -41,20 +41,20 @@ data class ContentResponse(
         @SerializedName("Tag")
         val tags: List<String>,
         @SerializedName("Image")
-        val images: Array<ImageInfo>,
+        val images: List<ImageInfo>?,
         @SerializedName("Files")
-        val files: Array<File>,
+        val files: List<File>?,
         @SerializedName("Movie")
-        val movie: MovieInfo,
+        val movie: MovieInfo?,
         @SerializedName("Album")
-        val album: AlbumInfo,
+        val album: AlbumInfo?,
         @SerializedName("App")
-        val app: AppInfo
+        val app: AppInfo?
     ) {
 
         data class AlbumInfo(
             @SerializedName("Images")
-            val images: Array<ImageInfo>,
+            val images: List<ImageInfo>,
             @SerializedName("Title")
             val title: String,
             @SerializedName("Time")
@@ -77,7 +77,7 @@ data class ContentResponse(
             @SerializedName("URL")
             val url: String,
             @SerializedName("Image")
-            val images: Array<ImageInfo>,
+            val images: List<ImageInfo>,
             val des: String,
             @SerializedName("Version")
             val version: String
@@ -113,7 +113,7 @@ data class ContentResponse(
             @SerializedName("URL")
             val url: String,
             @SerializedName("Image")
-            val images: Array<ImageInfo>,
+            val images: List<ImageInfo>,
             @SerializedName("Type")
             val type: String,
             @SerializedName("Detail")
@@ -159,11 +159,11 @@ data class ContentResponse(
             remarks = data.remarks,
             tags = data.tags
         ).apply {
-            data.images.forEach { images.add(it.toImage()) }
-            data.files.forEach { files.add(it) }
-            movie.target = data.movie.toMovie()
-            album.target = data.album.toAlbum()
-            app.target = data.app.toApp()
+            data.images?.forEach { images.add(it.toImage()) }
+            data.files?.forEach { files.add(it) }
+            movie.target = if (data.movie?.file?.file.isNullOrEmpty()) null else data.movie?.toMovie()
+            album.target = if (data.album?.title.isNullOrEmpty()) null else data.album?.toAlbum()
+            app.target = if (data.app?.file?.file.isNullOrEmpty()) null else data.app?.toApp()
         }
     }
 }

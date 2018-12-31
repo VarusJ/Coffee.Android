@@ -8,11 +8,10 @@ import io.objectbox.kotlin.query
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Path
-import studio.xmatrix.coffee.App
+import retrofit2.http.Query
 import studio.xmatrix.coffee.data.common.network.ApiResponse
 import studio.xmatrix.coffee.data.common.network.AppExecutors
-import studio.xmatrix.coffee.data.model.Content
-import studio.xmatrix.coffee.data.model.Content_
+import studio.xmatrix.coffee.data.model.*
 import studio.xmatrix.coffee.data.service.resource.ContentsResource
 import studio.xmatrix.coffee.data.service.response.CommonResponse
 import studio.xmatrix.coffee.data.service.response.ContentResponse
@@ -35,14 +34,20 @@ interface ContentService {
     @GET("detail/{id}")
     fun getDetailById(@Path("id") contentId: String): LiveData<ApiResponse<ContentResponse>>
 
-    @GET("public?page={page}&eachPage={eachPage}")
-    fun getPublic(@Path("page") page: Int, @Path("eachPage") eachPage: Int): LiveData<ApiResponse<PublishContentResponse>>
+    @GET("public")
+    fun getPublic(@Query("page") page: Int, @Query("eachPage") eachPage: Int): LiveData<ApiResponse<PublishContentResponse>>
 }
 
 @Singleton
-class ContentDatabase @Inject constructor(app: App, private val executors: AppExecutors) {
+class ContentDatabase @Inject constructor(app: studio.xmatrix.coffee.App, private val executors: AppExecutors) {
 
     private val box: Box<Content> = app.boxStore.boxFor()
+
+    private val albumBox: Box<Album> = app.boxStore.boxFor()
+    private val appBox: Box<App> = app.boxStore.boxFor()
+    private val fileBox: Box<File> = app.boxStore.boxFor()
+    private val imageBox: Box<Image> = app.boxStore.boxFor()
+    private val movieBox: Box<Movie> = app.boxStore.boxFor()
 
     fun loadContentsByNum(num: Int): LiveData<ContentsResource> {
         val data = MutableLiveData<ContentsResource>()
@@ -56,10 +61,29 @@ class ContentDatabase @Inject constructor(app: App, private val executors: AppEx
         return data
     }
 
-    fun saveContents(items: List<Content>) {
+    fun saveContents(items: List<Content>?) {
         box.query {
             equal(Content_.publicContent, true)
-            or()
+        }.find().forEach {
+            if (!it.album.isNull) albumBox.remove(it.album.targetId)
+            if (!it.app.isNull) appBox.remove(it.app.targetId)
+            if (!it.movie.isNull) movieBox.remove(it.movie.targetId)
+            it.files.forEach { file -> fileBox.remove(file._id) }
+            it.images.forEach { image -> imageBox.remove(image._id) }
+            box.remove(it._id)
         }
+        items?.forEach { item ->
+            box.query {
+                equal(Content_.id, item.id)
+            }.find().forEach {
+                if (!it.album.isNull) albumBox.remove(it.album.targetId)
+                if (!it.app.isNull) appBox.remove(it.app.targetId)
+                if (!it.movie.isNull) movieBox.remove(it.movie.targetId)
+                it.files.forEach { file -> fileBox.remove(file._id) }
+                it.images.forEach { image -> imageBox.remove(image._id) }
+                box.remove(it._id)
+            }
+        }
+        box.put(items)
     }
 }
