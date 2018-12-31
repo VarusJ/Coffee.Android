@@ -1,21 +1,18 @@
 package studio.xmatrix.coffee.ui.person;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.ui.BaseActionBarActivity;
+import studio.xmatrix.coffee.databinding.PersonActivityBinding;
 
 public class PersonActivity extends BaseActionBarActivity {
+    private PersonActivityBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.person_activity);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
+        binding = DataBindingUtil.setContentView(this, R.layout.person_activity);
+        PersonHandler handler = new PersonHandler(this, binding);
     }
 }

@@ -5,8 +5,12 @@ import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import com.daimajia.swipe.SwipeLayout;
+import q.rorbin.badgeview.Badge;
+import q.rorbin.badgeview.QBadgeView;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.databinding.NoticeItemBinding;
 import studio.xmatrix.coffee.ui.detail.DetailActivity;
@@ -37,6 +41,7 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder
 
     class ViewHolder extends RecyclerView.ViewHolder {
         private final NoticeItemBinding binding;
+        private Badge badge;
 
         ViewHolder(NoticeItemBinding binding) {
             super(binding.getRoot());
@@ -46,13 +51,18 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder
         void bind() {
             if (badge == null) {
                 badge = new QBadgeView(activity)
-                    .bindTarget(binding.noticeRemove)
-                    .setBadgeGravity(Gravity.CENTER)
-                    .setBadgeText("New");
+                        .bindTarget(binding.noticeContent)
+                        .setBadgeGravity(Gravity.END | Gravity.CENTER)
+                        .setBadgeText("New");
             }
             binding.noticeLayout.setOnClickListener(v -> {
                 activity.startActivity(new Intent(activity, DetailActivity.class));
             });
+
+            binding.noticeSwipe.setShowMode(SwipeLayout.ShowMode.PullOut);
+            binding.noticeSwipe.addDrag(SwipeLayout.DragEdge.Right, binding.removeLayout);
+
+
             badge.setOnDragStateChangedListener((dragState, badge, targetView) -> {
                 // todo
             });
