@@ -78,6 +78,14 @@ class Content constructor() {
         this.remarks = remarks
         this.tags = tags
     }
+
+    companion object {
+        const val TypeText = "Text"
+        const val TypeAlbum = "Album"
+        const val TypeFilm = "Film"
+        const val TypeGame = "Game"
+        const val TypeDoc = "Doc"
+    }
 }
 
 @Entity
@@ -126,15 +134,20 @@ data class File(
 )
 
 @Entity
-data class Image(
+class Image constructor() {
     @Id
-    var _id: Long = 0,
+    var _id: Long = 0
 
-    val native: Boolean,
-    val url: String,
-    val thumb: String
-) {
+    var native: Boolean = false
+    lateinit var url: String
+    lateinit var thumb: String
     lateinit var file: ToOne<File>
+
+    constructor(native: Boolean, url: String, thumb: String): this() {
+        this.native = native
+        this.url = url
+        this.thumb = thumb
+    }
 }
 
 @Entity
