@@ -2,26 +2,21 @@ package studio.xmatrix.coffee.ui.square;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration;
-import com.beloo.widget.chipslayoutmanager.gravity.IChildGravityResolver;
-import com.beloo.widget.chipslayoutmanager.layouter.breaker.IRowBreaker;
 import com.lzy.ninegrid.ImageInfo;
 import com.lzy.ninegrid.preview.NineGridViewClickAdapter;
-import org.intellij.lang.annotations.Flow;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.databinding.ContentCardItemBinding;
-import studio.xmatrix.coffee.databinding.SquareFragmentBinding;
 import studio.xmatrix.coffee.ui.detail.DetailActivity;
 import studio.xmatrix.coffee.ui.user.UserActivity;
 
@@ -90,9 +85,18 @@ public class SquareAdapter extends RecyclerView.Adapter<SquareAdapter.ViewHolder
         @Override
         public void onClick(View v) {
             if (v.getId() == binding.userAvatar.getId() || v.getId() == binding.userName.getId()) {
-                activity.startActivity(new Intent(activity, UserActivity.class));
+                Intent intent = new Intent(activity, UserActivity.class);
+                ActivityOptionsCompat options = ActivityOptionsCompat
+                        .makeSceneTransitionAnimation(activity,
+                                Pair.create(binding.userAvatar, "userAvatar"),
+                                Pair.create(binding.userName, "userName"));
+                activity.startActivity(intent, options.toBundle());
             } else if (v.getId() == binding.cardLayout.getId()) {
-                activity.startActivity(new Intent(activity, DetailActivity.class));
+                Intent intent = new Intent(activity, DetailActivity.class);
+                ActivityOptionsCompat options = ActivityOptionsCompat
+                        .makeSceneTransitionAnimation(activity,
+                                Pair.create(binding.contentCard, "contentCard"));
+                activity.startActivity(intent, options.toBundle());
             }
         }
     }

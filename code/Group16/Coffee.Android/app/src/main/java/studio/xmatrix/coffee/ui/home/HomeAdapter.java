@@ -3,7 +3,9 @@ package studio.xmatrix.coffee.ui.home;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -92,7 +94,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         @Override
         public void onClick(View v) {
             if (v.getId() == binding.homeClickLayout.getId()) {
-                activity.startActivity(new Intent(activity, DetailActivity.class));
+                Intent intent = new Intent(activity, DetailActivity.class);
+                ActivityOptionsCompat options = ActivityOptionsCompat
+                        .makeSceneTransitionAnimation(activity,
+                                Pair.create(binding.homeCard, "contentCard"));
+                activity.startActivity(intent, options.toBundle());
             }
         }
     }
