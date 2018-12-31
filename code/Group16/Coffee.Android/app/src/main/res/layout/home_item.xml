@@ -13,6 +13,7 @@
         android:orientation="horizontal">
 
         <com.github.vipulasri.timelineview.TimelineView
+            app:marker="@drawable/ic_dot"
             android:id="@+id/timeline"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

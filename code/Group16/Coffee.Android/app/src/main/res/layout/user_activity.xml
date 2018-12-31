@@ -109,7 +109,7 @@
             android:layout_marginTop="70dp"
             android:src="@mipmap/ic_launcher"
             android:translationZ="6dp"
-            app:civ_border_color="@color/colorWhite"
+            app:civ_border_color="@color/colorAvatar"
             app:civ_border_width="2dp"
             app:civ_border_overlay="true"
             app:finalHeight="@dimen/image_final_width"
