@@ -4,12 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="model"
+            type="studio.xmatrix.coffee.data.model.Content"/>
+        <import type="java.lang.Long" />
     </data>
+
     <android.support.design.card.MaterialCardView
         android:id="@+id/content_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:transitionName="contentCard"
         android:layout_marginHorizontal="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
@@ -40,6 +45,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:src="@mipmap/ic_launcher"
+                android:transitionName="userAvatar"
                 android:translationZ="2dp"
                 app:civ_border_color="@color/colorAvatar"
                 app:civ_border_width="1dp"
@@ -51,10 +57,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:textSize="16sp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
-                android:text="MegaShow"
+                android:text="@{model.userName}"
+                tools:text="MegaShow"
                 android:textColor="@color/colorBlack"
+                android:transitionName="userName"
                 android:translationZ="8dp"
                 app:layout_constraintBottom_toBottomOf="@id/user_avatar"
                 app:layout_constraintStart_toEndOf="@id/user_avatar"
@@ -62,6 +71,7 @@
 
 
             <TextView
+                android:id="@+id/content_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
@@ -91,9 +101,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
                 android:layout_marginTop="14dp"
-                android:text="我是一个标题"
+                tools:text="我是一个标题"
+                android:text="@{model.name}"
                 android:textColor="@color/colorBlack"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@id/card_divider"
                 app:layout_constraintTop_toBottomOf="@id/user_avatar" />
@@ -103,8 +114,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="22dp"
-                android:layout_marginTop="10dp"
-                android:text="我太强了！！！！！！！！！！我太强了我太强了我太强了我太强了我太强了我太强了我太强了我太强了我太强了我太强了！！！！"
+                android:textSize="15sp"
+                android:layout_marginTop="16dp"
+                android:text="@{model.detail}"
+                tools:text="我太强了！！！！！！！！！！我太强了我太强了我太强了我太强了我太强了我太强了我太强了我太强了我太强了我太强了！！！！"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/content_title" />
@@ -112,33 +125,31 @@
             <com.lzy.ninegrid.NineGridView
                 android:id="@+id/nine_grid_image"
                 android:layout_width="0dp"
-                android:layout_marginTop="6dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/content_text"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="6dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/content_text"
                 app:ngv_gridSpacing="3dp"
                 app:ngv_maxSize="9"
                 app:ngv_mode="grid"
                 app:ngv_singleImageRatio="1"
-                app:ngv_singleImageSize="250dp"/>
+                app:ngv_singleImageSize="250dp" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/tag_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="16dp"
-                app:layout_constraintTop_toBottomOf="@id/nine_grid_image">
-
-            </android.support.v7.widget.RecyclerView>
+                android:layout_marginTop="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/nine_grid_image"/>
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
                 android:background="@color/colorBottom"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -160,7 +171,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="5"
+                    tools:text="5"
+                    android:text="@{Long.toString(model.likeNum)}"
                     android:textSize="16sp" />
 
                 <ImageView
@@ -177,7 +189,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="2"
+                    tools:text="2"
+                    android:text="@{Long.toString(model.commentNum)}"
                     android:textSize="16sp" />
 
 

@@ -95,5 +95,4 @@ public class AdminActivityHandler implements Injectable {
         }
         binding.loginPassword.setSelection(binding.loginPassword.getText().length());
     }
-
 }

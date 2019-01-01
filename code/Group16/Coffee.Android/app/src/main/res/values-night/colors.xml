@@ -4,12 +4,13 @@
     <color name="colorPrimaryDark">#333333</color>
     <color name="colorAccent">#6d5855</color>
     <color name="colorWhite">#252525</color>
-    <color name="colorBackground">#313b47</color>
+    <color name="colorBackground">#2d343d</color>
     <color name="colorBottom">#1b1b1b</color>
     <color name="colorTitle">#afafaf</color>
     <color name="colorBlack">#e6e6e6</color>
-    <color name="colorSubTitle">#515151</color>
+    <color name="colorSubTitle">#d3c2c2c2</color>
     <color name="colorDivider">#494d4e</color>
-    <color name="colorTime">#a3a6af</color>
+    <color name="colorTime">#3dffffff</color>
     <color name="colorAvatar">#e6e6e6</color>
+    <color name="colorText">#e6cccccc</color>
 </resources>

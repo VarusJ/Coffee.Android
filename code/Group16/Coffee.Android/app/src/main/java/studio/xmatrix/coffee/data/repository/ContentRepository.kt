@@ -9,6 +9,7 @@ import studio.xmatrix.coffee.data.service.resource.ContentResource
 import studio.xmatrix.coffee.data.service.resource.ContentsResource
 import studio.xmatrix.coffee.data.service.resource.CommonResource
 import studio.xmatrix.coffee.data.service.response.ContentResponse
+import studio.xmatrix.coffee.data.service.response.ContentsResponse
 import studio.xmatrix.coffee.data.service.response.PublishContentsResponse
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -36,7 +37,7 @@ class ContentRepository @Inject constructor(
 
     fun getPublicContentsByPage(page: Int, eachPage: Int): LiveData<Resource<ContentsResource>> {
         if (page == 1) {
-            var state = String()
+            var state = CommonResource.StatusSuccess
             return object : NetworkBoundResource<ContentsResource, PublishContentsResponse>(executors) {
                 override fun saveCallResult(item: PublishContentsResponse) {
                     state = item.state
@@ -48,12 +49,12 @@ class ContentRepository @Inject constructor(
                 override fun shouldFetch(data: ContentsResource?) = true
 
                 override fun loadFromDb(): LiveData<ContentsResource> {
-                    if (state == CommonResource.StatusSuccess) {
-                        return database.loadContentsByNum(eachPage)
+                    return if (state == CommonResource.StatusSuccess) {
+                        database.loadContentsByNum(eachPage)
                     } else {
                         val data = MutableLiveData<ContentsResource>()
                         executors.diskIO().execute { data.postValue(ContentsResource(state, null)) }
-                        return data
+                        data
                     }
                 }
 
@@ -66,4 +67,33 @@ class ContentRepository @Inject constructor(
             }.asLiveData()
         }
     }
+
+    fun addAlbum(): LiveData<Resource<CommonResource>> {
+        TODO("not implemented")
+    }
+
+    fun getAlbumsByUserId(): LiveData<Resource<ContentsResource>> {
+        return object: NetworkBoundResource<ContentsResource, ContentsResponse>(executors) {
+            override fun saveCallResult(item: ContentsResponse) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun shouldFetch(data: ContentsResource?): Boolean {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun loadFromDb(): LiveData<ContentsResource> {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun createCall(): LiveData<ApiResponse<ContentsResponse>> {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+        }.asLiveData()
+    }
+
+    fun getFileByIdAndPath() = {}
+    fun getTextsByUserId() = {}
+    fun addText() = {}
+    fun updateContentById() = {}
 }
