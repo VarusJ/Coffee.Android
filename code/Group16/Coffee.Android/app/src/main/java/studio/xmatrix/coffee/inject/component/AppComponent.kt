@@ -7,7 +7,7 @@ import dagger.android.AndroidInjectionModule
 import studio.xmatrix.coffee.App
 import studio.xmatrix.coffee.inject.module.ServiceModule
 import studio.xmatrix.coffee.inject.module.ViewModelModule
-import studio.xmatrix.coffee.ui.admin.AdminActivity
+import studio.xmatrix.coffee.ui.admin.*
 import studio.xmatrix.coffee.ui.detail.DetailHandler
 import studio.xmatrix.coffee.ui.square.SquareHandler
 import studio.xmatrix.coffee.ui.admin.AdminActivityHandler
@@ -51,4 +51,6 @@ interface AppComponent {
     fun inject(injectable: PersonHandler)
 
     fun inject(injectable: AdminActivityHandler)
+    fun inject(injectable: SignUpActivityHandler)
+    fun inject(injectable: ValidActivityHandler)
 }

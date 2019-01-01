@@ -3,7 +3,7 @@ package studio.xmatrix.coffee.inject
 import studio.xmatrix.coffee.App
 import studio.xmatrix.coffee.inject.component.AppComponent
 import studio.xmatrix.coffee.inject.component.DaggerAppComponent
-import studio.xmatrix.coffee.ui.admin.AdminActivity
+import studio.xmatrix.coffee.ui.admin.*
 import studio.xmatrix.coffee.ui.detail.DetailHandler
 import studio.xmatrix.coffee.ui.square.SquareHandler
 import studio.xmatrix.coffee.ui.admin.AdminActivityHandler
@@ -26,6 +26,8 @@ class AppInjector private constructor() {
             when (injectable) {
                 is AdminActivity -> component.inject(injectable)
                 is AdminActivityHandler -> component.inject(injectable)
+                is SignUpActivityHandler -> component.inject(injectable)
+                is ValidActivityHandler -> component.inject(injectable)
                 is DetailHandler -> component.inject(injectable)
                 is SquareHandler -> component.inject(injectable)
                 is HomeHandler -> component.inject(injectable)
