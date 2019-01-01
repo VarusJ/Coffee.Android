@@ -14,7 +14,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration;
+import studio.xmatrix.coffee.data.common.network.Status;
 import studio.xmatrix.coffee.data.model.Content;
+import studio.xmatrix.coffee.data.service.LikeService;
 import studio.xmatrix.coffee.data.service.resource.CommentsResource;
 import studio.xmatrix.coffee.databinding.CommentFragmentBinding;
 import studio.xmatrix.coffee.databinding.DetailActivityBinding;
@@ -40,6 +42,11 @@ public class DetailHandler implements Injectable {
     private CommentAdapter commentAdapter;
     private TagAdapter tagAdapter;
     private String id;
+    private List<String> likeData;
+    private String fatherId;
+    private String contentId;
+    private String fatherName;
+    private Boolean isReply;
 
 
     @Inject
@@ -59,6 +66,24 @@ public class DetailHandler implements Injectable {
         viewModel = ViewModelProviders.of(activity, viewModelFactory).get(DetailViewModel.class);
         initView();
         initData();
+        refreshLike();
+    }
+
+
+    private void refreshLike() {
+        viewModel.getLikes().observe(activity, resource -> {
+            if (resource != null) {
+                switch (resource.getStatus()) {
+                    case ERROR:
+                        Toast.makeText(activity, "网络错误", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SUCCESS:
+                        likeData = Objects.requireNonNull(resource.getData()).getResource();
+                        commentAdapter.setLikeData(likeData);
+                        break;
+                }
+            }
+        });
     }
 
     private void initData() {
@@ -67,6 +92,11 @@ public class DetailHandler implements Injectable {
             if (resource != null) {
                 switch (resource.getStatus()) {
                     case SUCCESS:
+                        if (Objects.requireNonNull(resource.getData()).getState().equals("not_found")) {
+                            Toast.makeText(activity, "内容已删除", Toast.LENGTH_SHORT).show();
+                            activity.finish();
+                            return;
+                        }
                         Content data = Objects.requireNonNull(resource.getData()).getResource();
                         if (data != null) {
                             binding.detailContent.setModel(data);
@@ -102,6 +132,55 @@ public class DetailHandler implements Injectable {
         });
     }
 
+    private void deleteComment(String id) {
+        viewModel.deleteComment(id).observe(activity, res -> {
+            if (res != null) {
+                switch (res.getStatus()) {
+                    case ERROR:
+                        Toast.makeText(activity, "网络错误", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SUCCESS:
+                        initData();
+                        break;
+                }
+            }
+        });
+    }
+
+
+    private void like(String id, LikeService.LikeType type) {
+        viewModel.like(id, type).observe(activity, res -> {
+            if (res != null) {
+                switch (res.getStatus()) {
+                    case ERROR:
+                        Toast.makeText(activity, "网络错误", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SUCCESS:
+                        initData();
+                        refreshLike();
+                        break;
+                }
+            }
+        });
+    }
+
+
+    private void unlike(String id, LikeService.LikeType type) {
+        viewModel.unlike(id, type).observe(activity, res -> {
+            if (res != null) {
+                switch (res.getStatus()) {
+                    case ERROR:
+                        Toast.makeText(activity, "网络错误", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SUCCESS:
+                        initData();
+                        refreshLike();
+                        break;
+                }
+            }
+        });
+    }
+
     @SuppressLint({"SetTextI18n", "ClickableViewAccessibility"})
     private void initView() {
         Objects.requireNonNull(activity.getSupportActionBar()).setTitle("内容详情");
@@ -111,6 +190,54 @@ public class DetailHandler implements Injectable {
         // 评论列表
         binding.commentList.setLayoutManager(new LinearLayoutManager(activity));
         commentAdapter = new CommentAdapter(activity);
+        commentAdapter.setOnClickComment(new CommentAdapter.OnClickComment() {
+            @Override
+            public void onClickDelete(String id) {
+                deleteComment(id);
+            }
+
+            @Override
+            public void onClickLike(String id) {
+                if (likeData.contains(id)) {
+                    unlike(id, LikeService.LikeType.Comment);
+                } else {
+                    like(id, LikeService.LikeType.Comment);
+                }
+            }
+
+            @Override
+            public void onClickReply(String fatherId, String fatherName, String contentId) {
+                DetailHandler.this.fatherId = fatherId;
+                DetailHandler.this.fatherName = fatherName;
+                DetailHandler.this.contentId = contentId;
+                DetailHandler.this.isReply = false;
+                onClickAddComment(null);
+            }
+        });
+        commentAdapter.setOnClickReply(new ReplyAdapter.OnClickReply() {
+            @Override
+            public void onClickLike(String id) {
+                if (likeData.contains(id)) {
+                    unlike(id, LikeService.LikeType.Reply);
+                } else {
+                    like(id, LikeService.LikeType.Reply);
+                }
+            }
+
+            @Override
+            public void onClickReply(String fatherId, String fatherName, String contentId) {
+                DetailHandler.this.fatherId = fatherId;
+                DetailHandler.this.fatherName = fatherName;
+                DetailHandler.this.contentId = contentId;
+                DetailHandler.this.isReply = true;
+                onClickAddComment(null);
+            }
+
+            @Override
+            public void onClickDelete(String id) {
+                deleteComment(id);
+            }
+        });
         binding.commentList.setAdapter(commentAdapter);
 
 
@@ -170,15 +297,40 @@ public class DetailHandler implements Injectable {
         activity.startActivity(new Intent(activity, UserActivity.class));
     }
 
+    @SuppressLint("SetTextI18n")
     public void onClickAddComment(View v) {
         commentFragment = new CommentFragment((binding) -> {
             this.fragmentBinding = binding;
+            if (isReply) {
+                binding.commentFather.setText("回复: @" + fatherName);
+            } else {
+                binding.commentFather.setText("评论: @" + fatherName);
+            }
+            binding.btnAddComment.setOnClickListener(view -> {
+                String content = binding.editComment.getText().toString();
+                if (content.equals("")) {
+                    Toast.makeText(activity, "评论不能为空", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                viewModel.addComment(contentId, fatherId, content, isReply).observe(activity, res -> {
+                    if (res != null) {
+                        switch (res.getStatus()){
+                            case SUCCESS:
+                                initData();
+                                break;
+                            case ERROR:
+                                Toast.makeText(activity, "网络错误", Toast.LENGTH_SHORT).show();
+                                break;
+                        }
+                    }
+                });
+            });
             (new Handler()).postDelayed(() -> {
                 binding.editComment.setFocusable(true);
                 binding.editComment.requestFocus();
                 InputMethodManager inputManager = (InputMethodManager) binding.editComment.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 Objects.requireNonNull(inputManager).showSoftInput(binding.editComment, 0);
-            }, 666);
+            }, 333);
         });
         commentFragment.show(activity.getSupportFragmentManager(), "addComment");
     }

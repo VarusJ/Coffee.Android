@@ -5,8 +5,10 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
+import android.widget.Toast;
 import com.scwang.smartrefresh.header.DeliveryHeader;
 import studio.xmatrix.coffee.data.model.Content;
+import studio.xmatrix.coffee.data.service.LikeService;
 import studio.xmatrix.coffee.databinding.SquareFragmentBinding;
 import studio.xmatrix.coffee.inject.AppInjector;
 import studio.xmatrix.coffee.inject.Injectable;
@@ -20,6 +22,7 @@ public class SquareHandler implements Injectable {
     private FragmentActivity activity;
     private SquareFragmentBinding binding;
     private SquareAdapter adapter;
+    private List<String> likeData;
     private boolean hasMore;
     private static int EACH_PAGE = 7;
     private int currentPage = 1;
@@ -36,11 +39,69 @@ public class SquareHandler implements Injectable {
         this.hasMore = true;
         initView();
         refreshData();
+        // TODO
+        // refreshLike();
+    }
+
+    private void refreshLike() {
+        viewModel.getLikes().observe(activity, res -> {
+            if (res != null) {
+                switch (res.getStatus()) {
+                    case ERROR:
+                        Toast.makeText(activity, "网络错误", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SUCCESS:
+                        likeData = Objects.requireNonNull(res.getData()).getResource();
+                        adapter.setLikeData(likeData);
+                        break;
+                }
+            }
+        });
+    }
+
+
+    private void like(String id) {
+        viewModel.like(id, LikeService.LikeType.Content).observe(activity, res -> {
+            if (res != null) {
+                switch (res.getStatus()) {
+                    case ERROR:
+                        Toast.makeText(activity, "网络错误", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SUCCESS:
+                        refreshData();
+                        refreshLike();
+                        break;
+                }
+            }
+        });
+    }
+
+    private void unlike(String id) {
+        viewModel.unlike(id, LikeService.LikeType.Content).observe(activity, res -> {
+            if (res != null) {
+                switch (res.getStatus()) {
+                    case ERROR:
+                        Toast.makeText(activity, "网络错误", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SUCCESS:
+                        refreshData();
+                        refreshLike();
+                        break;
+                }
+            }
+        });
     }
 
     private void initView() {
         binding.squareList.setLayoutManager(new LinearLayoutManager(activity));
         adapter = new SquareAdapter(activity);
+        adapter.setOnClickLike(id -> {
+            if (likeData.contains(id)) {
+                unlike(id);
+            } else {
+                like(id);
+            }
+        });
         binding.squareList.setAdapter(adapter);
         // 刷新数据
         binding.refreshLayout.setOnRefreshListener(refreshLayout -> {

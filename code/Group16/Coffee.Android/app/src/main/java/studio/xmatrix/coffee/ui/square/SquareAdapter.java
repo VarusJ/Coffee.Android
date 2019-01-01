@@ -31,10 +31,21 @@ import static studio.xmatrix.coffee.ui.detail.DetailHandler.getTime;
 public class SquareAdapter extends RecyclerView.Adapter<SquareAdapter.ViewHolder> {
     private FragmentActivity activity;
     private List<Content> data;
+    private List<String> likeData;
+    private OnClickLike onClickLike;
+
+    public void setOnClickLike(OnClickLike onClickLike) {
+        this.onClickLike = onClickLike;
+    }
+
+    public interface OnClickLike{
+        void onClick(String id);
+    }
 
     SquareAdapter(FragmentActivity activity) {
         this.activity = activity;
         this.data = new ArrayList<>();
+        this.likeData = new ArrayList<>();
     }
 
     public void setData(List<Content> data) {
@@ -64,6 +75,12 @@ public class SquareAdapter extends RecyclerView.Adapter<SquareAdapter.ViewHolder
     @Override
     public int getItemCount() {
         return data.size();
+    }
+
+    public void setLikeData(List<String> likeData) {
+        if (likeData == null) return;
+        this.likeData = likeData;
+        notifyDataSetChanged();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -116,6 +133,16 @@ public class SquareAdapter extends RecyclerView.Adapter<SquareAdapter.ViewHolder
             });
             binding.contentTime.setText(getTime(itemData.getPublishDate()));
             binding.setModel(itemData);
+
+            binding.btnLike.setOnClickListener(v -> {
+                onClickLike.onClick(itemData.getId());
+            });
+
+            if (likeData.contains(itemData.getId())) {
+                binding.btnLike.setImageResource(R.drawable.ic_like);
+            } else {
+                binding.btnLike.setImageResource(R.drawable.ic_like_none);
+            }
         }
 
         @Override
