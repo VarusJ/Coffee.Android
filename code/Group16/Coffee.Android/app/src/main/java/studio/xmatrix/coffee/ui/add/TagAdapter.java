@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.robertlevonyan.views.chip.Chip;
-import com.robertlevonyan.views.chip.OnCloseClickListener;
 
 import java.util.ArrayList;
 
@@ -64,6 +63,12 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
 
         public void bind(String tagname) {
             Chip chip = binding.tag;
+
+            ViewGroup.LayoutParams params = chip.getLayoutParams();
+            params.height = (int) activity.getResources().getDimension(com.robertlevonyan.views.chip.R.dimen.chip_height);
+            chip.setLayoutParams(params);
+
+            chip.setClosable(true);
             chip.setChipText(tagname);
             chip.setOnCloseClickListener((View v) -> {
                 removeTag(tagname);

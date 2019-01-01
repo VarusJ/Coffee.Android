@@ -1,16 +1,28 @@
 package studio.xmatrix.coffee.ui.add;
 
 import android.content.DialogInterface;
+import android.graphics.Picture;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.GridLayoutManager;
 import android.text.InputFilter;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.luck.picture.lib.PictureSelectionModel;
+import com.luck.picture.lib.PictureSelector;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.entity.LocalMedia;
 import com.mcxtzhang.layoutmanager.flow.FlowLayoutManager;
-import com.suke.widget.SwitchButton;
+
+import java.util.List;
 
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.databinding.AddActivityBinding;
@@ -19,6 +31,7 @@ public class AddHandler {
     private AddActivity activity;
     private AddActivityBinding binding;
     private TagAdapter tagAdapter;
+    private PictureAdapter picAdapter;
 
     public AddHandler(AddActivity activity, AddActivityBinding binding) {
         this.activity = activity;
@@ -27,19 +40,32 @@ public class AddHandler {
     }
 
     private void initView() {
-        binding.tags.setLayoutManager(new FlowLayoutManager());
-        tagAdapter = new TagAdapter(activity);
-        binding.tags.setAdapter(tagAdapter);
-        /*
-        binding.toggle.setOnCheckedChangeListener((SwitchButton view, boolean isChecked) -> {
+        binding.toggle.setOnCheckedChangeListener((CompoundButton view, boolean isChecked) -> {
             if(isChecked) binding.feed.setText(R.string.feed_public);
             else binding.feed.setText(R.string.feed_private);
         });
-        */
+
+        binding.tags.setLayoutManager(new FlowLayoutManager());
+        tagAdapter = new TagAdapter(activity);
+        binding.tags.setAdapter(tagAdapter);
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(activity, 3);
+        binding.pics.setLayoutManager(gridLayoutManager);
+        picAdapter = new PictureAdapter(activity, binding.pics);
+        binding.pics.setAdapter(picAdapter);
+
     }
 
     public void onClickAddImage(View view) {
-        Toast.makeText(activity, "添加图片", Toast.LENGTH_SHORT).show();
+        PictureSelector.create(activity)
+                .openGallery(PictureMimeType.ofImage())
+                .maxSelectNum(12)
+                .theme(R.style.pickerStyle)
+                .forResult(PictureConfig.CHOOSE_REQUEST);
+    }
+
+    public void addImage(List<LocalMedia> list) {
+        picAdapter.addPics(list);
     }
 
     public void onClickAddTag(View view) {

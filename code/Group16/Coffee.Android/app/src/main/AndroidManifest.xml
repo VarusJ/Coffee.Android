@@ -4,6 +4,9 @@
     package="studio.xmatrix.coffee">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name=".App"
@@ -24,14 +27,14 @@
             <!--</intent-filter>-->
         </activity>
         <activity android:name=".ui.admin.AdminActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".ui.admin.SignUpActivity" />
         <activity android:name=".ui.admin.ValidActivity" />
-        <activity android:name=".ui.add.AddActivity" />
+        <activity android:name=".ui.add.AddActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter></activity>
         <activity android:name=".ui.user.UserActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ui.detail.DetailActivity" />
