@@ -38,7 +38,7 @@ data class NotificationRepository @Inject constructor(
         }.asLiveData()
     }
 
-    fun getUnreadNotificationsCound(): LiveData<Resource<NotificationCountResource>> {
+    fun getUnreadNotificationsCount(): LiveData<Resource<NotificationCountResource>> {
         return object : NetworkDirectiveResource<NotificationCountResource, CommonResource>(executors) {
             override fun convertToResource(data: CommonResource): NotificationCountResource {
                 if (data.state != CommonResource.StatusSuccess) {

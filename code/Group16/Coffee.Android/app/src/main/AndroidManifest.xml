@@ -22,12 +22,12 @@
             android:name=".ui.nav.NavActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.admin.AdminActivity" />
+        <activity android:name=".ui.admin.AdminActivity"/>
         <activity android:name=".ui.admin.SignUpActivity" />
         <activity android:name=".ui.admin.ValidActivity" />
         <activity android:name=".ui.add.AddActivity">
@@ -44,7 +44,6 @@
             android:label="@string/title_activity_settings" />
         <activity
             android:name=".ui.person.PersonActivity"
-            android:label="@string/title_activity_person"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

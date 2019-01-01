@@ -1,5 +1,6 @@
 package studio.xmatrix.coffee.ui.square;
 
+import android.app.Activity;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
@@ -9,13 +10,23 @@ import android.view.ViewGroup;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.databinding.TagItemBinding;
 
-public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
-    private FragmentActivity activity;
+import java.util.ArrayList;
+import java.util.List;
 
-    public TagAdapter(FragmentActivity activity) {
+public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
+    private Activity activity;
+    private List<String> data;
+
+    public TagAdapter(Activity activity) {
         this.activity = activity;
+        this.data = new ArrayList<>();
     }
 
+    public void setData(List<String> data) {
+        if (data == null) return;
+        this.data = data;
+        notifyDataSetChanged();
+    }
 
     @NonNull
     @Override
@@ -25,12 +36,12 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        viewHolder.bind();
+        viewHolder.bind(i);
     }
 
     @Override
     public int getItemCount() {
-        return 3;
+        return data.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -41,8 +52,8 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
             this.binding = binding;
         }
 
-        void bind() {
-
+        void bind(int pos) {
+            binding.tagChip.setChipText(data.get(pos));
         }
 
     }

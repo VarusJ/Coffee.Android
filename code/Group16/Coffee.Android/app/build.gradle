@@ -61,6 +61,8 @@ dependencies {
     implementation 'com.lzy.widget:ninegridview:0.2.0'
     // 侧滑布局
     implementation "com.daimajia.swipelayout:library:1.2.0@aar"
+    // gif
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.16'
     // 流式标签布局
     implementation 'com.github.Cutta:TagView:1.3'
     // 图片选择器
