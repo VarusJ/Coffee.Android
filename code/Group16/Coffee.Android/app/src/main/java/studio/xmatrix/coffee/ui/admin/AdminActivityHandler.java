@@ -13,20 +13,34 @@ import android.text.method.PasswordTransformationMethod;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.URLSpan;
+import android.util.Log;
 import android.widget.Toast;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.data.common.network.Status;
 import studio.xmatrix.coffee.databinding.AdminActivityBinding;
 import studio.xmatrix.coffee.inject.AppInjector;
 import studio.xmatrix.coffee.inject.Injectable;
+import timber.log.Timber;
 
 import javax.inject.Inject;
+
+import java.util.Objects;
+
+import static studio.xmatrix.coffee.data.service.resource.CommonResource.StatusError;
+import static studio.xmatrix.coffee.data.service.resource.CommonResource.StatusSuccess;
 
 public class AdminActivityHandler implements Injectable {
 
     private AdminActivity activity;
     private AdminActivityBinding binding;
     private boolean passwordVisibility;
+
+    private static class errMsg{
+        static String nullUsername = "请输入用户名";
+        static String nullPassword = "请输入密码";
+        static String errNetwork = "请检查网络连接";
+        static String loginFail = "用户名或密码错误";
+    }
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
@@ -36,7 +50,7 @@ public class AdminActivityHandler implements Injectable {
         this.activity = activity;
         this.binding = binding;
 
-        AppInjector.Companion.inject(activity);
+        AppInjector.Companion.inject(this);
         viewModel = ViewModelProviders.of(activity, viewModelFactory).get(AdminViewModel.class);
 
         initView();
@@ -45,7 +59,7 @@ public class AdminActivityHandler implements Injectable {
     private void initView() {
 
         binding.loginButton.setOnClickListener(v -> loginEvent());
-        binding.loginButton.getBackground().setAlpha(150);
+        binding.loginButton.getBackground().setAlpha(50);
 
         binding.loginForget.setClickable(true);
         SpannableString ss = new SpannableString(binding.loginForget.getText().toString());
@@ -60,7 +74,7 @@ public class AdminActivityHandler implements Injectable {
         passwordVisibility = false;
         binding.loginPasswordVisibility.setOnClickListener(v -> handlerPasswordVisibility());
 
-        binding.loginCardView.setCardBackgroundColor(Color.TRANSPARENT);
+        binding.loginCardView.getBackground().setAlpha(50);
 
     }
 
@@ -68,12 +82,24 @@ public class AdminActivityHandler implements Injectable {
     private void loginEvent() {
         String username = binding.loginUsername.getText().toString();
         String password = binding.loginPassword.getText().toString();
+        if (username.length() == 0){
+            Toast.makeText(activity, errMsg.nullUsername, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (password.length() == 0){
+            Toast.makeText(activity, errMsg.nullPassword, Toast.LENGTH_SHORT).show();
+            return;
+        }
         viewModel.login(username, password).observe(activity, res -> {
             assert res != null;
             if (res.getStatus() == Status.SUCCESS){
-                activity.finish();
-            } else {
-                Toast.makeText(activity, "用户名或密码错误", Toast.LENGTH_SHORT).show();
+                if (Objects.requireNonNull(res.getData()).getState().equals(StatusSuccess)){
+                    activity.finish();
+                } else if (res.getData().getState().equals(StatusError)){
+                    Toast.makeText(activity, errMsg.loginFail, Toast.LENGTH_SHORT).show();
+                }
+            } else if (res.getStatus() == Status.ERROR){
+                Toast.makeText(activity, errMsg.errNetwork, Toast.LENGTH_SHORT).show();
             }
         });
     }

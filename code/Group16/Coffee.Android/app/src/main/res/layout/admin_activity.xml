@@ -11,7 +11,7 @@
 			android:id="@+id/linearLayout"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:background="@mipmap/background"
+			android:background="@mipmap/login_background"
 			android:orientation="vertical">
 
 
@@ -79,7 +79,8 @@
 						android:layout_width="match_parent"
 						android:background="@null"
 						tools:ignore="Autofill,LabelFor"
-                        android:textColor="#FFFAF0"
+                        android:textColorHint="@color/colorHint"
+                        android:textColor="@color/colorWhite"
 						android:hint="@string/hint_username"
 						android:inputType="text"/>
 
@@ -122,7 +123,8 @@
 						tools:ignore="Autofill,LabelFor"
 						android:hint="@string/hint_password"
 						android:inputType="textPassword"
-                        android:textColor="#FFFAF0"
+                        android:textColorHint="@color/colorHint"
+                        android:textColor="@color/colorWhite"
 						android:background="@null"
 						android:layout_toEndOf="@+id/login_password_ic"/>
 
