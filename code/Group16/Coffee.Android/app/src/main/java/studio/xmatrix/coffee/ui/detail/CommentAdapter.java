@@ -7,15 +7,28 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import studio.xmatrix.coffee.R;
+import studio.xmatrix.coffee.data.service.resource.CommentsResource;
 import studio.xmatrix.coffee.databinding.CommentItemBinding;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static studio.xmatrix.coffee.ui.detail.DetailHandler.getTime;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHolder> {
     private  DetailActivity activity;
+    private List<CommentsResource.CommentForContent> data;
 
     public CommentAdapter(DetailActivity activity) {
         this.activity = activity;
+        data = new ArrayList<>();
     }
 
+    public void setData(List<CommentsResource.CommentForContent> data) {
+        if (data == null) return;
+        this.data = data;
+        notifyDataSetChanged();
+    }
 
     @NonNull
     @Override
@@ -25,12 +38,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        viewHolder.bind();
+        viewHolder.bind(i);
     }
 
     @Override
     public int getItemCount() {
-        return 3;
+        return data.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -42,13 +55,16 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             this.binding = binding;
         }
 
-        public void bind() {
+        public void bind(int pos) {
             if (adapter == null) {
                 adapter = new ReplyAdapter(activity);
                 binding.replyList.setAdapter(adapter);
                 binding.replyList.setLayoutManager(new LinearLayoutManager(activity));
             }
-
+            CommentsResource.CommentForContent itemData = data.get(pos);
+            binding.setModel(itemData);
+            adapter.setData(itemData.getReplies());
+            binding.commentTime.setText(getTime(itemData.getComment().getDate()));
         }
     }
 }

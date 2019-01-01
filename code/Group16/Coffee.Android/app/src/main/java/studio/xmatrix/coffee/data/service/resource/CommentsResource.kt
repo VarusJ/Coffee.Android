@@ -7,7 +7,7 @@ data class CommentsResource(
     @SerializedName("State")
     val state: String,
     @SerializedName("Data")
-    val resource: List<Comment>?
+    val resource: List<CommentForContent>?
 ) {
     data class CommentForContent(
         @SerializedName("Comment")

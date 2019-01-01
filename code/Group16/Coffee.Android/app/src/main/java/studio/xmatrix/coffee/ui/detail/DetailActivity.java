@@ -1,5 +1,7 @@
 package studio.xmatrix.coffee.ui.detail;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +18,12 @@ public class DetailActivity extends BaseActionBarActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.detail_activity);
         DetailHandler handler = new DetailHandler(this, binding);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("内容详情");
     }
+
+    public static void start(Activity activity, String id, Bundle bundle) {
+        Intent intent = new Intent(activity, DetailActivity.class);
+        intent.putExtra("id", id);
+        activity.startActivity(intent, bundle);
+    }
+
 }
