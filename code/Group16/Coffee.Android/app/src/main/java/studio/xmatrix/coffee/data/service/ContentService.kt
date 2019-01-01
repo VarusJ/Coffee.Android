@@ -2,21 +2,23 @@ package studio.xmatrix.coffee.data.service
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import com.google.gson.annotations.SerializedName
 import io.objectbox.Box
 import io.objectbox.kotlin.boxFor
 import io.objectbox.kotlin.query
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.Path
-import studio.xmatrix.coffee.App
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.Call
+import retrofit2.http.*
 import studio.xmatrix.coffee.data.common.network.ApiResponse
 import studio.xmatrix.coffee.data.common.network.AppExecutors
-import studio.xmatrix.coffee.data.model.Content
-import studio.xmatrix.coffee.data.model.Content_
+import studio.xmatrix.coffee.data.model.*
+import studio.xmatrix.coffee.data.service.resource.CommonResource
 import studio.xmatrix.coffee.data.service.resource.ContentsResource
-import studio.xmatrix.coffee.data.service.response.CommonResponse
 import studio.xmatrix.coffee.data.service.response.ContentResponse
-import studio.xmatrix.coffee.data.service.response.PublishContentResponse
+import studio.xmatrix.coffee.data.service.response.ContentsResponse
+import studio.xmatrix.coffee.data.service.response.PublishContentsResponse
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -28,26 +30,68 @@ interface ContentService {
     }
 
     @DELETE("{id}")
-    fun deleteById(@Path("id") contentId: String): LiveData<ApiResponse<CommonResponse>>
-
-    // @POST("album")
+    fun deleteById(@Path("id") contentId: String): LiveData<ApiResponse<CommonResource>>
 
     @GET("detail/{id}")
-    fun getDetailById(@Path("id") contentId: String): LiveData<ApiResponse<ContentResponse>>
+    fun getById(@Path("id") contentId: String): LiveData<ApiResponse<ContentResponse>>
 
-    @GET("public?page={page}&eachPage={eachPage}")
-    fun getPublic(@Path("page") page: Int, @Path("eachPage") eachPage: Int): LiveData<ApiResponse<PublishContentResponse>>
+    @GET("public")
+    fun getPublicListByPage(@Query("page") page: Int, @Query("eachPage") eachPage: Int): LiveData<ApiResponse<PublishContentsResponse>>
+
+    @Multipart
+    @POST("album")
+    fun addAlbum(@PartMap form: Map<String, RequestBody>, @Part files: List<MultipartBody.Part>): LiveData<ApiResponse<CommonResource>>
+
+    // 当id为self时获取自身数据
+    @GET("album/{id}")
+    fun getAlbumsByUserId(@Path("id") id: String): LiveData<ApiResponse<ContentsResponse>>
+
+    @GET("file/{id}/{path}")
+    fun getFileByIdAndPath(@Path("id") id: String, @Path("path") path: String): Call<RequestBody>
+
+    // 当id为self时获取自身数据
+    @GET("texts/{id}")
+    fun getTextsByUserId(@Path("id") id: String): LiveData<ApiResponse<ContentsResponse>>
+
+    @POST("text")
+    fun addText(@Body body: ContentRequestBody): LiveData<ApiResponse<CommonResource>>
+
+    @PATCH("all/{id}")
+    fun updateById(@Path("id") id: String, @Body body: ContentRequestBody): LiveData<ApiResponse<CommonResource>>
+
+    data class ContentRequestBody(
+        val title: String,
+        val detail: String,
+        val tags: List<String>,
+        @SerializedName("isPublic")
+        val public: Boolean
+    ) {
+        fun toForm(): Map<String, RequestBody> {
+            val form = HashMap<String, RequestBody>()
+            form["title"] = RequestBody.create(MediaType.parse("multipart/form-data"), title)
+            form["detail"] = RequestBody.create(MediaType.parse("multipart/form-data"), detail)
+            form["tags"] = RequestBody.create(MediaType.parse("multipart/form-data"), tags.joinToString())
+            form["isPublic"] = RequestBody.create(MediaType.parse("multipart/form-data"), public.toString())
+            return form
+        }
+    }
 }
 
 @Singleton
-class ContentDatabase @Inject constructor(app: App, private val executors: AppExecutors) {
+class ContentDatabase @Inject constructor(app: studio.xmatrix.coffee.App, private val executors: AppExecutors) {
 
     private val box: Box<Content> = app.boxStore.boxFor()
+
+    private val albumBox: Box<Album> = app.boxStore.boxFor()
+    private val appBox: Box<App> = app.boxStore.boxFor()
+    private val fileBox: Box<File> = app.boxStore.boxFor()
+    private val imageBox: Box<Image> = app.boxStore.boxFor()
+    private val movieBox: Box<Movie> = app.boxStore.boxFor()
 
     fun loadContentsByNum(num: Int): LiveData<ContentsResource> {
         val data = MutableLiveData<ContentsResource>()
         executors.diskIO().execute {
-            val res = ContentsResource(CommonResponse.StatusSuccess, box.query {
+            val res = ContentsResource(CommonResource.StatusSuccess, box.query {
                 equal(Content_.publicContent, true)
                 orderDesc(Content_.publishDate)
             }.find(0, num.toLong()))
@@ -56,10 +100,75 @@ class ContentDatabase @Inject constructor(app: App, private val executors: AppEx
         return data
     }
 
-    fun saveContents(items: List<Content>) {
+    fun saveContents(items: List<Content>?) {
         box.query {
             equal(Content_.publicContent, true)
-            or()
+        }.find().forEach {
+            if (!it.album.isNull) {
+                it.album.target.images.forEach { image ->
+                    if (!image.file.isNull) fileBox.remove(image.file.targetId)
+                    imageBox.remove(image._id)
+                }
+                albumBox.remove(it.album.targetId)
+            }
+            if (!it.app.isNull) {
+                if (!it.app.target.file.isNull) fileBox.remove(it.app.target.file.targetId)
+                it.app.target.images.forEach { image ->
+                    if (!image.file.isNull) fileBox.remove(image.file.targetId)
+                    imageBox.remove(image._id)
+                }
+                appBox.remove(it.app.targetId)
+            }
+            if (!it.movie.isNull) {
+                if (!it.movie.target.file.isNull) fileBox.remove(it.movie.target.file.targetId)
+                it.movie.target.images.forEach { image ->
+                    if (!image.file.isNull) fileBox.remove(image.file.targetId)
+                    imageBox.remove(image._id)
+                }
+                movieBox.remove(it.movie.targetId)
+            }
+            it.files.forEach { file -> fileBox.remove(file._id) }
+            it.images.forEach { image ->
+                if (!image.file.isNull) fileBox.remove(image.file.targetId)
+                imageBox.remove(image._id)
+            }
+            box.remove(it._id)
         }
+        items?.forEach { item ->
+            box.query {
+                equal(Content_.id, item.id)
+            }.find().forEach {
+                if (!it.album.isNull) {
+                    it.album.target.images.forEach { image ->
+                        if (!image.file.isNull) fileBox.remove(image.file.targetId)
+                        imageBox.remove(image._id)
+                    }
+                    albumBox.remove(it.album.targetId)
+                }
+                if (!it.app.isNull) {
+                    if (!it.app.target.file.isNull) fileBox.remove(it.app.target.file.targetId)
+                    it.app.target.images.forEach { image ->
+                        if (!image.file.isNull) fileBox.remove(image.file.targetId)
+                        imageBox.remove(image._id)
+                    }
+                    appBox.remove(it.app.targetId)
+                }
+                if (!it.movie.isNull) {
+                    if (!it.movie.target.file.isNull) fileBox.remove(it.movie.target.file.targetId)
+                    it.movie.target.images.forEach { image ->
+                        if (!image.file.isNull) fileBox.remove(image.file.targetId)
+                        imageBox.remove(image._id)
+                    }
+                    movieBox.remove(it.movie.targetId)
+                }
+                it.files.forEach { file -> fileBox.remove(file._id) }
+                it.images.forEach { image ->
+                    if (!image.file.isNull) fileBox.remove(image.file.targetId)
+                    imageBox.remove(image._id)
+                }
+                box.remove(it._id)
+            }
+        }
+        box.put(items)
     }
 }

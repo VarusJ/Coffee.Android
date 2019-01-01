@@ -2,12 +2,13 @@ package studio.xmatrix.coffee.data.service.response
 
 import com.google.gson.annotations.SerializedName
 import studio.xmatrix.coffee.data.model.Content
+import studio.xmatrix.coffee.data.service.resource.ContentsResource
 
-data class PublishContentResponse(
+data class PublishContentsResponse(
     @SerializedName("State")
     val state: String,
     @SerializedName("Data")
-    val publishData: Array<PublishData>
+    val publishData: List<PublishData>?
 ) {
     data class PublishData(
         @SerializedName("Data")
@@ -16,7 +17,10 @@ data class PublishContentResponse(
         val user: ContentResponse.UserBaseInfo
     )
 
-    fun toContents(): List<Content> {
+    fun toContentsResource(): ContentsResource {
+        if (publishData == null) {
+            return ContentsResource(state = state, resource = null)
+        }
         val arr = ArrayList<Content>()
         publishData.forEach {
             arr.add(
@@ -39,14 +43,14 @@ data class PublishContentResponse(
                     remarks = it.data.remarks,
                     tags = it.data.tags
                 ).apply {
-                    it.data.images.forEach { images.add(it.toImage()) }
-                    it.data.files.forEach { files.add(it) }
-                    movie.target = it.data.movie.toMovie()
-                    album.target = it.data.album.toAlbum()
-                    app.target = it.data.app.toApp()
+                    it.data.images?.forEach { image -> images.add(image.toImage()) }
+                    it.data.files?.forEach { file -> files.add(file) }
+                    movie.target = if (it.data.movie?.file?.file.isNullOrEmpty()) null else it.data.movie?.toMovie()
+                    album.target = if (it.data.album?.title.isNullOrEmpty()) null else it.data.album?.toAlbum()
+                    app.target = if (it.data.app?.file?.file.isNullOrEmpty()) null else it.data.app?.toApp()
                 }
             )
         }
-        return arr
+        return ContentsResource(state = state, resource = arr)
     }
 }

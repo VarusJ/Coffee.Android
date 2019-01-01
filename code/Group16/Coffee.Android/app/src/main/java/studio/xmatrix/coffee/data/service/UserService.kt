@@ -14,7 +14,8 @@ import studio.xmatrix.coffee.data.common.network.ApiResponse
 import studio.xmatrix.coffee.data.common.network.AppExecutors
 import studio.xmatrix.coffee.data.model.User
 import studio.xmatrix.coffee.data.model.User_
-import studio.xmatrix.coffee.data.service.response.CommonResponse
+import studio.xmatrix.coffee.data.service.resource.CommonResource
+import studio.xmatrix.coffee.data.service.resource.UserResource
 import studio.xmatrix.coffee.data.service.response.UserInfoResponse
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -26,20 +27,20 @@ interface UserService {
     }
 
     @POST("login/pass")
-    fun loginByPassword(@Body body: LoginRequestBody): LiveData<ApiResponse<CommonResponse>>
+    fun loginByPassword(@Body body: LoginRequestBody): LiveData<ApiResponse<CommonResource>>
 
     @POST("register")
-    fun register(@Body body: RegisterRequestBody): LiveData<ApiResponse<CommonResponse>>
+    fun register(@Body body: RegisterRequestBody): LiveData<ApiResponse<CommonResource>>
 
     @POST("email")
-    fun getEmailValidCode(): LiveData<ApiResponse<CommonResponse>>
+    fun getEmailValidCode(): LiveData<ApiResponse<CommonResource>>
 
     @POST("valid")
-    fun validEmail(@Body body: EmailValidRequestBody): LiveData<ApiResponse<CommonResponse>>
+    fun validEmail(@Body body: EmailValidRequestBody): LiveData<ApiResponse<CommonResource>>
 
     // 当id为self时获取自身数据
     @GET("info/{id}")
-    fun getInfoById(@Path("id") id: String): LiveData<ApiResponse<UserInfoResponse>>
+    fun getById(@Path("id") id: String): LiveData<ApiResponse<UserInfoResponse>>
 
     data class LoginRequestBody(val name: String, val password: String)
     data class RegisterRequestBody(val name: String, val email: String, val password: String)
@@ -51,18 +52,19 @@ class UserDatabase @Inject constructor(app: App, private val executors: AppExecu
 
     private val box: Box<User> = app.boxStore.boxFor()
 
-    fun loadInfoById(id: String?): LiveData<User> {
-        val data = MutableLiveData<User>()
+    fun loadInfoById(id: String): LiveData<UserResource> {
+        val data = MutableLiveData<UserResource>()
         executors.diskIO().execute {
-            data.postValue(box.query { equal(User_.id, id ?: "") }.findFirst())
+            data.postValue(UserResource(CommonResource.StatusSuccess, box.query { equal(User_.id, id) }.findFirst()))
         }
         return data
     }
 
     fun saveInfo(user: User) {
         user.id?.let {
-            box.query().equal(User_.id, it).build().remove()
+            box.query { equal(User_.id, it) }.remove()
             box.put(user)
+            return
         }
     }
 }

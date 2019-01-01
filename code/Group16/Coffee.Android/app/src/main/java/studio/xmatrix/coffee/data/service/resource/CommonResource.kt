@@ -1,12 +1,12 @@
-package studio.xmatrix.coffee.data.service.response
+package studio.xmatrix.coffee.data.service.resource
 
 import com.google.gson.annotations.SerializedName
 
-data class CommonResponse(
+data class CommonResource(
     @SerializedName("State")
     val state: String,
     @SerializedName("Data")
-    val data: String
+    val resource: String
 ) {
     companion object {
         const val StatusSuccess = "success"

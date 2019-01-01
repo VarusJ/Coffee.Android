@@ -1,13 +1,18 @@
 package studio.xmatrix.coffee
 
 import android.app.Application
+import android.content.Context
 import android.support.v7.app.AppCompatDelegate
+import com.lzy.ninegrid.NineGridView
 import io.objectbox.BoxStore
 import io.objectbox.android.AndroidObjectBrowser
 import studio.xmatrix.coffee.data.model.MyObjectBox
 import studio.xmatrix.coffee.ui.NightModeConfig
 import studio.xmatrix.coffee.inject.AppInjector
 import timber.log.Timber
+import android.graphics.Bitmap
+import android.widget.ImageView
+
 
 class App : Application() {
 
@@ -30,6 +35,8 @@ class App : Application() {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO)
         }
 
+        NineGridView.setImageLoader(MyImageLoader())
+
         boxStore = MyObjectBox.builder().androidContext(this).build()
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
@@ -37,5 +44,16 @@ class App : Application() {
         }
 
         AppInjector.init(this)
+    }
+
+    private inner class MyImageLoader : NineGridView.ImageLoader {
+
+        override fun onDisplayImage(context: Context, imageView: ImageView, url: String) {
+            imageView.setImageDrawable(getDrawable(R.drawable.ic_like))
+        }
+
+        override fun getCacheImage(url: String): Bitmap? {
+            return null
+        }
     }
 }

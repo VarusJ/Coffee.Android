@@ -6,6 +6,7 @@ import dagger.android.AndroidInjectionModule
 import studio.xmatrix.coffee.App
 import studio.xmatrix.coffee.inject.module.ServiceModule
 import studio.xmatrix.coffee.ui.admin.AdminActivity
+import studio.xmatrix.coffee.ui.admin.AdminActivityHandler
 import javax.inject.Singleton
 
 @Singleton
@@ -27,4 +28,5 @@ interface AppComponent {
     }
 
     fun inject(injectable: AdminActivity)
+    fun inject(injectable: AdminActivityHandler)
 }

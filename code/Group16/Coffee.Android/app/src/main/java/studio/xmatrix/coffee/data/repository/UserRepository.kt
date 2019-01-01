@@ -1,13 +1,14 @@
 package studio.xmatrix.coffee.data.repository
 
 import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.preference.PreferenceManager
 import studio.xmatrix.coffee.App
 import studio.xmatrix.coffee.data.common.network.*
-import studio.xmatrix.coffee.data.model.User
 import studio.xmatrix.coffee.data.service.UserDatabase
 import studio.xmatrix.coffee.data.service.UserService
-import studio.xmatrix.coffee.data.service.response.CommonResponse
+import studio.xmatrix.coffee.data.service.resource.CommonResource
+import studio.xmatrix.coffee.data.service.resource.UserResource
 import studio.xmatrix.coffee.data.service.response.UserInfoResponse
 import java.security.MessageDigest
 import javax.inject.Inject
@@ -21,64 +22,88 @@ class UserRepository @Inject constructor(
     private val database: UserDatabase
 ) {
 
-    fun login(name: String, password: String): LiveData<Resource<CommonResponse>> {
-        return object : NetworkDirectiveResource<CommonResponse>(executors) {
-            override fun createCall(): LiveData<ApiResponse<CommonResponse>> {
+    fun login(name: String, password: String): LiveData<Resource<CommonResource>> {
+        return object : NetworkDirectiveResource<CommonResource, CommonResource>(executors) {
+            override fun createCall(): LiveData<ApiResponse<CommonResource>> {
                 val bytes = password.toByteArray()
                 val md = MessageDigest.getInstance("SHA-512")
                 val digest = md.digest(bytes)
                 val hash = digest.fold("") { str, it -> str + "%02x".format(it) }
                 return service.loginByPassword(UserService.LoginRequestBody(name, hash))
             }
+
+            override fun convertToResource(data: CommonResource) = data
         }.asLiveData()
     }
 
-    fun register(name: String, email: String, password: String): LiveData<Resource<CommonResponse>> {
-        return object : NetworkDirectiveResource<CommonResponse>(executors) {
-            override fun createCall(): LiveData<ApiResponse<CommonResponse>> {
+    fun register(name: String, email: String, password: String): LiveData<Resource<CommonResource>> {
+        return object : NetworkDirectiveResource<CommonResource, CommonResource>(executors) {
+            override fun createCall(): LiveData<ApiResponse<CommonResource>> {
                 val bytes = password.toByteArray()
                 val md = MessageDigest.getInstance("SHA-512")
                 val digest = md.digest(bytes)
                 val hash = digest.fold("") { str, it -> str + "%02x".format(it) }
                 return service.register(UserService.RegisterRequestBody(name, email, hash))
             }
+
+            override fun convertToResource(data: CommonResource) = data
         }.asLiveData()
     }
 
-    fun getEmailValidCode(): LiveData<Resource<CommonResponse>> {
-        return object : NetworkDirectiveResource<CommonResponse>(executors) {
+    fun getEmailValidCode(): LiveData<Resource<CommonResource>> {
+        return object : NetworkDirectiveResource<CommonResource, CommonResource>(executors) {
             override fun createCall() = service.getEmailValidCode()
+            override fun convertToResource(data: CommonResource) = data
         }.asLiveData()
     }
 
-    fun validEmail(vcode: String): LiveData<Resource<CommonResponse>> {
-        return object : NetworkDirectiveResource<CommonResponse>(executors) {
+    fun validEmail(vcode: String): LiveData<Resource<CommonResource>> {
+        return object : NetworkDirectiveResource<CommonResource, CommonResource>(executors) {
             override fun createCall() = service.validEmail(UserService.EmailValidRequestBody(vcode))
+            override fun convertToResource(data: CommonResource) = data
         }.asLiveData()
     }
 
-    fun getInfo(): LiveData<Resource<User>> {
+    fun getInfo(): LiveData<Resource<UserResource>> {
         val pref = PreferenceManager.getDefaultSharedPreferences(app)
-        return object : NetworkBoundResource<User, UserInfoResponse>(executors) {
+        var state = CommonResource.StatusSuccess
+        return object : NetworkBoundResource<UserResource, UserInfoResponse>(executors) {
             override fun saveCallResult(item: UserInfoResponse) {
-                val editor = pref.edit()
-                editor.putString("id", item.id)
-                editor.apply()
-                database.saveInfo(item.toUser())
+                state = item.state
+                val res = item.toUserResource()
+                if (item.state == CommonResource.StatusSuccess && res.resource != null) {
+                    val editor = pref.edit()
+                    editor.putString("id", item.id)
+                    editor.apply()
+                    database.saveInfo(res.resource)
+                } else {
+                    val editor = pref.edit()
+                    editor.remove("id")
+                    editor.apply()
+                }
             }
 
-            override fun shouldFetch(data: User?) = true
-            override fun loadFromDb() = database.loadInfoById(pref.getString("id", null))
-            override fun createCall() = service.getInfoById("self")
+            override fun shouldFetch(data: UserResource?) = true
+
+            override fun loadFromDb(): LiveData<UserResource> {
+                val id = pref.getString("id", null)
+                return if (state == CommonResource.StatusSuccess && id != null) {
+                    database.loadInfoById(id)
+                } else {
+                    val data = MutableLiveData<UserResource>()
+                    executors.diskIO().execute { data.postValue(UserResource(state, null)) }
+                    data
+                }
+            }
+
+            override fun createCall() = service.getById("self")
         }.asLiveData()
     }
 
-    fun getInfoById(id: String): LiveData<Resource<User>> {
-        return object : NetworkBoundResource<User, UserInfoResponse>(executors) {
-            override fun saveCallResult(item: UserInfoResponse) = database.saveInfo(item.toUser())
-            override fun shouldFetch(data: User?) = true
-            override fun loadFromDb() = database.loadInfoById(id)
-            override fun createCall() = service.getInfoById(id)
+    fun getInfoById(id: String): LiveData<Resource<UserResource>> {
+        return object : NetworkDirectiveResource<UserResource, UserInfoResponse>(executors) {
+            override fun convertToResource(data: UserInfoResponse) = data.toUserResource()
+            override fun createCall() = service.getById(id)
         }.asLiveData()
     }
 }
