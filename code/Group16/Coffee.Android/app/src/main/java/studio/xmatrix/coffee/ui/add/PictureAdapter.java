@@ -67,6 +67,11 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.ViewHold
         notifyDataSetChanged();
         recyclerView.scrollToPosition(pathList.size() - 1);
     }
+
+    public void removePic(String path) {
+        pathList.remove(path);
+        notifyDataSetChanged();
+    }
     
     class ViewHolder extends RecyclerView.ViewHolder {
         private final AddPicItemBinding binding;
@@ -80,6 +85,13 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.ViewHold
             Bitmap bmp = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), Uri.fromFile(new File(path)));
             bmp = Bitmap.createScaledBitmap(bmp, binding.pic.getLayoutParams().width, binding.pic.getLayoutParams().height, false);
             binding.pic.setImageBitmap(bmp);
+            binding.pic.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    removePic(path);
+                    return true;
+                }
+            });
         }
     }
 }

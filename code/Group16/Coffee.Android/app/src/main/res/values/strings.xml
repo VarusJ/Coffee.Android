@@ -22,7 +22,7 @@
     <string name="title_notifications">通知</string>
     <string name="title_activity_settings">设置</string>
     <string name="add_title">标题</string>
-    <string name="add_content">内容</string>
+    <string name="add_content">......</string>
     <string name="feed_public">公开</string>
     <string name="feed_private">私密</string>
 
