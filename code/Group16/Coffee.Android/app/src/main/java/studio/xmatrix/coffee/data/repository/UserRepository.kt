@@ -2,9 +2,12 @@ package studio.xmatrix.coffee.data.repository
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import android.graphics.Bitmap
 import android.preference.PreferenceManager
 import studio.xmatrix.coffee.App
 import studio.xmatrix.coffee.data.common.network.*
+import studio.xmatrix.coffee.data.service.ImageDatabase
+import studio.xmatrix.coffee.data.service.ImageService
 import studio.xmatrix.coffee.data.service.UserDatabase
 import studio.xmatrix.coffee.data.service.UserService
 import studio.xmatrix.coffee.data.service.resource.CommonResource
@@ -19,7 +22,9 @@ class UserRepository @Inject constructor(
     private val app: App,
     private val executors: AppExecutors,
     private val service: UserService,
-    private val database: UserDatabase
+    private val database: UserDatabase,
+    private val imageService: ImageService,
+    private val imageDatabase: ImageDatabase
 ) {
 
     fun login(name: String, password: String): LiveData<Resource<CommonResource>> {
@@ -104,6 +109,15 @@ class UserRepository @Inject constructor(
         return object : NetworkDirectiveResource<UserResource, UserInfoResponse>(executors) {
             override fun convertToResource(data: UserInfoResponse) = data.toUserResource()
             override fun createCall() = service.getById(id)
+        }.asLiveData()
+    }
+
+    fun getAvatarByUrl(url: String): LiveData<Resource<Bitmap>> {
+        return object: NetworkBoundResource<Bitmap, Bitmap>(executors) {
+            override fun saveCallResult(item: Bitmap) = imageDatabase.saveById(url, item)
+            override fun shouldFetch(data: Bitmap?) = data == null
+            override fun loadFromDb() = imageDatabase.loadById(url)
+            override fun createCall() = imageService.getImage(url)
         }.asLiveData()
     }
 }

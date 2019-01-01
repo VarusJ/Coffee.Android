@@ -15,7 +15,7 @@ interface LikeService {
         const val BASE_URL = "$SERVICE_BASE_URL/like/"
     }
 
-    @GET
+    @GET("$SERVICE_BASE_URL/like")
     fun getList(): LiveData<ApiResponse<LikeResource>>
 
     @POST("{id}")
