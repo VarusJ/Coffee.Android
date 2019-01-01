@@ -59,7 +59,7 @@ class Content constructor() {
         subType: String,
         remarks: String,
         tags: List<String>
-    ): this() {
+    ) : this() {
         this.userName = userName
         this.userAvatar = userAvatar
         this.userGender = userGender
@@ -89,49 +89,70 @@ class Content constructor() {
 }
 
 @Entity
-data class Album(
+class Album constructor() {
     @Id
-    var _id: Long = 0,
+    var _id: Long = 0
 
-    val title: String,
-    val time: Long,
-    val location: String
-) {
+    lateinit var title: String
+    var time: Long = 0
+    lateinit var location: String
     lateinit var images: ToMany<Image>
+
+    constructor(title: String, time: Long, location: String) : this() {
+        this.title = title
+        this.time = time
+        this.location = location
+    }
 }
 
 @Entity
-data class App(
-    @Id
-    var _id: Long = 0,
+class App constructor() {
 
-    val web: String,
-    val url: String,
-    val des: String,
-    val version: String
-) {
+    @Id
+    var _id: Long = 0
+
+    lateinit var web: String
+    lateinit var url: String
+    lateinit var des: String
+    lateinit var version: String
+
     lateinit var file: ToOne<File>
     lateinit var images: ToMany<Image>
+
+    constructor(web: String, url: String, des: String, version: String) : this() {
+        this.web = web
+        this.url = url
+        this.des = des
+        this.version = version
+    }
 }
 
 @Entity
-data class File(
+class File constructor() {
     @Id
-    var _id: Long = 0,
+    var _id: Long = 0
 
     @SerializedName("File")
-    val file: String,
+    lateinit var file: String
     @SerializedName("Size")
-    val size: Long,
+    var size: Long = 0
     @SerializedName("Title")
-    val title: String,
+    lateinit var title: String
     @SerializedName("Time")
-    val time: Long,
+    var time: Long = 0
     @SerializedName("Count")
-    val count: Long,
+    var count: Long = 0
     @SerializedName("Type")
-    val type: String
-)
+    lateinit var type: String
+
+    constructor(file: String, size: Long, title: String, time: Long, count: Long) : this() {
+        this.file = file
+        this.size = size
+        this.title = title
+        this.time = time
+        this.count = count
+    }
+}
 
 @Entity
 class Image constructor() {
@@ -143,7 +164,7 @@ class Image constructor() {
     lateinit var thumb: String
     lateinit var file: ToOne<File>
 
-    constructor(native: Boolean, url: String, thumb: String): this() {
+    constructor(native: Boolean, url: String, thumb: String) : this() {
         this.native = native
         this.url = url
         this.thumb = thumb
@@ -151,15 +172,23 @@ class Image constructor() {
 }
 
 @Entity
-data class Movie(
-    @Id
-    var _id: Long = 0,
+class Movie constructor() {
 
-    val url: String,
-    val type: String,
-    val detail: String,
-    val watched: Boolean
-) {
+    @Id
+    var _id: Long = 0
+
+    lateinit var url: String
+    lateinit var type: String
+    lateinit var detail: String
+    var watched: Boolean = false
+
     lateinit var file: ToOne<File>
     lateinit var images: ToMany<Image>
+
+    constructor(url: String, type: String, detail: String, watched: Boolean) : this() {
+        this.url = url
+        this.type = type
+        this.detail = detail
+        this.watched = watched
+    }
 }
