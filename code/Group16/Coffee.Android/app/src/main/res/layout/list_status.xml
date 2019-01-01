@@ -29,6 +29,7 @@
             android:layout_height="wrap_content"
             android:text="@string/status_nothing"
             android:textColor="@color/colorSubTitle"
+            android:layout_marginTop="10dp"
             android:textSize="16sp"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
@@ -56,6 +57,7 @@
             android:textColor="@color/colorSubTitle"
             android:textSize="16sp"
             android:visibility="gone"
+            android:layout_marginTop="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/status_error" />
@@ -78,6 +80,7 @@
             android:text="@string/status_loading"
             android:textColor="@color/colorSubTitle"
             android:textSize="16sp"
+            android:layout_marginTop="10dp"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

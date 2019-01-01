@@ -20,6 +20,16 @@ import static studio.xmatrix.coffee.ui.detail.DetailHandler.getTime;
 public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> {
     private DetailActivity activity;
     private List<CommentsResource.ReplyForComment> data;
+    private onClickItem onClickItem;
+
+    public void setOnClickItem(ReplyAdapter.onClickItem onClickItem) {
+        this.onClickItem = onClickItem;
+    }
+
+    public interface onClickItem {
+         void onClickLike(String id);
+         void onClickReply(String fatherId, String fatherName, String contentId);
+    }
 
     public ReplyAdapter(DetailActivity activity) {
         this.activity = activity;

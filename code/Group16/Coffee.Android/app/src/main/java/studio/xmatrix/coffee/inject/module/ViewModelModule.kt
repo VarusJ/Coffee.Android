@@ -10,6 +10,7 @@ import studio.xmatrix.coffee.ui.admin.AdminViewModel
 import studio.xmatrix.coffee.ui.common.ViewModelFactory
 import studio.xmatrix.coffee.ui.detail.DetailViewModel
 import studio.xmatrix.coffee.ui.home.HomeViewModel
+import studio.xmatrix.coffee.ui.nav.NavViewModel
 import studio.xmatrix.coffee.ui.notice.NoticeViewModel
 import studio.xmatrix.coffee.ui.person.PersonViewModel
 import studio.xmatrix.coffee.ui.square.SquareViewModel
@@ -46,6 +47,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(PersonViewModel::class)
     abstract fun bindPersonViewModel(personViewModel: PersonViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(NavViewModel::class)
+    abstract fun bindNavViewModel(navViewModel: NavViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
