@@ -22,7 +22,8 @@
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp">
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/title"
@@ -31,86 +32,51 @@
                     android:hint="@string/add_title"
                     android:textSize="19sp"
                     android:layout_marginTop="15dp"
-                    android:layout_marginHorizontal="20dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
 
-                <!--EditText
-                    android:id="@+id/title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/add_title"
-                    android:textSize="19sp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginHorizontal="15dp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/-->
-
                 <EditText
                     android:id="@+id/content"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="140dp"
+                    android:scrollbars="vertical"
                     android:hint="@string/add_content"
                     android:textSize="15sp"
                     android:gravity="left"
                     android:background="@null"
-                    android:layout_marginHorizontal="20dp"
-                    android:layout_marginVertical="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="15dp"
                     app:layout_constraintTop_toBottomOf="@id/title"
-                    app:layout_constraintBottom_toTopOf="@id/pics"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/pics"
-                    android:layout_width="wrap_content"
-                    android:layout_height="180dp"
-                    android:layout_marginHorizontal="20dp"
-                    android:layout_marginBottom="10dp"
                     app:layout_constraintBottom_toTopOf="@id/tags"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    tools:layoutManager="GridLayoutManager"
-                    tools:listitem="@layout/add_pic_item"/>
-
-                <!--android.support.v7.widget.RecyclerView
-                    android:id="@+id/tags"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginHorizontal="20dp"
-                    android:layout_marginBottom="10dp"
-                    app:layout_constraintBottom_toTopOf="@id/bottom"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    tools:layoutManager="com.mcxtzhang.layoutmanager.flow.FlowLayoutManager"
-                    tools:listitem="@layout/add_tag_item"/-->
-
-                <!--com.kongzue.stacklabelview.StackLabel
-                    android:id="@+id/tags"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="20dp"
-                    android:layout_marginBottom="10dp"
-                    app:layout_constraintBottom_toTopOf="@id/bottom"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" /-->
+                    app:layout_constraintEnd_toEndOf="parent"/>
 
                 <com.cunoraz.tagview.TagView
                     xmlns:tagview="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/tags"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="20dp"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="15dp"
                     tagview:textPaddingTop="8dp"
                     tagview:textPaddingBottom="8dp"
                     tagview:textPaddingLeft="10dp"
                     tagview:textPaddingRight="8dp"
-                    tagview:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/pics"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/pics"
+                    android:layout_width="wrap_content"
+                    android:layout_height="190dp"
+                    android:layout_marginBottom="15dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:layoutManager="GridLayoutManager"
+                    tools:listitem="@layout/add_pic_item"/>
+
             </android.support.constraint.ConstraintLayout>
 
         </ScrollView>
@@ -119,17 +85,17 @@
             android:id="@+id/bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
+            android:layout_marginHorizontal="22dp"
             android:layout_marginBottom="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
             <ImageButton
                 android:id="@+id/add_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:background="@drawable/ic_img"
-                android:backgroundTint="@color/colorPrimaryDark"
+                android:backgroundTint="@color/colorPrimary"
                 android:onClick="@{handler::onClickAddImage}"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -137,10 +103,10 @@
 
             <ImageButton
                 android:id="@+id/add_tag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:background="@drawable/ic_label"
-                android:backgroundTint="@color/colorPrimaryDark"
+                android:backgroundTint="@color/colorPrimary"
                 android:onClick="@{handler::onClickAddTag}"
                 android:layout_marginStart="15dp"
                 app:layout_constraintTop_toTopOf="parent"
@@ -163,6 +129,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
+                android:thumbTint="@color/colorPrimary"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
