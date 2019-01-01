@@ -58,5 +58,4 @@ public class AdminActivityHandler {
         }
         binding.loginPassword.setSelection(binding.loginPassword.getText().length());
     }
-
 }

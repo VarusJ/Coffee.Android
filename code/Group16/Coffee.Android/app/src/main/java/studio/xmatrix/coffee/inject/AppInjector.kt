@@ -6,6 +6,7 @@ import studio.xmatrix.coffee.inject.component.DaggerAppComponent
 import studio.xmatrix.coffee.ui.admin.AdminActivity
 import studio.xmatrix.coffee.ui.detail.DetailHandler
 import studio.xmatrix.coffee.ui.square.SquareHandler
+import studio.xmatrix.coffee.ui.admin.AdminActivityHandler
 
 class AppInjector private constructor() {
 
@@ -18,14 +19,12 @@ class AppInjector private constructor() {
         }
 
         fun inject(injectable: Injectable) {
-            if (injectable is AdminActivity) {
-                component.inject(injectable)
-            } else if (injectable is SquareHandler) {
-                component.inject(injectable)
-            }  else if (injectable is DetailHandler) {
-                component.inject(injectable)
-            } else {
-                throw IllegalArgumentException("Class not found in AppComponent")
+            when (injectable) {
+                is AdminActivity -> component.inject(injectable)
+                is AdminActivityHandler -> component.inject(injectable)
+                is DetailHandler -> component.inject(injectable)
+                is SquareHandler -> component.inject(injectable)
+                else -> throw IllegalArgumentException("Class not found in AppComponent")
             }
         }
     }

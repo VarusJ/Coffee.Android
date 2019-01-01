@@ -15,6 +15,7 @@ import studio.xmatrix.coffee.data.common.network.AppExecutors
 import studio.xmatrix.coffee.data.model.User
 import studio.xmatrix.coffee.data.model.User_
 import studio.xmatrix.coffee.data.service.resource.CommonResource
+import studio.xmatrix.coffee.data.service.resource.UserResource
 import studio.xmatrix.coffee.data.service.response.UserInfoResponse
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -51,10 +52,10 @@ class UserDatabase @Inject constructor(app: App, private val executors: AppExecu
 
     private val box: Box<User> = app.boxStore.boxFor()
 
-    fun loadInfoById(id: String?): LiveData<User> {
-        val data = MutableLiveData<User>()
+    fun loadInfoById(id: String): LiveData<UserResource> {
+        val data = MutableLiveData<UserResource>()
         executors.diskIO().execute {
-            data.postValue(box.query { equal(User_.id, id ?: "") }.findFirst())
+            data.postValue(UserResource(CommonResource.StatusSuccess, box.query { equal(User_.id, id) }.findFirst()))
         }
         return data
     }
