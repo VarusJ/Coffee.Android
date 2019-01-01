@@ -1,5 +1,7 @@
 package studio.xmatrix.coffee.ui.nav;
 
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -20,21 +22,38 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 import studio.xmatrix.coffee.R;
+import studio.xmatrix.coffee.data.common.network.Status;
+import studio.xmatrix.coffee.data.model.User;
+import studio.xmatrix.coffee.inject.AppInjector;
+import studio.xmatrix.coffee.inject.Injectable;
 import studio.xmatrix.coffee.ui.NightModeConfig;
 import studio.xmatrix.coffee.ui.add.AddActivity;
 import studio.xmatrix.coffee.ui.admin.AdminActivity;
+import studio.xmatrix.coffee.ui.detail.DetailViewModel;
 import studio.xmatrix.coffee.ui.home.HomeFragment;
 import studio.xmatrix.coffee.ui.notice.NoticeFragment;
 import studio.xmatrix.coffee.ui.person.PersonActivity;
 import studio.xmatrix.coffee.ui.setting.SettingsActivity;
 import studio.xmatrix.coffee.ui.square.SquareFragment;
 
+import javax.inject.Inject;
+import java.util.Objects;
+
 public class NavActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, Injectable {
+
+
+
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
+    private NavViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        AppInjector.Companion.inject(this);
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(NavViewModel.class);
 
         setContentView(R.layout.nav_activity);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -110,6 +129,23 @@ public class NavActivity extends AppCompatActivity
 
         });
         tabLayout.setupWithViewPager(viewPager);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        viewModel.getUserInfo().observe(this, resource -> {
+//            if (resource != null) {
+//                if (resource.getStatus() == Status.SUCCESS) {
+//                    User userInfo = Objects.requireNonNull(resource.getData()).getResource();
+//                    if (userInfo == null) return;
+//                    Toast.makeText(this, userInfo.getName(), Toast.LENGTH_SHORT).show();
+//                } else if (resource.getStatus() == Status.ERROR) {
+//                    Toast.makeText(this, resource.getMessage(), Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
 
     }
 

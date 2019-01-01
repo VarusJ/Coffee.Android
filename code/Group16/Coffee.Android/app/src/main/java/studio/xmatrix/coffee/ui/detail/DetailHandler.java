@@ -47,7 +47,6 @@ public class DetailHandler implements Injectable {
     private DetailViewModel viewModel;
 
     public DetailHandler(DetailActivity activity, DetailActivityBinding binding) {
-        AppInjector.Companion.inject(this);
         this.activity = activity;
         this.binding = binding;
         Bundle bundle = activity.getIntent().getExtras();
@@ -56,6 +55,7 @@ public class DetailHandler implements Injectable {
             activity.finish();
             return;
         }
+        AppInjector.Companion.inject(this);
         viewModel = ViewModelProviders.of(activity, viewModelFactory).get(DetailViewModel.class);
         initView();
         initData();

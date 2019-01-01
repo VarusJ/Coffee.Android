@@ -4,7 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+    <variable
+        name="model"
+        type="studio.xmatrix.coffee.data.service.resource.NotificationsResource.Notification"/>
     </data>
 
     <com.daimajia.swipe.SwipeLayout
@@ -19,6 +21,7 @@
             android:background="#e25d5d">
 
             <ImageView
+                android:id="@+id/notice_delete"
                 android:layout_width="100dp"
                 android:layout_height="80dp"
                 android:layout_gravity="center_vertical"
@@ -37,7 +40,7 @@
             android:paddingTop="8dp">
 
             <TextView
-                android:id="@+id/notice_title"
+                android:id="@+id/notice_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -94,7 +97,8 @@
                 android:layout_marginTop="6dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
-                android:text="MegaShow"
+                tools:text="MegaShow"
+                android:text="@{model.user.name}"
                 android:transitionName="userName"
                 android:textColor="@color/colorTitle"
                 android:textSize="18sp"
@@ -121,7 +125,8 @@
                 android:paddingVertical="4dp"
                 android:textColor="@color/colorText"
                 android:paddingEnd="16dp"
-                android:text="你可是太强了你可是太强了你可是太强了你可是太强了你可是太强了你可是太强了你可是太强了"
+                android:text="@{model.data.content}"
+                tools:text="你可是太强了你可是太强了你可是太强了你可是太强了你可是太强了你可是太强了你可是太强了"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/notice_user_name"
                 app:layout_constraintTop_toBottomOf="@+id/notice_user_name"
