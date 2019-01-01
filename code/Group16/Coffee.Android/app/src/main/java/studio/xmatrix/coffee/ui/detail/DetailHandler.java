@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration;
 import studio.xmatrix.coffee.data.model.Content;
@@ -20,6 +21,7 @@ import studio.xmatrix.coffee.databinding.DetailActivityBinding;
 import studio.xmatrix.coffee.inject.AppInjector;
 import studio.xmatrix.coffee.inject.Injectable;
 import studio.xmatrix.coffee.ui.ListStatus;
+import studio.xmatrix.coffee.ui.add.AddActivity;
 import studio.xmatrix.coffee.ui.square.TagAdapter;
 import studio.xmatrix.coffee.ui.user.UserActivity;
 
@@ -49,7 +51,11 @@ public class DetailHandler implements Injectable {
         this.activity = activity;
         this.binding = binding;
         Bundle bundle = activity.getIntent().getExtras();
-        this.id = Objects.requireNonNull(bundle).getString("id");
+        this.id = Objects.requireNonNull(bundle).getString("id", "");
+        if (this.id.equals("")) {
+            activity.finish();
+            return;
+        }
         viewModel = ViewModelProviders.of(activity, viewModelFactory).get(DetailViewModel.class);
         initView();
         initData();
@@ -117,7 +123,9 @@ public class DetailHandler implements Injectable {
         binding.detailContent.btnRemove.setVisibility(View.VISIBLE);
         binding.detailContent.userAvatar.setOnClickListener(this::onClickUser);
         binding.detailContent.userName.setOnClickListener(this::onClickUser);
-
+        binding.detailContent.btnRemove.setOnClickListener(this::onClickDelete);
+        binding.detailContent.btnEdit.setOnClickListener(this::onClickEdit);
+        binding.detailContent.btnLike.setOnClickListener(this::onClickContentLike);
 
         // 标签
         tagAdapter = new TagAdapter(activity);
@@ -173,6 +181,18 @@ public class DetailHandler implements Injectable {
             }, 666);
         });
         commentFragment.show(activity.getSupportFragmentManager(), "addComment");
+    }
+
+    public void onClickEdit(View v) {
+        activity.startActivity(new Intent(activity, AddActivity.class));
+    }
+
+    public void onClickDelete(View v) {
+        Toast.makeText(activity, "Delete", Toast.LENGTH_SHORT).show();
+    }
+
+    public void onClickContentLike(View v) {
+        Toast.makeText(activity, "Like content", Toast.LENGTH_SHORT).show();
     }
 
     private void setStatus(ListStatus.StatusType status) {

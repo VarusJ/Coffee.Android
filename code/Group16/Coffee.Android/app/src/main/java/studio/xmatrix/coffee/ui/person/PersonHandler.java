@@ -1,16 +1,23 @@
 package studio.xmatrix.coffee.ui.person;
 
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.databinding.PersonActivityBinding;
+import studio.xmatrix.coffee.inject.AppInjector;
+import studio.xmatrix.coffee.inject.Injectable;
 import studio.xmatrix.coffee.ui.AvatarImageBehavior;
+import studio.xmatrix.coffee.ui.notice.NoticeViewModel;
+
+import javax.inject.Inject;
 
 import static studio.xmatrix.coffee.ui.AvatarImageBehavior.startAlphaAnimation;
 
-class PersonHandler implements AppBarLayout.OnOffsetChangedListener {
+public class PersonHandler implements AppBarLayout.OnOffsetChangedListener, Injectable {
     private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR = 0.6f;
     private static final float PERCENTAGE_TO_HIDE_TITLE_DETAILS = 0.3f;
     private static final int ALPHA_ANIMATIONS_DURATION = 200;
@@ -20,9 +27,16 @@ class PersonHandler implements AppBarLayout.OnOffsetChangedListener {
     private PersonActivity activity;
     private PersonActivityBinding binding;
 
+
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
+    private PersonViewModel viewModel;
+
     PersonHandler(PersonActivity activity, PersonActivityBinding binding) {
         this.activity = activity;
         this.binding = binding;
+        AppInjector.Companion.inject(this);
+        viewModel = ViewModelProviders.of(activity, viewModelFactory).get(PersonViewModel.class);
         initView();
     }
 

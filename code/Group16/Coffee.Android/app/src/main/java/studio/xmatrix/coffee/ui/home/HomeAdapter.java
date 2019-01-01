@@ -1,5 +1,6 @@
 package studio.xmatrix.coffee.ui.home;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
@@ -24,9 +25,9 @@ import studio.xmatrix.coffee.ui.square.TagAdapter;
 import java.util.ArrayList;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
-    private FragmentActivity activity;
+    private Activity activity;
 
-    public HomeAdapter(FragmentActivity activity) {
+    public HomeAdapter(Activity activity) {
         this.activity = activity;
     }
 
