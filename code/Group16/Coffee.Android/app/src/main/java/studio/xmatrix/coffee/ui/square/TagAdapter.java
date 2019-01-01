@@ -1,5 +1,6 @@
 package studio.xmatrix.coffee.ui.square;
 
+import android.app.Activity;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
@@ -13,10 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
-    private FragmentActivity activity;
+    private Activity activity;
     private List<String> data;
 
-    public TagAdapter(FragmentActivity activity) {
+    public TagAdapter(Activity activity) {
         this.activity = activity;
         this.data = new ArrayList<>();
     }

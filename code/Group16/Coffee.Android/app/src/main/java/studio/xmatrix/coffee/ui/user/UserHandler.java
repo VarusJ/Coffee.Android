@@ -1,16 +1,25 @@
 package studio.xmatrix.coffee.ui.user;
 
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.databinding.UserActivityBinding;
+import studio.xmatrix.coffee.inject.AppInjector;
+import studio.xmatrix.coffee.inject.Injectable;
 import studio.xmatrix.coffee.ui.home.HomeAdapter;
+import studio.xmatrix.coffee.ui.home.HomeHandler;
+import studio.xmatrix.coffee.ui.home.HomeListManger;
+import studio.xmatrix.coffee.ui.home.HomeViewModel;
+
+import javax.inject.Inject;
 
 import static studio.xmatrix.coffee.ui.AvatarImageBehavior.startAlphaAnimation;
 
-class UserHandler implements AppBarLayout.OnOffsetChangedListener {
+public class UserHandler implements AppBarLayout.OnOffsetChangedListener, Injectable {
     private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR = 0.6f;
     private static final float PERCENTAGE_TO_HIDE_TITLE_DETAILS = 0.3f;
     private static final int ALPHA_ANIMATIONS_DURATION = 200;
@@ -18,11 +27,20 @@ class UserHandler implements AppBarLayout.OnOffsetChangedListener {
     private boolean mIsTheTitleContainerVisible = true;
     private UserActivity activity;
     private UserActivityBinding binding;
+    private HomeListManger listManger;
+
+
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
+    private HomeViewModel viewModel;
 
     UserHandler(UserActivity activity, UserActivityBinding binding) {
         this.activity = activity;
         this.binding = binding;
+        AppInjector.Companion.inject(this);
+        viewModel = ViewModelProviders.of(activity, viewModelFactory).get(HomeViewModel.class);
         initView();
+        listManger = new HomeListManger(activity, binding.userInclude, viewModel);
     }
 
     private void initView() {

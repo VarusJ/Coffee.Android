@@ -4,11 +4,13 @@ import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.View;
 import com.scwang.smartrefresh.header.DeliveryHeader;
 import studio.xmatrix.coffee.data.model.Content;
 import studio.xmatrix.coffee.databinding.SquareFragmentBinding;
 import studio.xmatrix.coffee.inject.AppInjector;
 import studio.xmatrix.coffee.inject.Injectable;
+import studio.xmatrix.coffee.ui.ListStatus;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -33,7 +35,7 @@ public class SquareHandler implements Injectable {
         this.binding = binding;
         this.hasMore = true;
         initView();
-        initData();
+        refreshData();
     }
 
     private void initView() {
@@ -47,20 +49,20 @@ public class SquareHandler implements Injectable {
                 if (resource != null) {
                     switch (resource.getStatus()) {
                         case SUCCESS:
-                            List<Content> contents = Objects.requireNonNull(resource.getData()).getResource();
-                            if (contents != null) {
-                                adapter.setData(contents);
-                                this.hasMore = true;
-                            } else {
-                                this.hasMore = false;
-                            }
-                            binding.refreshLayout.setEnableLoadMore(this.hasMore);
+                            setData(Objects.requireNonNull(resource.getData()).getResource());
                             refreshLayout.finishRefresh(200);
+                            break;
+                        case ERROR:
+                            refreshLayout.finishRefresh(false);
+                            setStatus(ListStatus.StatusType.Error);
                             break;
                     }
                 }
             });
         });
+        binding.squareStatus.statusError.setOnClickListener(v -> refreshData());
+
+        // 加载更多数据
         binding.refreshLayout.setEnableLoadMore(true);
         binding.refreshLayout.setOnLoadMoreListener(refreshLayout -> {
             if (!hasMore) {
@@ -71,13 +73,12 @@ public class SquareHandler implements Injectable {
                     if (resource != null) {
                         switch (resource.getStatus()) {
                             case SUCCESS:
-                                List<Content> contents = Objects.requireNonNull(resource.getData()).getResource();
-                                adapter.addData(contents);
-                                if (contents == null || contents.size() != EACH_PAGE) {
-                                    this.hasMore = false;
-                                    binding.refreshLayout.setEnableLoadMore(false);
-                                }
+                                setData(Objects.requireNonNull(resource.getData()).getResource());
                                 refreshLayout.finishLoadMore(200);
+                                break;
+                            case ERROR:
+                                refreshLayout.finishLoadMore(false);
+                                setStatus(ListStatus.StatusType.Error);
                                 break;
                         }
                     }
@@ -88,17 +89,47 @@ public class SquareHandler implements Injectable {
 
     }
 
-    private void initData() {
-        viewModel.getPublic(1, 7).observe(activity, resource -> {
+    private void refreshData() {
+        viewModel.getPublic(currentPage, EACH_PAGE).observe(activity, resource -> {
             if (resource != null) {
                 switch (resource.getStatus()) {
                     case SUCCESS:
-                        List<Content> contents = Objects.requireNonNull(resource.getData()).getResource();
-                        adapter.setData(contents);
+                        setData(Objects.requireNonNull(resource.getData()).getResource());
+                        break;
+                    case LOADING:
+                        setStatus(ListStatus.StatusType.Loading);
+                        break;
+                    case ERROR:
+                        setStatus(ListStatus.StatusType.Error);
                         break;
                 }
             }
         });
     }
 
+    private void setData(List<Content> contents) {
+        if (currentPage == 1) {
+            adapter.setData(contents);
+        } else {
+            adapter.addData(contents);
+        }
+        if (contents == null || contents.size() != EACH_PAGE) {
+            this.hasMore = false;
+            binding.refreshLayout.setEnableLoadMore(false);
+            if (contents == null && currentPage == 1)  {
+                setStatus(ListStatus.StatusType.Nothing);
+            } else {
+                setStatus(ListStatus.StatusType.Done);
+            }
+        } else {
+            this.hasMore = true;
+            setStatus(ListStatus.StatusType.Done);
+        }
+        binding.refreshLayout.setEnableLoadMore(this.hasMore);
+    }
+
+    private void setStatus(ListStatus.StatusType status) {
+        ListStatus.setStatus(binding.squareStatus, status);
+        binding.refreshLayout.setVisibility(status == ListStatus.StatusType.Done ?  View.VISIBLE : View.GONE);
+    }
 }
