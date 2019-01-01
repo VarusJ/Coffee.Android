@@ -9,20 +9,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration;
-import com.lzy.ninegrid.ImageInfo;
-import com.lzy.ninegrid.preview.NineGridViewClickAdapter;
 import studio.xmatrix.coffee.data.model.Content;
 import studio.xmatrix.coffee.data.service.resource.CommentsResource;
 import studio.xmatrix.coffee.databinding.CommentFragmentBinding;
 import studio.xmatrix.coffee.databinding.DetailActivityBinding;
 import studio.xmatrix.coffee.inject.AppInjector;
 import studio.xmatrix.coffee.inject.Injectable;
-import studio.xmatrix.coffee.ui.square.SquareViewModel;
+import studio.xmatrix.coffee.ui.ListStatus;
 import studio.xmatrix.coffee.ui.square.TagAdapter;
 import studio.xmatrix.coffee.ui.user.UserActivity;
 
@@ -53,28 +50,62 @@ public class DetailHandler implements Injectable {
         this.binding = binding;
         Bundle bundle = activity.getIntent().getExtras();
         this.id = Objects.requireNonNull(bundle).getString("id");
-
         viewModel = ViewModelProviders.of(activity, viewModelFactory).get(DetailViewModel.class);
         initView();
+        initData();
     }
 
-    @SuppressLint({"SetTextI18n", "ClickableViewAccessibility"})
-    private void initView() {
-        Objects.requireNonNull(activity.getSupportActionBar()).setTitle("内容详情");
-        // 评论列表
-        binding.commentList.setLayoutManager(new LinearLayoutManager(activity));
-        commentAdapter = new CommentAdapter(activity);
-        binding.commentList.setAdapter(commentAdapter);
+    private void initData() {
+        // 刷新数据
+        viewModel.getDetail(id).observe(activity, resource -> {
+            if (resource != null) {
+                switch (resource.getStatus()) {
+                    case SUCCESS:
+                        Content data = Objects.requireNonNull(resource.getData()).getResource();
+                        if (data != null) {
+                            binding.detailContent.setModel(data);
+                            tagAdapter.setData(data.tags);
+                            binding.detailContent.contentTime.setText(getTime(data.getPublishDate()));
+                            setStatus(ListStatus.StatusType.Done);
+                        } else {
+                            setStatus(ListStatus.StatusType.Nothing);
+                        }
+                        break;
+                    case ERROR:
+                        setStatus(ListStatus.StatusType.Error);
+                        break;
+                }
+            }
+        });
 
         viewModel.getComments(id).observe(activity, resource -> {
             if (resource != null) {
                 switch (resource.getStatus()) {
                     case SUCCESS:
                         List<CommentsResource.CommentForContent> content = Objects.requireNonNull(resource.getData()).getResource();
-                        commentAdapter.setData(content);
+                        if (content != null) {
+                            commentAdapter.setData(content);
+                            binding.commentNothing.setVisibility(View.GONE);
+                            binding.commentList.setVisibility(View.VISIBLE);
+                        } else {
+                            binding.commentNothing.setVisibility(View.VISIBLE);
+                            binding.commentList.setVisibility(View.GONE);
+                        }
                 }
             }
         });
+    }
+
+    @SuppressLint({"SetTextI18n", "ClickableViewAccessibility"})
+    private void initView() {
+        Objects.requireNonNull(activity.getSupportActionBar()).setTitle("内容详情");
+
+        binding.detailStatus.statusError.setOnClickListener(v -> initData());
+
+        // 评论列表
+        binding.commentList.setLayoutManager(new LinearLayoutManager(activity));
+        commentAdapter = new CommentAdapter(activity);
+        binding.commentList.setAdapter(commentAdapter);
 
 
         // 底部栏
@@ -87,20 +118,6 @@ public class DetailHandler implements Injectable {
         binding.detailContent.userAvatar.setOnClickListener(this::onClickUser);
         binding.detailContent.userName.setOnClickListener(this::onClickUser);
 
-        viewModel.getDetail(id).observe(activity, resource -> {
-            if (resource != null) {
-                switch (resource.getStatus()) {
-                    case SUCCESS:
-                        Content data = Objects.requireNonNull(resource.getData()).getResource();
-                        if (data != null) {
-                            binding.detailContent.setModel(data);
-                            tagAdapter.setData(data.tags);
-                            binding.detailContent.contentTime.setText(getTime(data.getPublishDate()));
-                        }
-                        break;
-                }
-            }
-        });
 
         // 标签
         tagAdapter = new TagAdapter(activity);
@@ -156,5 +173,11 @@ public class DetailHandler implements Injectable {
             }, 666);
         });
         commentFragment.show(activity.getSupportFragmentManager(), "addComment");
+    }
+
+    private void setStatus(ListStatus.StatusType status) {
+        ListStatus.setStatus(binding.detailStatus, status);
+        binding.detailScrollView.setVisibility(status == ListStatus.StatusType.Done ? View.VISIBLE : View.GONE);
+        binding.commentList.setVisibility(status == ListStatus.StatusType.Done ? View.VISIBLE : View.GONE);
     }
 }
