@@ -20,20 +20,29 @@ import static studio.xmatrix.coffee.ui.detail.DetailHandler.getTime;
 public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> {
     private DetailActivity activity;
     private List<CommentsResource.ReplyForComment> data;
-    private onClickItem onClickItem;
+    private OnClickReply onClickReply;
+    private List<String> likeData;
 
-    public void setOnClickItem(ReplyAdapter.onClickItem onClickItem) {
-        this.onClickItem = onClickItem;
+    public void setOnClickReply(ReplyAdapter.OnClickReply onClickReply) {
+        this.onClickReply = onClickReply;
     }
 
-    public interface onClickItem {
+    public void setLikeData(List<String> likeData) {
+        if (likeData == null) return;
+        this.likeData = likeData;
+        notifyDataSetChanged();
+    }
+
+    public interface OnClickReply {
          void onClickLike(String id);
          void onClickReply(String fatherId, String fatherName, String contentId);
+         void onClickDelete(String id);
     }
 
     public ReplyAdapter(DetailActivity activity) {
         this.activity = activity;
         this.data = new ArrayList<>();
+        this.likeData = new ArrayList<>();
     }
 
     public void setData(List<CommentsResource.ReplyForComment> data) {
@@ -73,6 +82,9 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
             CommentsResource.ReplyForComment itemData = data.get(pos);
             binding.setModel(itemData);
             binding.replyTime.setText(getTime(itemData.getReply().getDate()));
+            binding.replyLike.setOnClickListener(v-> {
+                onClickReply.onClickLike(itemData.getReply().getId());
+            });
             binding.replyContent.setOnLongClickListener(v -> {
                 final AlertDialog.Builder normalDialog =
                         new AlertDialog.Builder(activity);
@@ -80,6 +92,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
                 normalDialog.setMessage("删除这条回复?");
                 normalDialog.setPositiveButton("确定", (dialog, which) -> {
                     Toast.makeText(activity, "删除", Toast.LENGTH_SHORT).show();
+                    onClickReply.onClickDelete(itemData.getReply().getId());
                     dialog.dismiss();
                 });
                 normalDialog.setNegativeButton("取消", (dialog, which) -> {
@@ -88,6 +101,15 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
                 normalDialog.show();
                 return true;
             });
+            binding.replyContent.setOnClickListener(v -> {
+                onClickReply.onClickReply(itemData.getReply().getUserId(), itemData.getUser().getName(), itemData.getReply().getContentId());
+            });
+
+            if (likeData.contains(itemData.getReply().getId())) {
+                binding.replyLike.setImageResource(R.drawable.ic_like);
+            } else {
+                binding.replyLike.setImageResource(R.drawable.ic_like_none);
+            }
         }
     }
 }
