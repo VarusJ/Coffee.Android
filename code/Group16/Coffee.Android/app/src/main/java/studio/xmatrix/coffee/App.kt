@@ -12,6 +12,7 @@ import studio.xmatrix.coffee.inject.AppInjector
 import timber.log.Timber
 import android.graphics.Bitmap
 import android.widget.ImageView
+import studio.xmatrix.coffee.data.store.DefaultSharedPref
 
 
 class App : Application() {
@@ -43,6 +44,7 @@ class App : Application() {
             AndroidObjectBrowser(boxStore).start(this)
         }
 
+        DefaultSharedPref.init(this)
         AppInjector.init(this)
     }
 
