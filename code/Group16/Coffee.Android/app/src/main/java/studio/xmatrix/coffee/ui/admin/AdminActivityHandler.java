@@ -4,32 +4,25 @@ import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.LinkMovementMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.URLSpan;
-import android.util.Log;
 import android.widget.Toast;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.data.common.network.Status;
 import studio.xmatrix.coffee.databinding.AdminActivityBinding;
 import studio.xmatrix.coffee.inject.AppInjector;
 import studio.xmatrix.coffee.inject.Injectable;
-import timber.log.Timber;
 
 import javax.inject.Inject;
-
 import java.util.Objects;
 
-import static studio.xmatrix.coffee.data.service.resource.CommonResource.StatusError;
-import static studio.xmatrix.coffee.data.service.resource.CommonResource.StatusNotValid;
-import static studio.xmatrix.coffee.data.service.resource.CommonResource.StatusSuccess;
+import static studio.xmatrix.coffee.data.service.resource.CommonResource.*;
 
 public class AdminActivityHandler implements Injectable {
 
@@ -46,7 +39,7 @@ public class AdminActivityHandler implements Injectable {
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
-    AdminViewModel viewModel;
+    private AdminViewModel viewModel;
 
     AdminActivityHandler(AdminActivity activity, AdminActivityBinding binding){
         this.activity = activity;
@@ -63,6 +56,7 @@ public class AdminActivityHandler implements Injectable {
         binding.loginButton.setOnClickListener(v -> loginEvent());
         binding.loginButton.getBackground().setAlpha(50);
         binding.loginButtonCardView.getBackground().setAlpha(50);
+        binding.linearLayout.getBackground().setAlpha(210);
 
         binding.loginForget.setClickable(true);
         SpannableString ss = new SpannableString(binding.loginForget.getText().toString());

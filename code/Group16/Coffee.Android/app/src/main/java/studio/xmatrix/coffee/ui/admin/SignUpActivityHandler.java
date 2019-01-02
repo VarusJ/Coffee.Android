@@ -55,6 +55,7 @@ public class SignUpActivityHandler implements Injectable {
         binding.signupButton.setOnClickListener(v -> signupEvent());
         binding.signupButton.getBackground().setAlpha(50);
         binding.signupButtonCardView.getBackground().setAlpha(50);
+        binding.linearLayout.getBackground().setAlpha(210);
 
         passwordVisibility = false;
         confirmVisibility = false;

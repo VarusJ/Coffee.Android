@@ -22,6 +22,8 @@ data class CommonResource(
         const val StatusNotValidEmail = "invalid_email"
         const val StatusExistUsername = "exist_name"
         const val StatusExistEmail = "exist_email"
-
+        // verify
+        const val StatusErrorCode = "error_emailCode"
+        const val StatusTimeOutCode = "timeout_emailCode"
     }
 }
