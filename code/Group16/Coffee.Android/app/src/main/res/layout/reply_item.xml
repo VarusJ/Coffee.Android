@@ -21,6 +21,7 @@
         <TextView
             android:id="@+id/reply_name"
             android:layout_width="wrap_content"
+            android:transitionName="userName"
             android:layout_height="wrap_content"
             android:text="@{@string/reply_name(model.user.name)}"
             android:textColor="@color/colorBlack"
@@ -33,6 +34,7 @@
             android:id="@+id/reply_at"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:transitionName="userName"
             android:layout_marginStart="8dp"
             android:text="@{@string/reply_at_str(model.father.name)}"
             android:textColor="#39adf1"

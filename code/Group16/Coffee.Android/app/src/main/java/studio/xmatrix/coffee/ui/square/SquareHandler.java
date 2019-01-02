@@ -152,7 +152,7 @@ public class SquareHandler implements Injectable {
 
     }
 
-    private void refreshData() {
+    public void refreshData() {
         viewModel.getPublic(currentPage, EACH_PAGE).observe(activity, resource -> {
             if (resource != null) {
                 switch (resource.getStatus()) {

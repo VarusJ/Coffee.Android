@@ -16,5 +16,12 @@ data class CommonResource(
         const val StatusExist = "had_exist"
         const val StatusError = "error"
         const val StatusNotValid = "not_invalid"
+        // sign up
+        const val StatusNotValidUsername = "invalid_name"
+        const val StatusReservedUsername = "reserved_name"
+        const val StatusNotValidEmail = "invalid_email"
+        const val StatusExistUsername = "exist_name"
+        const val StatusExistEmail = "exist_email"
+
     }
 }

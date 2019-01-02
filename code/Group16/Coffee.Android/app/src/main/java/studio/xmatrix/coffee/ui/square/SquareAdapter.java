@@ -89,7 +89,7 @@ public class SquareAdapter extends RecyclerView.Adapter<SquareAdapter.ViewHolder
         notifyDataSetChanged();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ViewHolder extends RecyclerView.ViewHolder {
         private final ContentCardItemBinding binding;
         private TagAdapter adapter;
 
@@ -129,8 +129,8 @@ public class SquareAdapter extends RecyclerView.Adapter<SquareAdapter.ViewHolder
 //            binding.nineGridImage.setAdapter(new NineGridViewClickAdapter(activity, imageInfos));
 
             // 点击事件
-            binding.userAvatar.setOnClickListener(this);
-            binding.userName.setOnClickListener(this);
+            binding.userAvatar.setOnClickListener(v -> gotoUser(itemData.getOwnId()));
+            binding.userName.setOnClickListener(v -> gotoUser(itemData.getOwnId()));
             binding.btnComment.setOnClickListener(v -> gotoDetail(itemData.getId()));
             binding.cardLayout.setOnClickListener(v -> gotoDetail(itemData.getId()));
             binding.btnLike.setOnClickListener(v -> onClickLike.onClick(itemData.getId()));
@@ -144,29 +144,19 @@ public class SquareAdapter extends RecyclerView.Adapter<SquareAdapter.ViewHolder
             }
         }
 
-        public void gotoDetail(String id) {
+        void gotoDetail(String id) {
             DetailActivity.start(activity, id, ActivityOptionsCompat
                     .makeSceneTransitionAnimation(activity,
                             Pair.create(binding.contentCard, "contentCard"))
                     .toBundle());
         }
 
-        @Override
-        public void onClick(View v) {
-            Intent intent;
-            ActivityOptionsCompat options;
-
-            switch (v.getId()) {
-                case R.id.user_avatar:
-                case R.id.user_name:
-                    intent = new Intent(activity, UserActivity.class);
-                    options = ActivityOptionsCompat
-                            .makeSceneTransitionAnimation(activity,
-                                    Pair.create(binding.userAvatar, "userAvatar"),
-                                    Pair.create(binding.userName, "userName"));
-                    activity.startActivity(intent, options.toBundle());
-                    break;
-            }
+        void gotoUser(String id) {
+            UserActivity.start(activity, id, ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(activity,
+                            Pair.create(binding.userAvatar, "userAvatar"),
+                            Pair.create(binding.userName, "userName"))
+                    .toBundle());
         }
     }
 }

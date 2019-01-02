@@ -9,8 +9,10 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.util.Pair;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -44,6 +46,9 @@ import java.util.Objects;
 public class NavActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, Injectable {
 
+    private HomeFragment homeActivity;
+    private NoticeFragment noticeFragment;
+    private SquareFragment squareFragment;
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
@@ -134,6 +139,19 @@ public class NavActivity extends AppCompatActivity
 
     }
 
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null) {
+            if (data.getBooleanExtra("update", false)) {
+                if (squareFragment != null) {
+                    squareFragment.handler.refreshData();
+                }
+            }
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -154,8 +172,13 @@ public class NavActivity extends AppCompatActivity
 //                        }
 //                    });
                     userAvatar.setOnClickListener(v -> {
-                        startActivity(new Intent(this, UserActivity.class));
+                        UserActivity.start(this, userInfo.getId(), ActivityOptionsCompat
+                                .makeSceneTransitionAnimation(this,
+                                        Pair.create(userAvatar, "userAvatar"),
+                                        Pair.create(userNameText, "userName"))
+                                .toBundle());
                     });
+
 
                     // Toast.makeText(this, userInfo.getName(), Toast.LENGTH_SHORT).show();
                 } else if (resource.getStatus() == Status.ERROR) {
