@@ -21,7 +21,7 @@ import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.data.model.Content;
 import studio.xmatrix.coffee.data.service.LikeService;
 import studio.xmatrix.coffee.data.service.resource.CommentsResource;
-import studio.xmatrix.coffee.data.store.SpUtil;
+import studio.xmatrix.coffee.data.store.DefaultSharedPref;
 import studio.xmatrix.coffee.databinding.DetailActivityBinding;
 import studio.xmatrix.coffee.inject.AppInjector;
 import studio.xmatrix.coffee.inject.Injectable;
@@ -121,7 +121,7 @@ public class DetailHandler implements Injectable {
                             binding.detailContent.contentTime.setText(getTime(detailData.getPublishDate()));
                             setStatus(ListStatus.StatusType.Done);
                             setLikeStatus();
-                            if (SpUtil.getItem(activity, SpUtil.SpKey.UserId).equals(detailData.getOwnId())) {
+                            if (DefaultSharedPref.INSTANCE.get(DefaultSharedPref.Key.UserId).equals(detailData.getOwnId())) {
                                 binding.detailContent.btnEdit.setVisibility(View.VISIBLE);
                                 binding.detailContent.btnRemove.setVisibility(View.VISIBLE);
                             }
@@ -389,7 +389,7 @@ public class DetailHandler implements Injectable {
     }
 
     private void onClickDelete(View v) {
-        if (SpUtil.getItem(activity, SpUtil.SpKey.UserId).equals(detailData.getOwnId())) {
+        if (DefaultSharedPref.INSTANCE.get(DefaultSharedPref.Key.UserId).equals(detailData.getOwnId())) {
             final AlertDialog.Builder normalDialog =
                     new AlertDialog.Builder(activity);
             normalDialog.setTitle("操作确认");

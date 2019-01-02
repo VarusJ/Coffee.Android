@@ -13,6 +13,7 @@ import studio.xmatrix.coffee.data.service.UserService
 import studio.xmatrix.coffee.data.service.resource.CommonResource
 import studio.xmatrix.coffee.data.service.resource.UserResource
 import studio.xmatrix.coffee.data.service.response.UserInfoResponse
+import studio.xmatrix.coffee.data.store.DefaultSharedPref
 import java.security.MessageDigest
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -77,29 +78,24 @@ class UserRepository @Inject constructor(
     }
 
     fun getInfo(): LiveData<Resource<UserResource>> {
-        val pref = PreferenceManager.getDefaultSharedPreferences(app)
         var state = CommonResource.StatusSuccess
         return object : NetworkBoundResource<UserResource, UserInfoResponse>(executors) {
             override fun saveCallResult(item: UserInfoResponse) {
                 state = item.state
                 val res = item.toUserResource()
                 if (item.state == CommonResource.StatusSuccess && res.resource != null) {
-                    val editor = pref.edit()
-                    editor.putString("id", item.id)
-                    editor.apply()
+                    DefaultSharedPref.set(DefaultSharedPref.Key.UserId, item.id)
                     database.saveInfo(res.resource)
                 } else {
-                    val editor = pref.edit()
-                    editor.remove("id")
-                    editor.apply()
+                    DefaultSharedPref.remove(DefaultSharedPref.Key.UserId)
                 }
             }
 
             override fun shouldFetch(data: UserResource?) = true
 
             override fun loadFromDb(): LiveData<UserResource> {
-                val id = pref.getString("id", null)
-                return if (state == CommonResource.StatusSuccess && id != null) {
+                val id = DefaultSharedPref.get(DefaultSharedPref.Key.UserId)
+                return if (state == CommonResource.StatusSuccess && !id.isEmpty()) {
                     database.loadInfoById(id)
                 } else {
                     val data = MutableLiveData<UserResource>()
