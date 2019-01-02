@@ -1,14 +1,13 @@
 <resources>
     <string name="app_name">Coffee</string>
-	<string name="login_title">Coffee</string>
-	<string name="hint_username">Username</string>
-	<string name="hint_password">Password</string>
-    <string name="hint_email">Email</string>
-    <string name="hint_confirm">Confirm</string>
-    <string name="hint_verification_code">Verification Code</string>
-	<string name="login_text">Log in</string>
-    <string name="signup_text">sign up</string>
-    <string name="valid_text">Verification</string>
+	<string name="hint_username">用户名</string>
+	<string name="hint_password">密码</string>
+    <string name="hint_email">邮箱</string>
+    <string name="hint_confirm">请确认密码</string>
+    <string name="hint_verification_code">请输入验证码</string>
+	<string name="login_text">登录</string>
+    <string name="signup_text">注册</string>
+    <string name="valid_text">验证</string>
     <string name="title_activity_nav">NavActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

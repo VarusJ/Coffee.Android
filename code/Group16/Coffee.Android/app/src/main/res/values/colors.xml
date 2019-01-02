@@ -13,7 +13,7 @@
     <color name="colorTime">#3d000000</color>
     <color name="colorAvatar">#f9f9f9</color>
     <color name="colorText">#d07b7b7b</color>
-    <color name="colorHint">#DCDCDC</color>
+    <color name="colorHint">#998C8C</color>
     <color name="colorGreen">#4BB464</color>
     <color name="colorGrey">#4BB464</color>
 </resources>
