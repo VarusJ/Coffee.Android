@@ -1,5 +1,6 @@
 package studio.xmatrix.coffee.ui.nav;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -31,6 +32,7 @@ import com.lzy.ninegrid.NineGridView;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.data.common.network.Status;
 import studio.xmatrix.coffee.data.model.User;
+import studio.xmatrix.coffee.data.store.DefaultSharedPref;
 import studio.xmatrix.coffee.inject.AppInjector;
 import studio.xmatrix.coffee.inject.Injectable;
 import studio.xmatrix.coffee.ui.NightModeConfig;
@@ -44,13 +46,12 @@ import studio.xmatrix.coffee.ui.square.SquareFragment;
 import studio.xmatrix.coffee.ui.user.UserActivity;
 
 import javax.inject.Inject;
-import java.util.List;
 import java.util.Objects;
 
 public class NavActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, Injectable {
 
-    private HomeFragment homeActivity;
+    private HomeFragment homeFragment;
     private NoticeFragment noticeFragment;
     private SquareFragment squareFragment;
 
@@ -85,7 +86,7 @@ public class NavActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         // 夜间模式菜单
         MenuItem item = navigationView.getMenu().findItem(R.id.nav_night);
-        
+
         int currentMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         if (currentMode != Configuration.UI_MODE_NIGHT_YES) {
             item.setIcon(getDrawable(R.drawable.ic_night));
@@ -99,19 +100,17 @@ public class NavActivity extends AppCompatActivity
         View headerLayout = header.findViewById(R.id.head_user_avatar);
         headerLayout.setOnClickListener(v -> startActivity(new Intent(this, AdminActivity.class)));
 
+
         TabLayout tabLayout = findViewById(R.id.tabLayout);
         ViewPager viewPager = findViewById(R.id.home_view);
         viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
-            private HomeFragment homeActivity;
-            private NoticeFragment noticeFragment;
-            private SquareFragment squareFragment;
 
             @Override
             public Fragment getItem(int position) {
                 switch (position) {
                     case 0:
-                        if (homeActivity == null) homeActivity = new HomeFragment();
-                        return homeActivity;
+                        if (homeFragment == null) homeFragment = new HomeFragment();
+                        return homeFragment;
                     case 1:
                         if (squareFragment == null) squareFragment = new SquareFragment();
                         return squareFragment;
@@ -152,7 +151,7 @@ public class NavActivity extends AppCompatActivity
             String[] data = url.split("@");
             if (data.length == 2) {
                 String path = data[0];
-                path =  path.replace('/', '|');
+                path = path.replace('/', '|');
                 viewModel.getImage(data[1], path).observe(NavActivity.this, res -> {
                     if (res != null) {
                         switch (res.getStatus()) {
@@ -176,7 +175,7 @@ public class NavActivity extends AppCompatActivity
                 imageView.setImageDrawable(getDrawable(R.drawable.ic_like));
             }
 
-            
+
         }
 
         @Override
@@ -198,39 +197,53 @@ public class NavActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    @SuppressLint("SetTextI18n")
+    private void refreshData() {
         viewModel.getUserInfo().observe(this, resource -> {
             if (resource != null) {
-                if (resource.getStatus() == Status.SUCCESS) {
-                    User userInfo = Objects.requireNonNull(resource.getData()).getResource();
-                    if (userInfo == null) return;
-                    TextView userNameText = findViewById(R.id.head_user_name);
-                    userNameText.setText(userInfo.getName());
-                    TextView userText = findViewById(R.id.head_user_text);
-                    userText.setText(userInfo.getBio());
-                    ImageView userAvatar = findViewById(R.id.head_user_avatar);
-                    viewModel.getUserAvatar(userInfo.getAvatar()).observe(this, res -> {
-                        if (res != null && res.getStatus() == Status.SUCCESS) {
-                            userAvatar.setImageBitmap(res.getData());
+                switch (resource.getStatus()) {
+                    case SUCCESS:
+                        User userInfo = Objects.requireNonNull(resource.getData()).getResource();
+                        TextView userNameText = findViewById(R.id.head_user_name);
+                        TextView userText = findViewById(R.id.head_user_text);
+                        ImageView userAvatar = findViewById(R.id.head_user_avatar);
+                        if (userInfo == null) {
+                            userNameText.setText("点击头像登陆");
+                            userText.setText("Coffee");
+                            userAvatar.setImageResource(R.mipmap.ic_launcher_round);
+                            userAvatar.setOnClickListener(v -> startActivity(new Intent(this, AdminActivity.class)));
+                            DefaultSharedPref.INSTANCE.remove(DefaultSharedPref.Key.UserId);
+                        } else {
+                            userNameText.setText(userInfo.getName());
+                            userText.setText(userInfo.getBio());
+                            viewModel.getUserAvatar(userInfo.getAvatar()).observe(this, res -> {
+                                if (res != null && res.getStatus() == Status.SUCCESS) {
+                                    userAvatar.setImageBitmap(res.getData());
+                                }
+                            });
+                            userAvatar.setOnClickListener(v -> UserActivity.start(this, userInfo.getId(), ActivityOptionsCompat
+                                    .makeSceneTransitionAnimation(this,
+                                            Pair.create(userAvatar, "userAvatar"),
+                                            Pair.create(userNameText, "userName"))
+                                    .toBundle()));
+                            DefaultSharedPref.INSTANCE.set(DefaultSharedPref.Key.UserId, userInfo.getId());
                         }
-                    });
-                    userAvatar.setOnClickListener(v -> {
-                        UserActivity.start(this, userInfo.getId(), ActivityOptionsCompat
-                                .makeSceneTransitionAnimation(this,
-                                        Pair.create(userAvatar, "userAvatar"),
-                                        Pair.create(userNameText, "userName"))
-                                .toBundle());
-                    });
-
-
-                    // Toast.makeText(this, userInfo.getName(), Toast.LENGTH_SHORT).show();
-                } else if (resource.getStatus() == Status.ERROR) {
-                    Toast.makeText(this, resource.getMessage(), Toast.LENGTH_SHORT).show();
+                        if (noticeFragment != null)  noticeFragment.handler.refreshData();
+                        if (homeFragment != null) homeFragment.handler.refreshData();
+                        break;
+                    case ERROR:
+                        Toast.makeText(this, "网络错误", Toast.LENGTH_SHORT).show();
+                        break;
                 }
             }
         });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshData();
     }
 
     @Override
@@ -269,7 +282,12 @@ public class NavActivity extends AppCompatActivity
             recreate();
             // (new Handler()).postDelayed(this::recreate, 300);
         } else if (id == R.id.nav_logout) {
-            Toast.makeText(this, "退出登陆", Toast.LENGTH_SHORT).show();
+            viewModel.logout().observe(this, res -> {
+                if (res != null && res.getStatus() == Status.SUCCESS) {
+                    DefaultSharedPref.INSTANCE.remove(DefaultSharedPref.Key.UserId);
+                    refreshData();
+                }
+            });
         } else if (id == R.id.nav_person) {
             startActivity(new Intent(this, PersonActivity.class));
             drawer.closeDrawer(GravityCompat.START);

@@ -13,11 +13,12 @@ import studio.xmatrix.coffee.databinding.HomeFragmentBinding;
 
 public class HomeFragment extends Fragment {
     HomeFragmentBinding binding;
+    public  HomeHandler handler;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.inflate(LayoutInflater.from(getActivity()), R.layout.home_fragment, null, false);
-        HomeHandler handler = new HomeHandler(getActivity(), binding);
+        handler = new HomeHandler(getActivity(), binding);
     }
 
     @Nullable

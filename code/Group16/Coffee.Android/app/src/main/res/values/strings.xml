@@ -65,6 +65,9 @@
     <string name="reply_at_str"> \@%1$s</string>
     <string name="nothing">Nothing</string>
     <string name="status_error">网络错误，点击图标重试</string>
+    <string name="status_login">你还没有登陆呢</string>
     <string name="status_nothing">空空如也</string>
     <string name="status_loading">好像快要加载完了...</string>
+    <string name="str_comment">Comment</string>
+    <string name="str_like">Like</string>
 </resources>

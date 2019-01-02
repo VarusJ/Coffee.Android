@@ -33,6 +33,7 @@ public class UserHandler implements AppBarLayout.OnOffsetChangedListener, Inject
     private UserActivity activity;
     private UserActivityBinding binding;
     private String id;
+    private HomeListManger listManger;
 
 
     @Inject
@@ -51,7 +52,8 @@ public class UserHandler implements AppBarLayout.OnOffsetChangedListener, Inject
         AppInjector.Companion.inject(this);
         viewModel = ViewModelProviders.of(activity, viewModelFactory).get(HomeViewModel.class);
         initView();
-        new HomeListManger(activity, binding.userInclude, viewModel);
+        listManger =  new HomeListManger(activity, binding.userInclude, viewModel);
+        listManger.setId(id);
         initData();
     }
 

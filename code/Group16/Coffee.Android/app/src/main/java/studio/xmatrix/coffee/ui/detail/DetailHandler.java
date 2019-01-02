@@ -17,9 +17,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration;
+import com.lzy.ninegrid.ImageInfo;
+import com.lzy.ninegrid.preview.NineGridViewClickAdapter;
+import io.objectbox.relation.ToMany;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.data.common.network.Status;
+import studio.xmatrix.coffee.data.model.Album;
 import studio.xmatrix.coffee.data.model.Content;
+import studio.xmatrix.coffee.data.model.Image;
 import studio.xmatrix.coffee.data.service.LikeService;
 import studio.xmatrix.coffee.data.service.resource.CommentsResource;
 import studio.xmatrix.coffee.data.store.DefaultSharedPref;
@@ -33,10 +38,7 @@ import studio.xmatrix.coffee.ui.user.UserActivity;
 
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -93,7 +95,12 @@ public class DetailHandler implements Injectable {
                         Toast.makeText(activity, "网络错误", Toast.LENGTH_SHORT).show();
                         break;
                     case SUCCESS:
-                        likeData = Objects.requireNonNull(resource.getData()).getResource();
+                        List<String> data = Objects.requireNonNull(resource.getData()).getResource();
+                        if (data != null) {
+                            likeData = data;
+                        } else {
+                            likeData.clear();
+                        }
                         commentAdapter.setLikeData(likeData);
                         setLikeStatus();
                         break;
@@ -131,6 +138,19 @@ public class DetailHandler implements Injectable {
                                     binding.detailContent.userAvatar.setImageBitmap(res.getData());
                                 }
                             });
+                            ArrayList<ImageInfo> imageInfo = new ArrayList<>();
+                            Album album = detailData.getAlbum().getTarget();
+                            if (album != null) {
+                                ToMany<Image> images = album.getImages();
+                                for (Image i :images) {
+                                    ImageInfo info = new ImageInfo();
+                                    info.setThumbnailUrl(i.getThumb());
+                                    info.setBigImageUrl(i.getThumb());
+                                    // info.setBigImageUrl(i.getFile().getTarget().getFile() + "@" + itemData.getId());
+                                    imageInfo.add(info);
+                                }
+                            }
+                            binding.detailContent.nineGridImage.setAdapter(new NineGridViewClickAdapter(activity, imageInfo));
                         } else {
                             setStatus(ListStatus.StatusType.Nothing);
                         }
@@ -161,6 +181,10 @@ public class DetailHandler implements Injectable {
     }
 
     private void deleteComment(String id) {
+        if (DefaultSharedPref.INSTANCE.get(DefaultSharedPref.Key.UserId).equals("")) {
+            Toast.makeText(activity, "请先登陆", Toast.LENGTH_SHORT).show();
+            return;
+        }
         viewModel.deleteComment(id).observe(activity, res -> {
             if (res != null) {
                 switch (res.getStatus()) {
@@ -233,6 +257,10 @@ public class DetailHandler implements Injectable {
 
             @Override
             public void onClickLike(String id) {
+                if (DefaultSharedPref.INSTANCE.get(DefaultSharedPref.Key.UserId).equals("")) {
+                    Toast.makeText(activity, "请先登陆", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (likeData.contains(id)) {
                     unlike(id, LikeService.LikeType.Comment);
                 } else {
@@ -253,6 +281,10 @@ public class DetailHandler implements Injectable {
         commentAdapter.setOnClickReply(new ReplyAdapter.OnClickReply() {
             @Override
             public void onClickLike(String id) {
+                if (DefaultSharedPref.INSTANCE.get(DefaultSharedPref.Key.UserId).equals("")) {
+                    Toast.makeText(activity, "请先登陆", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (likeData.contains(id)) {
                     unlike(id, LikeService.LikeType.Reply);
                 } else {
@@ -313,16 +345,6 @@ public class DetailHandler implements Injectable {
                 .build();
         binding.detailContent.tagLayout.setLayoutManager(chipsLayoutManager);
         binding.detailContent.tagLayout.addItemDecoration(new SpacingItemDecoration(10, 10));
-
-        // 图片加载
-//        ArrayList<ImageInfo> imageInfos = new ArrayList<>();
-//        for (int i = 0; i < 2; i++) {
-//            ImageInfo info = new ImageInfo();
-//            info.setThumbnailUrl("test" + i);
-//            info.setBigImageUrl("test2" + i);
-//            imageInfos.add(info);
-//        }
-//        binding.detailContent.nineGridImage.setAdapter(new NineGridViewClickAdapter(activity, imageInfos));
     }
 
     public static String getTime(Long publish) {
@@ -351,6 +373,10 @@ public class DetailHandler implements Injectable {
 
     @SuppressLint("SetTextI18n")
     private void onClickAddComment(View v) {
+        if (DefaultSharedPref.INSTANCE.get(DefaultSharedPref.Key.UserId).equals("")) {
+            Toast.makeText(activity, "请先登陆", Toast.LENGTH_SHORT).show();
+            return;
+        }
         commentFragment = new CommentFragment((binding) -> {
             if (isReply) {
                 binding.commentFather.setText("回复: @" + fatherName);
@@ -392,10 +418,20 @@ public class DetailHandler implements Injectable {
     }
 
     private void onClickEdit(View v) {
+        if (DefaultSharedPref.INSTANCE.get(DefaultSharedPref.Key.UserId).equals("")) {
+            Toast.makeText(activity, "请先登陆", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // todo
+        // 获取旧内容填充
         activity.startActivity(new Intent(activity, AddActivity.class));
     }
 
     private void onClickDelete(View v) {
+        if (DefaultSharedPref.INSTANCE.get(DefaultSharedPref.Key.UserId).equals("")) {
+            Toast.makeText(activity, "请先登陆", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (DefaultSharedPref.INSTANCE.get(DefaultSharedPref.Key.UserId).equals(detailData.getOwnId())) {
             final AlertDialog.Builder normalDialog =
                     new AlertDialog.Builder(activity);
@@ -428,6 +464,10 @@ public class DetailHandler implements Injectable {
     }
 
     private void onClickContentLike(View v) {
+        if (DefaultSharedPref.INSTANCE.get(DefaultSharedPref.Key.UserId).equals("")) {
+            Toast.makeText(activity, "请先登陆", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (likeData.contains(detailData.getId())) {
             unlike(detailData.getId(), LikeService.LikeType.Content);
         } else {
