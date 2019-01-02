@@ -2,11 +2,13 @@ package studio.xmatrix.coffee.ui.detail;
 
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.graphics.Bitmap;
 import studio.xmatrix.coffee.App;
 import studio.xmatrix.coffee.data.common.network.Resource;
 import studio.xmatrix.coffee.data.repository.CommentRepository;
 import studio.xmatrix.coffee.data.repository.ContentRepository;
 import studio.xmatrix.coffee.data.repository.LikeRepository;
+import studio.xmatrix.coffee.data.repository.UserRepository;
 import studio.xmatrix.coffee.data.service.LikeService;
 import studio.xmatrix.coffee.data.service.resource.CommentsResource;
 import studio.xmatrix.coffee.data.service.resource.CommonResource;
@@ -20,14 +22,16 @@ public class DetailViewModel extends AndroidViewModel {
     private ContentRepository contentRepository;
     private CommentRepository commentRepository;
     private LikeRepository likeRepository;
+    private UserRepository userRepository;
 
     @Inject
     DetailViewModel(App app, ContentRepository contentRepository, CommentRepository commentRepository,
-                    LikeRepository likeRepository) {
+                    LikeRepository likeRepository, UserRepository userRepository) {
         super(app);
         this.contentRepository = contentRepository;
         this.commentRepository = commentRepository;
         this.likeRepository = likeRepository;
+        this.userRepository = userRepository;
     }
 
     LiveData<Resource<ContentResource>> getDetail(String id) {
@@ -60,6 +64,9 @@ public class DetailViewModel extends AndroidViewModel {
 
     LiveData<Resource<CommonResource>> unlike(String id,LikeService.LikeType type) {
         return likeRepository.unlikeById(id, type);
+    }
+    LiveData<Resource<Bitmap>> getUserAvatar(String url) {
+        return userRepository.getAvatarByUrl(url);
     }
 
 }

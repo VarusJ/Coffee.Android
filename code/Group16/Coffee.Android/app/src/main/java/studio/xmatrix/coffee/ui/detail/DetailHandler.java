@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration;
 import studio.xmatrix.coffee.R;
+import studio.xmatrix.coffee.data.common.network.Status;
 import studio.xmatrix.coffee.data.model.Content;
 import studio.xmatrix.coffee.data.service.LikeService;
 import studio.xmatrix.coffee.data.service.resource.CommentsResource;
@@ -125,6 +126,11 @@ public class DetailHandler implements Injectable {
                                 binding.detailContent.btnEdit.setVisibility(View.VISIBLE);
                                 binding.detailContent.btnRemove.setVisibility(View.VISIBLE);
                             }
+                            viewModel.getUserAvatar(detailData.getUserAvatar()).observe(activity, res -> {
+                                if (res != null && res.getStatus() == Status.SUCCESS) {
+                                    binding.detailContent.userAvatar.setImageBitmap(res.getData());
+                                }
+                            });
                         } else {
                             setStatus(ListStatus.StatusType.Nothing);
                         }
@@ -212,6 +218,7 @@ public class DetailHandler implements Injectable {
         });
     }
 
+
     private void initView() {
         Objects.requireNonNull(activity.getSupportActionBar()).setTitle("内容详情");
 
@@ -219,7 +226,7 @@ public class DetailHandler implements Injectable {
 
         // 评论列表
         binding.commentList.setLayoutManager(new LinearLayoutManager(activity));
-        commentAdapter = new CommentAdapter(activity);
+        commentAdapter = new CommentAdapter(activity, viewModel);
         commentAdapter.setOnClickComment(new CommentAdapter.OnClickComment() {
             @Override
             public void onClickDelete(String id) {
@@ -243,6 +250,7 @@ public class DetailHandler implements Injectable {
                 DetailHandler.this.isReply = true;
                 onClickAddComment(null);
             }
+
         });
         commentAdapter.setOnClickReply(new ReplyAdapter.OnClickReply() {
             @Override
@@ -267,6 +275,7 @@ public class DetailHandler implements Injectable {
             public void onClickDelete(String id) {
                 deleteComment(id);
             }
+
         });
         binding.commentList.setAdapter(commentAdapter);
 

@@ -2,8 +2,10 @@ package studio.xmatrix.coffee.ui.nav;
 
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -25,6 +27,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.lzy.ninegrid.NineGridView;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.data.common.network.Status;
 import studio.xmatrix.coffee.data.model.User;
@@ -41,6 +44,7 @@ import studio.xmatrix.coffee.ui.square.SquareFragment;
 import studio.xmatrix.coffee.ui.user.UserActivity;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Objects;
 
 public class NavActivity extends AppCompatActivity
@@ -61,6 +65,9 @@ public class NavActivity extends AppCompatActivity
         AppInjector.Companion.inject(this);
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(NavViewModel.class);
 
+
+        NineGridView.setImageLoader(new MyImageLoader());
+
         setContentView(R.layout.nav_activity);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -78,8 +85,7 @@ public class NavActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         // 夜间模式菜单
         MenuItem item = navigationView.getMenu().findItem(R.id.nav_night);
-
-
+        
         int currentMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         if (currentMode != Configuration.UI_MODE_NIGHT_YES) {
             item.setIcon(getDrawable(R.drawable.ic_night));
@@ -140,6 +146,37 @@ public class NavActivity extends AppCompatActivity
     }
 
 
+    private class MyImageLoader implements NineGridView.ImageLoader {
+        @Override
+        public void onDisplayImage(Context context, ImageView imageView, String url) {
+            String[] data = url.split("@");
+            if (data.length == 2) {
+                viewModel.getImage(data[1], data[0]).observe(NavActivity.this, res -> {
+                    if (res != null && res.getStatus() == Status.SUCCESS) {
+                        imageView.setImageBitmap(res.getData());
+                    }
+                });
+
+            } else if (data.length == 1) {
+                viewModel.getThumb(data[0]).observe(NavActivity.this, res -> {
+                    if (res != null && res.getStatus() == Status.SUCCESS) {
+                        imageView.setImageBitmap(res.getData());
+                    }
+                });
+            } else {
+                imageView.setImageDrawable(getDrawable(R.drawable.ic_like));
+            }
+
+            
+        }
+
+        @Override
+        public Bitmap getCacheImage(String url) {
+            return null;
+        }
+    }
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -165,12 +202,11 @@ public class NavActivity extends AppCompatActivity
                     TextView userText = findViewById(R.id.head_user_text);
                     userText.setText(userInfo.getBio());
                     ImageView userAvatar = findViewById(R.id.head_user_avatar);
-                    // todo
-//                    viewModel.getUserAvatar(userInfo.getId()).observe(this, res -> {
-//                        if (res != null && res.getStatus() == Status.SUCCESS) {
-//                            userAvatar.setImageBitmap(res.getData());
-//                        }
-//                    });
+                    viewModel.getUserAvatar(userInfo.getAvatar()).observe(this, res -> {
+                        if (res != null && res.getStatus() == Status.SUCCESS) {
+                            userAvatar.setImageBitmap(res.getData());
+                        }
+                    });
                     userAvatar.setOnClickListener(v -> {
                         UserActivity.start(this, userInfo.getId(), ActivityOptionsCompat
                                 .makeSceneTransitionAnimation(this,

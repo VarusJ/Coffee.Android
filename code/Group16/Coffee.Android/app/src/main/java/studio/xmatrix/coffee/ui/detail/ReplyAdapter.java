@@ -26,6 +26,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
     private List<CommentsResource.ReplyForComment> data;
     private OnClickReply onClickReply;
     private List<String> likeData;
+    private DetailViewModel viewModel;
 
     public void setOnClickReply(ReplyAdapter.OnClickReply onClickReply) {
         this.onClickReply = onClickReply;
@@ -41,13 +42,16 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
     }
 
     public interface OnClickReply {
-         void onClickLike(String id);
-         void onClickReply(String fatherId, String fatherName, String contentId);
-         void onClickDelete(String id);
+        void onClickLike(String id);
+
+        void onClickReply(String fatherId, String fatherName, String contentId);
+
+        void onClickDelete(String id);
     }
 
-    public ReplyAdapter(DetailActivity activity) {
+    public ReplyAdapter(DetailActivity activity, DetailViewModel viewModel) {
         this.activity = activity;
+        this.viewModel = viewModel;
         this.data = new ArrayList<>();
         this.likeData = new ArrayList<>();
     }
@@ -92,7 +96,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
             CommentsResource.ReplyForComment itemData = data.get(pos);
             binding.setModel(itemData);
             binding.replyTime.setText(getTime(itemData.getReply().getDate()));
-            binding.replyLike.setOnClickListener(v-> {
+            binding.replyLike.setOnClickListener(v -> {
                 onClickReply.onClickLike(itemData.getReply().getId());
             });
             binding.replyContent.setOnLongClickListener(v -> {
