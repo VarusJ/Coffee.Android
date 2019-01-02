@@ -2,6 +2,7 @@ package studio.xmatrix.coffee.ui.home;
 
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.graphics.Bitmap;
 import studio.xmatrix.coffee.App;
 import studio.xmatrix.coffee.data.common.network.Resource;
 import studio.xmatrix.coffee.data.repository.ContentRepository;
@@ -43,5 +44,11 @@ public class HomeViewModel extends AndroidViewModel {
     public LiveData<Resource<UserResource>> getUserInfo(String id) {
         return userRepository.getInfoById(id);
     }
+
+    public LiveData<Resource<Bitmap>> getUserAvatar(String url) {
+        return userRepository.getAvatarByUrl(url);
+    }
+
+
 }
 

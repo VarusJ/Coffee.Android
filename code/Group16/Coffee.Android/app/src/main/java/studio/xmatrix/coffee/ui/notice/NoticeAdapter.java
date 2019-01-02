@@ -11,11 +11,11 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import com.daimajia.swipe.SwipeLayout;
 import q.rorbin.badgeview.Badge;
 import q.rorbin.badgeview.QBadgeView;
 import studio.xmatrix.coffee.R;
+import studio.xmatrix.coffee.data.common.network.Status;
 import studio.xmatrix.coffee.data.service.resource.NotificationsResource;
 import studio.xmatrix.coffee.databinding.NoticeItemBinding;
 import studio.xmatrix.coffee.ui.detail.DetailActivity;
@@ -31,6 +31,7 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder
     private FragmentActivity activity;
     private List<NotificationsResource.Notification> data;
     private OnClickNotice onClickNotice;
+    private NoticeViewModel viewModel;
 
     public void setOnClickNotice(OnClickNotice onClickNotice) {
         this.onClickNotice = onClickNotice;
@@ -41,8 +42,9 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder
         void onClickRead(String id);
     }
 
-    public NoticeAdapter(FragmentActivity activity) {
+    public NoticeAdapter(FragmentActivity activity, NoticeViewModel viewModel) {
         this.activity = activity;
+        this.viewModel = viewModel;
         data = new ArrayList<>();
     }
 
@@ -109,18 +111,18 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder
             binding.noticeSwipe.setShowMode(SwipeLayout.ShowMode.PullOut);
             binding.noticeSwipe.addDrag(SwipeLayout.DragEdge.Right, binding.removeLayout);
 
-            binding.noticeDelete.setOnClickListener(v -> {
-                onClickNotice.onClickDelete(item.getData().getId());
-            });
+            binding.noticeDelete.setOnClickListener(v -> onClickNotice.onClickDelete(item.getData().getId()));
 
             binding.noticeTime.setText(getTime(item.getData().getCreateTime()));
 
-
-            // badge.hide(true);
-            // binding.setModel(i);
+            viewModel.getUserAvatar(item.getUser().getAvatar()).observe(activity, res -> {
+                if (res != null && res.getStatus() == Status.SUCCESS) {
+                    binding.noticeUserAvatar.setImageBitmap(res.getData());
+                }
+            });
         }
 
-        public void goToUser(View v) {
+        void goToUser(View v) {
             Intent intent = new Intent(activity, UserActivity.class);
             ActivityOptionsCompat options = ActivityOptionsCompat
                     .makeSceneTransitionAnimation(activity,
