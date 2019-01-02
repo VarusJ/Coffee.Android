@@ -19,8 +19,8 @@ class BitmapConverterFactory private constructor(): Converter.Factory() {
         type: Type,
         annotations: Array<Annotation>,
         retrofit: Retrofit
-    ): Converter<ResponseBody, Bitmap>? {
-        if (type == Bitmap::class) {
+    ): Converter<ResponseBody, Bitmap?>? {
+        if (type == Bitmap::class.java) {
             return Converter { value -> BitmapFactory.decodeStream(value.byteStream()) }
         }
         return null

@@ -8,6 +8,7 @@ import io.objectbox.Box
 import io.objectbox.kotlin.boxFor
 import io.objectbox.kotlin.query
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Url
 import studio.xmatrix.coffee.App
 import studio.xmatrix.coffee.data.common.network.ApiResponse
@@ -26,7 +27,10 @@ interface ImageService {
     }
 
     @GET
-    fun getImage(@Url url: String): LiveData<ApiResponse<Bitmap>>
+    fun getByUrl(@Url url: String): LiveData<ApiResponse<Bitmap>>
+
+    @GET("{filename}")
+    fun getByFilename(@Path("filename") filename: String): LiveData<ApiResponse<Bitmap>>
 }
 
 @Singleton

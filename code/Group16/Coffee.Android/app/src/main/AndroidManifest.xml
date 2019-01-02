@@ -27,11 +27,12 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.admin.AdminActivity"/>
+        <activity android:name=".ui.admin.AdminActivity" />
         <activity android:name=".ui.admin.SignUpActivity" />
         <activity android:name=".ui.admin.ValidActivity" />
         <activity android:name=".ui.add.AddActivity" />
-        <activity android:name=".ui.user.UserActivity"
+        <activity
+            android:name=".ui.user.UserActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ui.detail.DetailActivity" />
         <activity

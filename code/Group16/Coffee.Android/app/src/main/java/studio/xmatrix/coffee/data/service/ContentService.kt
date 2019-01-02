@@ -2,6 +2,7 @@ package studio.xmatrix.coffee.data.service
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import android.graphics.Bitmap
 import com.google.gson.annotations.SerializedName
 import io.objectbox.Box
 import io.objectbox.kotlin.boxFor
@@ -46,8 +47,9 @@ interface ContentService {
     @GET("album/{id}")
     fun getAlbumsByUserId(@Path("id") id: String): LiveData<ApiResponse<ContentsResponse>>
 
+    // 目前仅用于获取图片
     @GET("file/{id}/{path}")
-    fun getFileByIdAndPath(@Path("id") id: String, @Path("path") path: String): Call<RequestBody>
+    fun getImageByIdAndPath(@Path("id") id: String, @Path("path") path: String): LiveData<ApiResponse<Bitmap>>
 
     // 当id为self时获取自身数据
     @GET("texts/{id}")
@@ -88,7 +90,7 @@ class ContentDatabase @Inject constructor(app: studio.xmatrix.coffee.App, privat
     private val imageBox: Box<Image> = app.boxStore.boxFor()
     private val movieBox: Box<Movie> = app.boxStore.boxFor()
 
-    fun loadContentsByNum(num: Int): LiveData<ContentsResource> {
+    fun loadPublicContentsByNum(num: Int): LiveData<ContentsResource> {
         val data = MutableLiveData<ContentsResource>()
         executors.diskIO().execute {
             val res = ContentsResource(CommonResource.StatusSuccess, box.query {

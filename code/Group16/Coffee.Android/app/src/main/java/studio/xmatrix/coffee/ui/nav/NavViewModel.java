@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import studio.xmatrix.coffee.App;
 import studio.xmatrix.coffee.data.common.network.Resource;
 import studio.xmatrix.coffee.data.repository.UserRepository;
+import studio.xmatrix.coffee.data.service.resource.CommonResource;
 import studio.xmatrix.coffee.data.service.resource.UserResource;
 
 import javax.inject.Inject;
@@ -20,15 +21,15 @@ public class NavViewModel extends AndroidViewModel {
         this.userRepository = userRepository;
     }
 
-    LiveData<Resource<UserResource>>  getUserInfo() {
+    LiveData<Resource<UserResource>> getUserInfo() {
         return userRepository.getInfo();
     }
 
-    LiveData<Resource<Bitmap>>  getUserAvatar(String id) {
-        return userRepository.getAvatarByUrl(id);
+    LiveData<Resource<Bitmap>> getUserAvatar(String url) {
+        return userRepository.getAvatarByUrl(url);
     }
 
-//    LiveData<Resource<UserRepository>> logout() {
-//        return userRepository.
-//    }
+    LiveData<Resource<CommonResource>> logout() {
+        return userRepository.logout();
+    }
 }
