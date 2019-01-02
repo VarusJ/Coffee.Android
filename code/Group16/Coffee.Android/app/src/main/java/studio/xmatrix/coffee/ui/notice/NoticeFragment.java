@@ -14,11 +14,12 @@ import studio.xmatrix.coffee.databinding.NoticeFragmentBinding;
 public class NoticeFragment extends Fragment {
 
     NoticeFragmentBinding binding;
+    public NoticeHandler handler;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.inflate(LayoutInflater.from(getActivity()), R.layout.notice_fragment, null, false);
-        NoticeHandler handler = new NoticeHandler(getActivity(), binding);
+        handler = new NoticeHandler(getActivity(), binding);
     }
 
     @Nullable

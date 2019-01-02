@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.scwang.smartrefresh.header.DeliveryHeader;
 import studio.xmatrix.coffee.data.model.Content;
 import studio.xmatrix.coffee.data.service.LikeService;
+import studio.xmatrix.coffee.data.store.DefaultSharedPref;
 import studio.xmatrix.coffee.databinding.SquareFragmentBinding;
 import studio.xmatrix.coffee.inject.AppInjector;
 import studio.xmatrix.coffee.inject.Injectable;
@@ -24,7 +25,7 @@ public class SquareHandler implements Injectable {
     private SquareFragmentBinding binding;
     private SquareAdapter adapter;
     private List<String> likeData;
-    private boolean hasMore;
+    private boolean hasMore = true;
     private static int EACH_PAGE = 7;
     private int currentPage = 1;
 
@@ -37,12 +38,10 @@ public class SquareHandler implements Injectable {
         viewModel = ViewModelProviders.of(activity, viewModelFactory).get(SquareViewModel.class);
         this.activity = activity;
         this.binding = binding;
-        this.hasMore = true;
         this.likeData = new ArrayList<>();
         setStatus(ListStatus.StatusType.Loading);
         initView();
         refreshData();
-        refreshLike();
     }
 
     private void refreshLike() {
@@ -76,7 +75,6 @@ public class SquareHandler implements Injectable {
                         break;
                     case SUCCESS:
                         refreshData();
-                        refreshLike();
                         break;
                 }
             }
@@ -92,7 +90,6 @@ public class SquareHandler implements Injectable {
                         break;
                     case SUCCESS:
                         refreshData();
-                        refreshLike();
                         break;
                 }
             }
@@ -103,6 +100,10 @@ public class SquareHandler implements Injectable {
         binding.squareList.setLayoutManager(new LinearLayoutManager(activity));
         adapter = new SquareAdapter(activity, viewModel);
         adapter.setOnClickContent(id -> {
+            if (DefaultSharedPref.INSTANCE.get(DefaultSharedPref.Key.UserId).equals("")) {
+                Toast.makeText(activity, "请先登陆", Toast.LENGTH_SHORT).show();
+                return;
+            }
             if (likeData.contains(id)) {
                 unlike(id);
             } else {
@@ -158,6 +159,7 @@ public class SquareHandler implements Injectable {
     }
 
     public void refreshData() {
+        refreshLike();
         viewModel.getPublic(currentPage, EACH_PAGE).observe(activity, resource -> {
             if (resource != null) {
                 switch (resource.getStatus()) {

@@ -38,7 +38,7 @@ public class NoticeHandler implements Injectable {
         refreshData();
     }
 
-    private void refreshData() {
+    public void refreshData() {
         viewModel.getNotice().observe(activity, resource -> {
             if (resource != null) {
                 switch (resource.getStatus()) {
@@ -58,6 +58,8 @@ public class NoticeHandler implements Injectable {
                                 adapter.setData(list);
                                 setStatus(ListStatus.StatusType.Done);
                             }
+                        } else if (resource.getData().getState().equals("not_login")){
+                            setStatus(ListStatus.StatusType.NotLogin);
                         } else {
                             setStatus(ListStatus.StatusType.Nothing);
                         }

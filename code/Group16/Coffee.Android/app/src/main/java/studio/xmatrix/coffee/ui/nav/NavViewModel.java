@@ -35,6 +35,7 @@ public class NavViewModel extends AndroidViewModel {
     LiveData<Resource<CommonResource>> logout() {
         return userRepository.logout();
     }
+
     LiveData<Resource<Bitmap>> getThumb(String file) {
         return contentRepository.getThumbByFilename(file);
     }
