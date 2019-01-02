@@ -38,6 +38,7 @@ class ServiceModule {
         val okHttpClient = OkHttpClient.Builder().cookieJar(cookieJar).build()
         val retrofit = Retrofit.Builder()
             .addCallAdapterFactory(LiveDataCallAdapterFactory())
+            .addConverterFactory(BitmapConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(ContentService.BASE_URL)
             .client(okHttpClient)

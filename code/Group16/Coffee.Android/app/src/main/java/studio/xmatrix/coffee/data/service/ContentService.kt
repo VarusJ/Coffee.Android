@@ -95,6 +95,7 @@ class ContentDatabase @Inject constructor(app: studio.xmatrix.coffee.App, privat
         executors.diskIO().execute {
             val res = ContentsResource(CommonResource.StatusSuccess, box.query {
                 equal(Content_.publicContent, true)
+                notEqual(Content_.userName, "")
                 orderDesc(Content_.publishDate)
             }.find(0, num.toLong()))
             data.postValue(res)
@@ -102,9 +103,23 @@ class ContentDatabase @Inject constructor(app: studio.xmatrix.coffee.App, privat
         return data
     }
 
-    fun saveContents(items: List<Content>?) {
+    fun loadContentsByType(type: String): LiveData<ContentsResource> {
+        val data = MutableLiveData<ContentsResource>()
+        executors.diskIO().execute {
+            val res = ContentsResource(CommonResource.StatusSuccess, box.query {
+                equal(Content_.userName, "")
+                equal(Content_.type, type)
+                orderDesc(Content_.publishDate)
+            }.find())
+            data.postValue(res)
+        }
+        return data
+    }
+
+    fun savePublicContents(items: List<Content>?) {
         box.query {
             equal(Content_.publicContent, true)
+            notEqual(Content_.userName, "")
         }.find().forEach {
             if (!it.album.isNull) {
                 it.album.target.images.forEach { image ->
@@ -139,6 +154,47 @@ class ContentDatabase @Inject constructor(app: studio.xmatrix.coffee.App, privat
         items?.forEach { item ->
             box.query {
                 equal(Content_.id, item.id)
+                notEqual(Content_.userName, "")
+            }.find().forEach {
+                if (!it.album.isNull) {
+                    it.album.target.images.forEach { image ->
+                        if (!image.file.isNull) fileBox.remove(image.file.targetId)
+                        imageBox.remove(image._id)
+                    }
+                    albumBox.remove(it.album.targetId)
+                }
+                if (!it.app.isNull) {
+                    if (!it.app.target.file.isNull) fileBox.remove(it.app.target.file.targetId)
+                    it.app.target.images.forEach { image ->
+                        if (!image.file.isNull) fileBox.remove(image.file.targetId)
+                        imageBox.remove(image._id)
+                    }
+                    appBox.remove(it.app.targetId)
+                }
+                if (!it.movie.isNull) {
+                    if (!it.movie.target.file.isNull) fileBox.remove(it.movie.target.file.targetId)
+                    it.movie.target.images.forEach { image ->
+                        if (!image.file.isNull) fileBox.remove(image.file.targetId)
+                        imageBox.remove(image._id)
+                    }
+                    movieBox.remove(it.movie.targetId)
+                }
+                it.files.forEach { file -> fileBox.remove(file._id) }
+                it.images.forEach { image ->
+                    if (!image.file.isNull) fileBox.remove(image.file.targetId)
+                    imageBox.remove(image._id)
+                }
+                box.remove(it._id)
+            }
+        }
+        box.put(items)
+    }
+
+    fun saveContents(items: List<Content>?) {
+        items?.forEach { item ->
+            box.query {
+                equal(Content_.id, item.id)
+                equal(Content_.userName, "")
             }.find().forEach {
                 if (!it.album.isNull) {
                     it.album.target.images.forEach { image ->
