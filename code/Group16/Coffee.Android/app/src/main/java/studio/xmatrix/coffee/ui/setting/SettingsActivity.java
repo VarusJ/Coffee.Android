@@ -9,13 +9,17 @@ import android.os.Bundle;
 import android.preference.*;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 import studio.xmatrix.coffee.R;
+import studio.xmatrix.coffee.data.service.ImageDatabase;
 import studio.xmatrix.coffee.ui.NightModeConfig;
 
+import java.io.File;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -161,12 +165,52 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
             super.onViewCreated(view, savedInstanceState);
             Preference clearCache = findPreference("clear_cache");
-            clearCache.setSummary("123MB");
+            clearCache.setSummary(getCacheSize());
             clearCache.setOnPreferenceClickListener(preference -> {
-                Toast.makeText(getActivity(), "清理缓存", Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                        .setTitle("是否清除缓存?")
+                        .setPositiveButton("确认", (dialog, which) -> {
+                            if (cleanCache()) {
+                                Toast.makeText(getActivity(), "清除缓存成功", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getActivity(), "清除缓存失败,请稍后重试", Toast.LENGTH_SHORT).show();
+                            }
+                            clearCache.setSummary(getCacheSize());
+                        })
+                        .setNegativeButton("取消", (dialog, which) -> {
+                        });
+                builder.create().show();
                 return true;
             });
+        }
 
+        private String getCacheSize() {
+            final String[] sizeType = new String[]{"B", "KB", "MB", "GB"};
+            int sizeIndex = 0;
+            float length = 0;
+            File folder = new File(getContext().getCacheDir(), ImageDatabase.ImagePath);
+            for (File file : folder.listFiles()) {
+                if (file.isFile()) {
+                    length += file.length();
+                }
+            }
+            while (length > 512) {
+                length /= 1024;
+                sizeIndex++;
+            }
+            return String.format(Locale.getDefault(), "%.2f%s", length, sizeType[sizeIndex]);
+        }
+
+        private Boolean cleanCache() {
+            File folder = new File(getContext().getCacheDir(), ImageDatabase.ImagePath);
+            for (File file : folder.listFiles()) {
+                if (file.isFile()) {
+                    if (!file.delete()) {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
     }
 
@@ -227,7 +271,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             SwitchPreference nightAuto = (SwitchPreference) findPreference("night_auto");
             nightAuto.setOnPreferenceChangeListener((preference, newValue) -> {
                 boolean isAuto = (boolean) newValue;
-                NightModeConfig.getInstance().setNightAuto(getActivity(),isAuto);
+                NightModeConfig.getInstance().setNightAuto(getActivity(), isAuto);
                 return true;
             });
         }
