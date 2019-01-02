@@ -53,7 +53,12 @@ public class SquareHandler implements Injectable {
                         Toast.makeText(activity, "网络错误", Toast.LENGTH_SHORT).show();
                         break;
                     case SUCCESS:
-                        likeData = Objects.requireNonNull(res.getData()).getResource();
+                        List<String> data = Objects.requireNonNull(res.getData()).getResource();
+                        if (data != null)  {
+                            likeData = data;
+                        } else {
+                            likeData.clear();
+                        }
                         adapter.setLikeData(likeData);
                         break;
                 }

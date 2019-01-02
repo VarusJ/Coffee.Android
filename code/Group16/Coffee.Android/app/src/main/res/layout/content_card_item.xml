@@ -135,7 +135,7 @@
                 app:ngv_maxSize="9"
                 app:ngv_mode="grid"
                 app:ngv_singleImageRatio="1"
-                app:ngv_singleImageSize="250dp" />
+                app:ngv_singleImageSize="150dp" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/tag_layout"
