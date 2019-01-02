@@ -15,4 +15,6 @@
     <color name="colorText">#d07b7b7b</color>
     <color name="colorTag">#0f000000</color>
     <color name="colorHint">#DCDCDC</color>
+    <color name="colorGreen">#4BB464</color>
+    <color name="colorGrey">#4BB464</color>
 </resources>

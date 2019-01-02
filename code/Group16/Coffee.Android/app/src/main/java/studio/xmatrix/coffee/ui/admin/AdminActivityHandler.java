@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.HideReturnsTransformationMethod;
@@ -27,6 +28,7 @@ import javax.inject.Inject;
 import java.util.Objects;
 
 import static studio.xmatrix.coffee.data.service.resource.CommonResource.StatusError;
+import static studio.xmatrix.coffee.data.service.resource.CommonResource.StatusNotValid;
 import static studio.xmatrix.coffee.data.service.resource.CommonResource.StatusSuccess;
 
 public class AdminActivityHandler implements Injectable {
@@ -60,6 +62,7 @@ public class AdminActivityHandler implements Injectable {
 
         binding.loginButton.setOnClickListener(v -> loginEvent());
         binding.loginButton.getBackground().setAlpha(50);
+        binding.loginButtonCardView.getBackground().setAlpha(50);
 
         binding.loginForget.setClickable(true);
         SpannableString ss = new SpannableString(binding.loginForget.getText().toString());
@@ -75,7 +78,6 @@ public class AdminActivityHandler implements Injectable {
         binding.loginPasswordVisibility.setOnClickListener(v -> handlerPasswordVisibility());
 
         binding.loginCardView.getBackground().setAlpha(50);
-
     }
 
     // 登录
@@ -93,10 +95,19 @@ public class AdminActivityHandler implements Injectable {
         viewModel.login(username, password).observe(activity, res -> {
             assert res != null;
             if (res.getStatus() == Status.SUCCESS){
-                if (Objects.requireNonNull(res.getData()).getState().equals(StatusSuccess)){
-                    activity.finish();
-                } else if (res.getData().getState().equals(StatusError)){
-                    Toast.makeText(activity, errMsg.loginFail, Toast.LENGTH_SHORT).show();
+                switch (Objects.requireNonNull(res.getData()).getState()){
+                    case StatusSuccess:
+                        activity.finish();
+                        break;
+                    case StatusError:
+                        Toast.makeText(activity, errMsg.loginFail, Toast.LENGTH_SHORT).show();
+                        break;
+                    case StatusNotValid:
+                        Intent intent = new Intent(activity.getBaseContext(), ValidActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("email", res.getData().getResource());
+                        intent.putExtras(bundle);
+                        activity.startActivity(intent);
                 }
             } else if (res.getStatus() == Status.ERROR){
                 Toast.makeText(activity, errMsg.errNetwork, Toast.LENGTH_SHORT).show();
