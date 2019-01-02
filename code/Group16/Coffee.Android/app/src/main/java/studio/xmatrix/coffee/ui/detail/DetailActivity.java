@@ -12,6 +12,7 @@ import studio.xmatrix.coffee.ui.BaseActionBarActivity;
 import java.util.Objects;
 
 public class DetailActivity extends BaseActionBarActivity {
+    public static int REQUEST_CODE = 886;
     DetailActivityBinding binding;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -23,7 +24,7 @@ public class DetailActivity extends BaseActionBarActivity {
     public static void start(Activity activity, String id, Bundle bundle) {
         Intent intent = new Intent(activity, DetailActivity.class);
         intent.putExtra("id", id);
-        activity.startActivity(intent, bundle);
+        activity.startActivityForResult(intent, REQUEST_CODE, bundle);
     }
 
 }

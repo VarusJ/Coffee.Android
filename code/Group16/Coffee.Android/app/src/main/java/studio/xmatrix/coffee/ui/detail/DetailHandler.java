@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.Gravity;
 import android.view.View;
@@ -18,7 +21,7 @@ import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.data.model.Content;
 import studio.xmatrix.coffee.data.service.LikeService;
 import studio.xmatrix.coffee.data.service.resource.CommentsResource;
-import studio.xmatrix.coffee.databinding.CommentFragmentBinding;
+import studio.xmatrix.coffee.data.store.SpUtil;
 import studio.xmatrix.coffee.databinding.DetailActivityBinding;
 import studio.xmatrix.coffee.inject.AppInjector;
 import studio.xmatrix.coffee.inject.Injectable;
@@ -34,11 +37,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import static android.app.Activity.RESULT_OK;
+
 public class DetailHandler implements Injectable {
     private DetailActivity activity;
     private DetailActivityBinding binding;
     private CommentFragment commentFragment;
-    private CommentFragmentBinding fragmentBinding;
     private CommentAdapter commentAdapter;
     private TagAdapter tagAdapter;
     private String id;
@@ -117,6 +121,10 @@ public class DetailHandler implements Injectable {
                             binding.detailContent.contentTime.setText(getTime(detailData.getPublishDate()));
                             setStatus(ListStatus.StatusType.Done);
                             setLikeStatus();
+                            if (SpUtil.getItem(activity, SpUtil.SpKey.UserId).equals(detailData.getOwnId())) {
+                                binding.detailContent.btnEdit.setVisibility(View.VISIBLE);
+                                binding.detailContent.btnRemove.setVisibility(View.VISIBLE);
+                            }
                         } else {
                             setStatus(ListStatus.StatusType.Nothing);
                         }
@@ -155,6 +163,9 @@ public class DetailHandler implements Injectable {
                         break;
                     case SUCCESS:
                         initData();
+                        Intent intent = new Intent();
+                        intent.putExtra("update", true);
+                        activity.setResult(RESULT_OK, intent);
                         break;
                 }
             }
@@ -172,6 +183,9 @@ public class DetailHandler implements Injectable {
                     case SUCCESS:
                         initData();
                         refreshLike();
+                        Intent intent = new Intent();
+                        intent.putExtra("update", true);
+                        activity.setResult(RESULT_OK, intent);
                         break;
                 }
             }
@@ -189,25 +203,19 @@ public class DetailHandler implements Injectable {
                     case SUCCESS:
                         initData();
                         refreshLike();
+                        Intent intent = new Intent();
+                        intent.putExtra("update", true);
+                        activity.setResult(RESULT_OK, intent);
                         break;
                 }
             }
         });
     }
 
-    @SuppressLint({"SetTextI18n", "ClickableViewAccessibility"})
     private void initView() {
         Objects.requireNonNull(activity.getSupportActionBar()).setTitle("内容详情");
 
         binding.detailStatus.statusError.setOnClickListener(v -> initData());
-
-        binding.detailContent.btnLike.setOnClickListener(v -> {
-            if (likeData.contains(detailData.getId())) {
-                unlike(detailData.getId(), LikeService.LikeType.Content);
-            } else {
-                like(detailData.getId(), LikeService.LikeType.Content);
-            }
-        });
 
         // 评论列表
         binding.commentList.setLayoutManager(new LinearLayoutManager(activity));
@@ -280,9 +288,7 @@ public class DetailHandler implements Injectable {
             this.contentId = detailData.getId();
             this.onClickAddComment(v);
         });
-
-        binding.detailContent.btnEdit.setVisibility(View.VISIBLE);
-        binding.detailContent.btnRemove.setVisibility(View.VISIBLE);
+        // 点击事件
         binding.detailContent.userAvatar.setOnClickListener(this::onClickUser);
         binding.detailContent.userName.setOnClickListener(this::onClickUser);
         binding.detailContent.btnRemove.setOnClickListener(this::onClickDelete);
@@ -328,14 +334,17 @@ public class DetailHandler implements Injectable {
 
     }
 
-    public void onClickUser(View v) {
-        activity.startActivity(new Intent(activity, UserActivity.class));
+    private void onClickUser(View v) {
+        UserActivity.start(activity, detailData.getOwnId(), ActivityOptionsCompat
+                .makeSceneTransitionAnimation(activity,
+                        Pair.create(binding.detailContent.userAvatar, "userAvatar"),
+                        Pair.create(binding.detailContent.userName, "userName"))
+                .toBundle());
     }
 
     @SuppressLint("SetTextI18n")
-    public void onClickAddComment(View v) {
+    private void onClickAddComment(View v) {
         commentFragment = new CommentFragment((binding) -> {
-            this.fragmentBinding = binding;
             if (isReply) {
                 binding.commentFather.setText("回复: @" + fatherName);
             } else {
@@ -354,6 +363,9 @@ public class DetailHandler implements Injectable {
                                 // Toast.makeText(activity, res.getData().getState(), Toast.LENGTH_SHORT).show();
                                 initData();
                                 commentFragment.dismiss();
+                                Intent intent = new Intent();
+                                intent.putExtra("update", true);
+                                activity.setResult(RESULT_OK, intent);
                                 break;
                             case ERROR:
                                 Toast.makeText(activity, "网络错误", Toast.LENGTH_SHORT).show();
@@ -372,16 +384,48 @@ public class DetailHandler implements Injectable {
         commentFragment.show(activity.getSupportFragmentManager(), "addComment");
     }
 
-    public void onClickEdit(View v) {
+    private void onClickEdit(View v) {
         activity.startActivity(new Intent(activity, AddActivity.class));
     }
 
-    public void onClickDelete(View v) {
-        Toast.makeText(activity, "Delete", Toast.LENGTH_SHORT).show();
+    private void onClickDelete(View v) {
+        if (SpUtil.getItem(activity, SpUtil.SpKey.UserId).equals(detailData.getOwnId())) {
+            final AlertDialog.Builder normalDialog =
+                    new AlertDialog.Builder(activity);
+            normalDialog.setTitle("操作确认");
+            normalDialog.setMessage("删除这条内容?");
+            normalDialog.setPositiveButton("确定", (dialog, which) -> {
+                viewModel.deleteContent(detailData.getId()).observe(activity, res -> {
+                    if (res != null) {
+                        switch (res.getStatus()) {
+                            case SUCCESS:
+                                Toast.makeText(activity, "删除成功", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent();
+                                intent.putExtra("update", true);
+                                activity.setResult(RESULT_OK, intent);
+                                activity.finish();
+                                break;
+                            case ERROR:
+                                Toast.makeText(activity, "网络错误", Toast.LENGTH_SHORT).show();
+                                break;
+                        }
+                    }
+                });
+                dialog.dismiss();
+            });
+            normalDialog.setNegativeButton("取消", (dialog, which) -> {
+                dialog.dismiss();
+            });
+            normalDialog.show();
+        }
     }
 
-    public void onClickContentLike(View v) {
-        Toast.makeText(activity, "Like content", Toast.LENGTH_SHORT).show();
+    private void onClickContentLike(View v) {
+        if (likeData.contains(detailData.getId())) {
+            unlike(detailData.getId(), LikeService.LikeType.Content);
+        } else {
+            like(detailData.getId(), LikeService.LikeType.Content);
+        }
     }
 
     private void setStatus(ListStatus.StatusType status) {

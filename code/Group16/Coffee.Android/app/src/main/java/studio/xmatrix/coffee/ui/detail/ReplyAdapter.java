@@ -2,6 +2,8 @@ package studio.xmatrix.coffee.ui.detail;
 
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,7 +12,9 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.data.service.resource.CommentsResource;
+import studio.xmatrix.coffee.data.store.SpUtil;
 import studio.xmatrix.coffee.databinding.ReplyItemBinding;
+import studio.xmatrix.coffee.ui.user.UserActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,19 +96,21 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
                 onClickReply.onClickLike(itemData.getReply().getId());
             });
             binding.replyContent.setOnLongClickListener(v -> {
-                final AlertDialog.Builder normalDialog =
-                        new AlertDialog.Builder(activity);
-                normalDialog.setTitle("操作确认");
-                normalDialog.setMessage("删除这条回复?");
-                normalDialog.setPositiveButton("确定", (dialog, which) -> {
-                    Toast.makeText(activity, "删除", Toast.LENGTH_SHORT).show();
-                    onClickReply.onClickDelete(itemData.getReply().getId());
-                    dialog.dismiss();
-                });
-                normalDialog.setNegativeButton("取消", (dialog, which) -> {
-                    dialog.dismiss();
-                });
-                normalDialog.show();
+                if (SpUtil.getItem(activity, SpUtil.SpKey.UserId).equals(itemData.getReply().getUserId())) {
+                    final AlertDialog.Builder normalDialog =
+                            new AlertDialog.Builder(activity);
+                    normalDialog.setTitle("操作确认");
+                    normalDialog.setMessage("删除这条回复?");
+                    normalDialog.setPositiveButton("确定", (dialog, which) -> {
+                        Toast.makeText(activity, "删除", Toast.LENGTH_SHORT).show();
+                        onClickReply.onClickDelete(itemData.getReply().getId());
+                        dialog.dismiss();
+                    });
+                    normalDialog.setNegativeButton("取消", (dialog, which) -> {
+                        dialog.dismiss();
+                    });
+                    normalDialog.show();
+                }
                 return true;
             });
             binding.replyContent.setOnClickListener(v -> {
@@ -116,7 +122,18 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
             } else {
                 binding.replyLike.setImageResource(R.drawable.ic_like_none);
             }
+
+            binding.replyName.setOnClickListener(v -> UserActivity.start(activity, itemData.getReply().getUserId(), ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(activity,
+                            Pair.create(binding.replyName, "userName"))
+                    .toBundle()));
+
+            binding.replyAt.setOnClickListener(v -> UserActivity.start(activity, itemData.getReply().getFatherId(), ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(activity,
+                            Pair.create(binding.replyAt, "userName"))
+                    .toBundle()));
         }
+
     }
 }
 
