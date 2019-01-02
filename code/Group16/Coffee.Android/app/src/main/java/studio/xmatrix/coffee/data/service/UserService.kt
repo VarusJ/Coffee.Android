@@ -30,6 +30,9 @@ interface UserService {
     @POST("login/pass")
     fun loginByPassword(@Body body: LoginRequestBody): LiveData<ApiResponse<CommonResource>>
 
+    @POST("logout")
+    fun logout(): LiveData<ApiResponse<CommonResource>>
+
     @POST("register")
     fun register(@Body body: RegisterRequestBody): LiveData<ApiResponse<CommonResource>>
 

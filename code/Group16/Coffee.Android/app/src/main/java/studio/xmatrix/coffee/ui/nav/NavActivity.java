@@ -33,7 +33,6 @@ import studio.xmatrix.coffee.inject.Injectable;
 import studio.xmatrix.coffee.ui.NightModeConfig;
 import studio.xmatrix.coffee.ui.add.AddActivity;
 import studio.xmatrix.coffee.ui.admin.AdminActivity;
-import studio.xmatrix.coffee.ui.detail.DetailViewModel;
 import studio.xmatrix.coffee.ui.home.HomeFragment;
 import studio.xmatrix.coffee.ui.notice.NoticeFragment;
 import studio.xmatrix.coffee.ui.person.PersonActivity;
@@ -46,6 +45,7 @@ import java.util.Objects;
 
 public class NavActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, Injectable {
+
     private HomeFragment homeActivity;
     private NoticeFragment noticeFragment;
     private SquareFragment squareFragment;
@@ -96,6 +96,10 @@ public class NavActivity extends AppCompatActivity
         TabLayout tabLayout = findViewById(R.id.tabLayout);
         ViewPager viewPager = findViewById(R.id.home_view);
         viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
+            private HomeFragment homeActivity;
+            private NoticeFragment noticeFragment;
+            private SquareFragment squareFragment;
+
             @Override
             public Fragment getItem(int position) {
                 switch (position) {
@@ -206,12 +210,12 @@ public class NavActivity extends AppCompatActivity
                 //保存夜间模式状态,Application中可以根据这个值判断是否设置夜间模式
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 //ThemeConfig主题配置，这里只是保存了是否是夜间模式的boolean值
-                NightModeConfig.getInstance().setNightMode(getApplicationContext(),true);
+                NightModeConfig.getInstance().setNightMode(getApplicationContext(), true);
                 item.setIcon(getDrawable(R.drawable.ic_day));
                 item.setTitle("日间模式");
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                NightModeConfig.getInstance().setNightMode(getApplicationContext(),false);
+                NightModeConfig.getInstance().setNightMode(getApplicationContext(), false);
                 item.setIcon(getDrawable(R.drawable.ic_night));
                 item.setTitle("夜间模式");
             }

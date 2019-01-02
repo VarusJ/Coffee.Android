@@ -41,6 +41,13 @@ class UserRepository @Inject constructor(
         }.asLiveData()
     }
 
+    fun logout(): LiveData<Resource<CommonResource>> {
+        return object : NetworkDirectiveResource<CommonResource, CommonResource>(executors) {
+            override fun convertToResource(data: CommonResource) = data
+            override fun createCall() = service.logout()
+        }.asLiveData()
+    }
+
     fun register(name: String, email: String, password: String): LiveData<Resource<CommonResource>> {
         return object : NetworkDirectiveResource<CommonResource, CommonResource>(executors) {
             override fun createCall(): LiveData<ApiResponse<CommonResource>> {
@@ -113,11 +120,11 @@ class UserRepository @Inject constructor(
     }
 
     fun getAvatarByUrl(url: String): LiveData<Resource<Bitmap>> {
-        return object: NetworkBoundResource<Bitmap, Bitmap>(executors) {
+        return object : NetworkBoundResource<Bitmap, Bitmap>(executors) {
             override fun saveCallResult(item: Bitmap) = imageDatabase.saveById(url, item)
             override fun shouldFetch(data: Bitmap?) = data == null
             override fun loadFromDb() = imageDatabase.loadById(url)
-            override fun createCall() = imageService.getImage(url)
+            override fun createCall() = imageService.getByUrl(url)
         }.asLiveData()
     }
 }

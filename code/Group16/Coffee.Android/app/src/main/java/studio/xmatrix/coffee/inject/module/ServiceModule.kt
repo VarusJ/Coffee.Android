@@ -47,14 +47,11 @@ class ServiceModule {
 
     @Singleton
     @Provides
-    fun provideImageService(app: App): ImageService {
-        val cookieJar = PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(app))
-        val okHttpClient = OkHttpClient.Builder().cookieJar(cookieJar).build()
+    fun provideImageService(): ImageService {
         val retrofit = Retrofit.Builder()
             .addCallAdapterFactory(LiveDataCallAdapterFactory())
             .addConverterFactory(BitmapConverterFactory.create())
             .baseUrl(ImageService.BASE_URL)
-            .client(okHttpClient)
             .build()
         return retrofit.create(ImageService::class.java)
     }
