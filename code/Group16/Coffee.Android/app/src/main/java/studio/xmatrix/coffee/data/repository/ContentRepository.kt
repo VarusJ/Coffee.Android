@@ -3,6 +3,7 @@ package studio.xmatrix.coffee.data.repository
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.graphics.Bitmap
+import android.media.ThumbnailUtils
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -18,9 +19,10 @@ import studio.xmatrix.coffee.data.service.resource.ContentsResource
 import studio.xmatrix.coffee.data.service.response.ContentResponse
 import studio.xmatrix.coffee.data.service.response.ContentsResponse
 import studio.xmatrix.coffee.data.service.response.PublishContentsResponse
-import java.io.File
+import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
+
 
 @Singleton
 class ContentRepository @Inject constructor(
@@ -83,20 +85,36 @@ class ContentRepository @Inject constructor(
         detail: String,
         tags: List<String>,
         public: Boolean,
-        images: List<File>
+        images: List<Bitmap>
     ): LiveData<Resource<CommonResource>> {
+        val thumbDimension = 150
         return object : NetworkDirectiveResource<CommonResource, CommonResource>(executors) {
             override fun convertToResource(data: CommonResource) = data
 
             override fun createCall(): LiveData<ApiResponse<CommonResource>> {
                 val list = ArrayList<MultipartBody.Part>()
                 for ((i, image) in images.withIndex()) {
-                    val body = RequestBody.create(MediaType.parse("multipart/form-data"), image)
-                    val part = MultipartBody.Part.createFormData("file" + i.toString(), image.name, body)
-                    list.add(part)
-                    // val thumbBody = RequestBody.create(MediaType.parse("multipart/form-data"), )
+                    ByteArrayOutputStream().use {
+                        image.compress(Bitmap.CompressFormat.PNG, 100, it)
+                        val body = RequestBody.create(MediaType.parse("multipart/form-data"), it.toByteArray())
+                        val part = MultipartBody.Part.createFormData("file" + i.toString(), "file" + i.toString(), body)
+                        list.add(part)
+                    }
+                    var thumbImage = if (image.width >= image.height) {
+                        ThumbnailUtils.extractThumbnail(image, image.height, image.height)
+                    } else {
+                        ThumbnailUtils.extractThumbnail(image, image.width, image.width)
+                    }
+                    thumbImage = Bitmap.createScaledBitmap(thumbImage, thumbDimension, thumbDimension, true);
+                    ByteArrayOutputStream().use {
+                        thumbImage.compress(Bitmap.CompressFormat.PNG, 100, it)
+                        val body = RequestBody.create(MediaType.parse("multipart/form-data"), it.toByteArray())
+                        val part =
+                            MultipartBody.Part.createFormData("thumb" + i.toString(), "thumb" + i.toString(), body)
+                        list.add(part)
+                    }
                 }
-                TODO()
+                return service.addAlbum(ContentService.ContentRequestBody(title, detail, tags, public).toForm(), list)
             }
         }.asLiveData()
     }

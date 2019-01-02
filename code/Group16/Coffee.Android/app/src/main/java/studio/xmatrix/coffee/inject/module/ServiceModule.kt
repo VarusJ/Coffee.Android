@@ -5,6 +5,7 @@ import com.franmontiel.persistentcookiejar.cache.SetCookieCache
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor
 import dagger.Module
 import dagger.Provides
+import okhttp3.CookieJar
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -19,8 +20,13 @@ class ServiceModule {
 
     @Singleton
     @Provides
-    fun provideCommentService(app: App): CommentService {
-        val cookieJar = PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(app))
+    fun provideCookieJar(app: App): CookieJar {
+        return PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(app))
+    }
+
+    @Singleton
+    @Provides
+    fun provideCommentService(app: App, cookieJar: CookieJar): CommentService {
         val okHttpClient = OkHttpClient.Builder().cookieJar(cookieJar).build()
         val retrofit = Retrofit.Builder()
             .addCallAdapterFactory(LiveDataCallAdapterFactory())
@@ -33,8 +39,7 @@ class ServiceModule {
 
     @Singleton
     @Provides
-    fun provideContentService(app: App): ContentService {
-        val cookieJar = PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(app))
+    fun provideContentService(app: App, cookieJar: CookieJar): ContentService {
         val okHttpClient = OkHttpClient.Builder().cookieJar(cookieJar).build()
         val retrofit = Retrofit.Builder()
             .addCallAdapterFactory(LiveDataCallAdapterFactory())
@@ -59,8 +64,7 @@ class ServiceModule {
 
     @Singleton
     @Provides
-    fun provideLikeService(app: App): LikeService {
-        val cookieJar = PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(app))
+    fun provideLikeService(app: App, cookieJar: CookieJar): LikeService {
         val okHttpClient = OkHttpClient.Builder().cookieJar(cookieJar).build()
         val retrofit = Retrofit.Builder()
             .addCallAdapterFactory(LiveDataCallAdapterFactory())
@@ -73,8 +77,7 @@ class ServiceModule {
 
     @Singleton
     @Provides
-    fun provideNotificationService(app: App): NotificationService {
-        val cookieJar = PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(app))
+    fun provideNotificationService(app: App, cookieJar: CookieJar): NotificationService {
         val okHttpClient = OkHttpClient.Builder().cookieJar(cookieJar).build()
         val retrofit = Retrofit.Builder()
             .addCallAdapterFactory(LiveDataCallAdapterFactory())
@@ -87,8 +90,7 @@ class ServiceModule {
 
     @Singleton
     @Provides
-    fun provideUserService(app: App): UserService {
-        val cookieJar = PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(app))
+    fun provideUserService(app: App, cookieJar: CookieJar): UserService {
         val okHttpClient = OkHttpClient.Builder().cookieJar(cookieJar).build()
         val retrofit = Retrofit.Builder()
             .addCallAdapterFactory(LiveDataCallAdapterFactory())
