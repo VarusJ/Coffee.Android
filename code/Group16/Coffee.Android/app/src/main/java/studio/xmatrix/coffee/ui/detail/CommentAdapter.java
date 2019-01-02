@@ -2,13 +2,20 @@ package studio.xmatrix.coffee.ui.detail;
 
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.data.service.resource.CommentsResource;
+import studio.xmatrix.coffee.data.store.SpUtil;
 import studio.xmatrix.coffee.databinding.CommentItemBinding;
+import studio.xmatrix.coffee.ui.user.UserActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,8 +110,29 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             binding.commentContentText.setOnClickListener(v -> {
                 onClickComment.onClickReply(itemData.getComment().getUserId(), itemData.getUser().getName(), itemData.getComment().getId());
             });
+
+            // 删除按钮
+            if (SpUtil.getItem(activity, SpUtil.SpKey.UserId).equals(itemData.getComment().getUserId())) {
+                binding.commentDelete.setVisibility(View.VISIBLE);
+            } else {
+                binding.commentDelete.setVisibility(View.GONE);
+            }
             binding.commentDelete.setOnClickListener(v -> {
-                onClickComment.onClickDelete(itemData.getComment().getId());
+                if (SpUtil.getItem(activity, SpUtil.SpKey.UserId).equals(itemData.getComment().getUserId())) {
+                    final AlertDialog.Builder normalDialog =
+                            new AlertDialog.Builder(activity);
+                    normalDialog.setTitle("操作确认");
+                    normalDialog.setMessage("删除这条评论?");
+                    normalDialog.setPositiveButton("确定", (dialog, which) -> {
+                        Toast.makeText(activity, "删除", Toast.LENGTH_SHORT).show();
+                        onClickComment.onClickDelete(itemData.getComment().getId());
+                        dialog.dismiss();
+                    });
+                    normalDialog.setNegativeButton("取消", (dialog, which) -> {
+                        dialog.dismiss();
+                    });
+                    normalDialog.show();
+                }
             });
             binding.setModel(itemData);
             adapter.setData(itemData.getReplies());
@@ -114,6 +142,17 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             } else {
                 binding.commentLike.setImageResource(R.drawable.ic_like_none);
             }
+
+            binding.commentUserAvatar.setOnClickListener(v -> gotoUser(itemData.getComment().getUserId()));
+            binding.commentUserName.setOnClickListener(v -> gotoUser(itemData.getComment().getUserId()));
+        }
+
+        private void gotoUser(String id) {
+            UserActivity.start(activity, id, ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(activity,
+                            Pair.create(binding.commentUserAvatar, "userAvatar"),
+                            Pair.create(binding.commentUserName, "userName"))
+                    .toBundle());
         }
     }
 }
