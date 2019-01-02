@@ -12,7 +12,6 @@ import studio.xmatrix.coffee.databinding.NoticeFragmentBinding;
 import studio.xmatrix.coffee.inject.AppInjector;
 import studio.xmatrix.coffee.inject.Injectable;
 import studio.xmatrix.coffee.ui.ListStatus;
-import studio.xmatrix.coffee.ui.home.HomeViewModel;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -79,7 +78,7 @@ public class NoticeHandler implements Injectable {
         binding.noticeStatus.statusError.setOnClickListener(v -> refreshData());
         binding.noticeStatus.statusNothing.setOnClickListener(v -> refreshData());
         binding.noticeList.setLayoutManager(new LinearLayoutManager(activity));
-        adapter = new NoticeAdapter(activity);
+        adapter = new NoticeAdapter(activity, viewModel);
         adapter.setOnClickNotice(new NoticeAdapter.OnClickNotice() {
             @Override
             public void onClickDelete(String id) {

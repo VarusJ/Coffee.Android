@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import studio.xmatrix.coffee.R;
+import studio.xmatrix.coffee.data.common.network.Status;
 import studio.xmatrix.coffee.data.service.resource.CommentsResource;
 import studio.xmatrix.coffee.data.store.DefaultSharedPref;
 import studio.xmatrix.coffee.databinding.CommentItemBinding;
@@ -28,6 +29,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     private List<String> likeData;
     private OnClickComment onClickComment;
     private ReplyAdapter.OnClickReply onClickReply;
+    private DetailViewModel viewModel;
 
     public void setOnClickComment(OnClickComment onClickComment) {
         this.onClickComment = onClickComment;
@@ -46,8 +48,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         void onClickReply(String fatherId, String fatherName, String contentId);
     }
 
-    public CommentAdapter(DetailActivity activity) {
+    public CommentAdapter(DetailActivity activity, DetailViewModel viewModel) {
         this.activity = activity;
+        this.viewModel = viewModel;
         data = new ArrayList<>();
         this.likeData = new ArrayList<>();
     }
@@ -97,7 +100,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
         public void bind(int pos) {
             if (adapter == null) {
-                adapter = new ReplyAdapter(activity);
+                adapter = new ReplyAdapter(activity, viewModel);
                 adapter.setOnClickReply(onClickReply);
                 binding.replyList.setAdapter(adapter);
                 binding.replyList.setLayoutManager(new LinearLayoutManager(activity));
@@ -142,6 +145,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             } else {
                 binding.commentLike.setImageResource(R.drawable.ic_like_none);
             }
+
+            viewModel.getUserAvatar(itemData.getUser().getAvatar()).observe(activity, res -> {
+                if (res != null && res.getStatus() == Status.SUCCESS) {
+                    binding.commentUserAvatar.setImageBitmap(res.getData());
+                }
+            });
 
             binding.commentUserAvatar.setOnClickListener(v -> gotoUser(itemData.getComment().getUserId()));
             binding.commentUserName.setOnClickListener(v -> gotoUser(itemData.getComment().getUserId()));

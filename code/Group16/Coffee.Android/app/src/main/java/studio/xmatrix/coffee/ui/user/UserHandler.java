@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import studio.xmatrix.coffee.R;
+import studio.xmatrix.coffee.data.common.network.Status;
 import studio.xmatrix.coffee.data.model.User;
 import studio.xmatrix.coffee.databinding.UserActivityBinding;
 import studio.xmatrix.coffee.inject.AppInjector;
@@ -64,8 +65,11 @@ public class UserHandler implements AppBarLayout.OnOffsetChangedListener, Inject
                             binding.userToolbarTitle.setText(info.getName());
                             binding.userTitle.setText(info.getName());
                             binding.userBio.setText(info.getBio());
-                            // todo
-                            // 设置头像
+                            viewModel.getUserAvatar(info.getAvatar()).observe(activity, avatarRes -> {
+                                if (avatarRes != null && avatarRes.getStatus() == Status.SUCCESS) {
+                                    binding.userBigAvatar.setImageBitmap(avatarRes.getData());
+                                }
+                            });
                         }
                         break;
                 }

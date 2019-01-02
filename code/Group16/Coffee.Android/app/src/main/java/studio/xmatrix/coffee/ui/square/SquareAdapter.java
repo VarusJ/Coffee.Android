@@ -1,8 +1,8 @@
 package studio.xmatrix.coffee.ui.square;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentActivity;
@@ -10,21 +10,24 @@ import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration;
+import com.lzy.ninegrid.ImageInfo;
+import com.lzy.ninegrid.preview.NineGridViewClickAdapter;
+import io.objectbox.relation.ToMany;
+import io.objectbox.relation.ToOne;
 import studio.xmatrix.coffee.R;
+import studio.xmatrix.coffee.data.common.network.Status;
+import studio.xmatrix.coffee.data.model.Album;
 import studio.xmatrix.coffee.data.model.Content;
+import studio.xmatrix.coffee.data.model.Image;
 import studio.xmatrix.coffee.databinding.ContentCardItemBinding;
 import studio.xmatrix.coffee.ui.detail.DetailActivity;
 import studio.xmatrix.coffee.ui.user.UserActivity;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import static studio.xmatrix.coffee.ui.detail.DetailHandler.getTime;
 
@@ -32,18 +35,20 @@ public class SquareAdapter extends RecyclerView.Adapter<SquareAdapter.ViewHolder
     private FragmentActivity activity;
     private List<Content> data;
     private List<String> likeData;
-    private OnClickLike onClickLike;
+    private OnClickContent onClickContent;
+    private SquareViewModel viewModel;
 
-    public void setOnClickLike(OnClickLike onClickLike) {
-        this.onClickLike = onClickLike;
+    void setOnClickContent(OnClickContent onClickContent) {
+        this.onClickContent = onClickContent;
     }
 
-    public interface OnClickLike{
+    public interface OnClickContent {
         void onClick(String id);
     }
 
-    SquareAdapter(FragmentActivity activity) {
+    SquareAdapter(FragmentActivity activity, SquareViewModel viewModel) {
         this.activity = activity;
+        this.viewModel = viewModel;
         this.data = new ArrayList<>();
         this.likeData = new ArrayList<>();
     }
@@ -119,24 +124,36 @@ public class SquareAdapter extends RecyclerView.Adapter<SquareAdapter.ViewHolder
             adapter.setData(itemData.tags);
 
             // 图片列表
-//            ArrayList<ImageInfo> imageInfos = new ArrayList<>();
-//            for (int i = 0; i < 2; i++) {
-//                ImageInfo info = new ImageInfo();
-//                info.setThumbnailUrl("test" + i);
-//                info.setBigImageUrl("test2" + i);
-//                imageInfos.add(info);
-//            }
-//            binding.nineGridImage.setAdapter(new NineGridViewClickAdapter(activity, imageInfos));
+            ArrayList<ImageInfo> imageInfo = new ArrayList<>();
+            Album album = itemData.getAlbum().getTarget();
+            if (album != null) {
+                ToMany<Image> images = album.getImages();
+                for (Image i :images) {
+                    ImageInfo info = new ImageInfo();
+                    info.setThumbnailUrl(i.getThumb());
+                    info.setBigImageUrl(i.getFile().getTarget().getFile() + "@" + itemData.getId());
+                    imageInfo.add(info);
+                }
+            }
+            binding.nineGridImage.setAdapter(new NineGridViewClickAdapter(activity, imageInfo));
 
             // 点击事件
             binding.userAvatar.setOnClickListener(v -> gotoUser(itemData.getOwnId()));
             binding.userName.setOnClickListener(v -> gotoUser(itemData.getOwnId()));
             binding.btnComment.setOnClickListener(v -> gotoDetail(itemData.getId()));
             binding.cardLayout.setOnClickListener(v -> gotoDetail(itemData.getId()));
-            binding.btnLike.setOnClickListener(v -> onClickLike.onClick(itemData.getId()));
+            binding.btnLike.setOnClickListener(v -> onClickContent.onClick(itemData.getId()));
             // 数据
             binding.contentTime.setText(getTime(itemData.getPublishDate()));
             binding.setModel(itemData);
+            // 头像
+            viewModel.getUserAvatar(itemData.getUserAvatar()).observe(activity, res -> {
+                if (res != null && res.getStatus() == Status.SUCCESS) {
+                    Bitmap avatar = res.getData();
+                    if (avatar != null) binding.userAvatar.setImageBitmap(avatar);
+                }
+            });
+
             if (likeData.contains(itemData.getId())) {
                 binding.btnLike.setImageResource(R.drawable.ic_like);
             } else {

@@ -96,8 +96,8 @@ public class SquareHandler implements Injectable {
 
     private void initView() {
         binding.squareList.setLayoutManager(new LinearLayoutManager(activity));
-        adapter = new SquareAdapter(activity);
-        adapter.setOnClickLike(id -> {
+        adapter = new SquareAdapter(activity, viewModel);
+        adapter.setOnClickContent(id -> {
             if (likeData.contains(id)) {
                 unlike(id);
             } else {

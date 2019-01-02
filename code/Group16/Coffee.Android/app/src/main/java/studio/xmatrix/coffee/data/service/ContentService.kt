@@ -48,7 +48,7 @@ interface ContentService {
     fun getAlbumsByUserId(@Path("id") id: String): LiveData<ApiResponse<ContentsResponse>>
 
     // 目前仅用于获取图片
-    @GET("file/{id}/{path}")
+    @GET("$SERVICE_BASE_URL/file/{id}/{path}")
     fun getImageByIdAndPath(@Path("id") id: String, @Path("path") path: String): LiveData<ApiResponse<Bitmap>>
 
     // 当id为self时获取自身数据

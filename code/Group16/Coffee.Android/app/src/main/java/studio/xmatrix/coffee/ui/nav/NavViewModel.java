@@ -5,6 +5,7 @@ import android.arch.lifecycle.LiveData;
 import android.graphics.Bitmap;
 import studio.xmatrix.coffee.App;
 import studio.xmatrix.coffee.data.common.network.Resource;
+import studio.xmatrix.coffee.data.repository.ContentRepository;
 import studio.xmatrix.coffee.data.repository.UserRepository;
 import studio.xmatrix.coffee.data.service.resource.CommonResource;
 import studio.xmatrix.coffee.data.service.resource.UserResource;
@@ -14,11 +15,13 @@ import javax.inject.Inject;
 public class NavViewModel extends AndroidViewModel {
 
     private UserRepository userRepository;
+    private ContentRepository contentRepository;
 
     @Inject
-    NavViewModel(App app, UserRepository userRepository) {
+    NavViewModel(App app, UserRepository userRepository, ContentRepository contentRepository) {
         super(app);
         this.userRepository = userRepository;
+        this.contentRepository = contentRepository;
     }
 
     LiveData<Resource<UserResource>> getUserInfo() {
@@ -32,4 +35,12 @@ public class NavViewModel extends AndroidViewModel {
     LiveData<Resource<CommonResource>> logout() {
         return userRepository.logout();
     }
+    LiveData<Resource<Bitmap>> getThumb(String file) {
+        return contentRepository.getThumbByFilename(file);
+    }
+
+    LiveData<Resource<Bitmap>> getImage(String id, String path) {
+        return contentRepository.getImageByIdAndPath(id, path);
+    }
+
 }
