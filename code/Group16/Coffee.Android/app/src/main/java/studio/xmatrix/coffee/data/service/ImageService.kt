@@ -72,9 +72,11 @@ class ImageDatabase @Inject constructor(private val app: App, private val execut
                 return
             }
         }
-        val filename = box.put(ImageObjectId(id)).toString()
-        File(folder, filename).outputStream().use {
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
+        if (box.query{ equal(ImageObjectId_.id, id) }.findFirst() == null) {
+            val filename = box.put(ImageObjectId(id)).toString()
+            File(folder, filename).outputStream().use {
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
+            }
         }
     }
 }

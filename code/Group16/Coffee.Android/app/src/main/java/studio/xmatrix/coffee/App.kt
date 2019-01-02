@@ -42,6 +42,7 @@ class App : Application() {
             AndroidObjectBrowser(boxStore).start(this)
         }
 
+        DefaultSharedPref.init(this)
         AppInjector.init(this)
     }
 }

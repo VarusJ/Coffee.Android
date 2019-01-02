@@ -14,7 +14,7 @@ import android.widget.Toast;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.data.common.network.Status;
 import studio.xmatrix.coffee.data.service.resource.CommentsResource;
-import studio.xmatrix.coffee.data.store.SpUtil;
+import studio.xmatrix.coffee.data.store.DefaultSharedPref;
 import studio.xmatrix.coffee.databinding.CommentItemBinding;
 import studio.xmatrix.coffee.ui.user.UserActivity;
 
@@ -115,13 +115,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             });
 
             // 删除按钮
-            if (SpUtil.getItem(activity, SpUtil.SpKey.UserId).equals(itemData.getComment().getUserId())) {
+            if (DefaultSharedPref.INSTANCE.get(DefaultSharedPref.Key.UserId).equals(itemData.getComment().getUserId())) {
                 binding.commentDelete.setVisibility(View.VISIBLE);
             } else {
                 binding.commentDelete.setVisibility(View.GONE);
             }
             binding.commentDelete.setOnClickListener(v -> {
-                if (SpUtil.getItem(activity, SpUtil.SpKey.UserId).equals(itemData.getComment().getUserId())) {
+                if (DefaultSharedPref.INSTANCE.get(DefaultSharedPref.Key.UserId).equals(itemData.getComment().getUserId())) {
                     final AlertDialog.Builder normalDialog =
                             new AlertDialog.Builder(activity);
                     normalDialog.setTitle("操作确认");

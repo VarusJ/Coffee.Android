@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.data.service.resource.CommentsResource;
-import studio.xmatrix.coffee.data.store.SpUtil;
+import studio.xmatrix.coffee.data.store.DefaultSharedPref;
 import studio.xmatrix.coffee.databinding.ReplyItemBinding;
 import studio.xmatrix.coffee.ui.user.UserActivity;
 
@@ -100,7 +100,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
                 onClickReply.onClickLike(itemData.getReply().getId());
             });
             binding.replyContent.setOnLongClickListener(v -> {
-                if (SpUtil.getItem(activity, SpUtil.SpKey.UserId).equals(itemData.getReply().getUserId())) {
+                if (DefaultSharedPref.INSTANCE.get(DefaultSharedPref.Key.UserId).equals(itemData.getReply().getUserId())) {
                     final AlertDialog.Builder normalDialog =
                             new AlertDialog.Builder(activity);
                     normalDialog.setTitle("操作确认");
