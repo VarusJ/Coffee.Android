@@ -105,9 +105,8 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.ViewHold
                 bmp = thumbnails.get(pos);
             }
             binding.pic.setImageBitmap(bmp);
-            binding.pic.setOnLongClickListener((View v) -> {
+            binding.remove.setOnClickListener((View v) -> {
                 removePic(pos);
-                return true;
             });
         }
     }

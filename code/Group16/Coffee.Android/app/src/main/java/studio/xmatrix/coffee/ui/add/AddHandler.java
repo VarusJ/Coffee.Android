@@ -1,8 +1,13 @@
 package studio.xmatrix.coffee.ui.add;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.text.InputFilter;
@@ -15,6 +20,7 @@ import android.widget.Toast;
 
 import com.cunoraz.tagview.Tag;
 import com.cunoraz.tagview.TagView;
+import com.luck.picture.lib.PictureSelectionModel;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -68,11 +74,18 @@ public class AddHandler {
     }
 
     public void onClickAddImage(View view) {
-        PictureSelector.create(activity)
-                .openGallery(PictureMimeType.ofImage())
-                .maxSelectNum(15)
-                .theme(R.style.pickerStyle)
-                .forResult(PictureConfig.CHOOSE_REQUEST);
+        if(!checkStoragePermission()) {
+            if(!ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+                Toast.makeText(activity, "请开启存储权限！", Toast.LENGTH_SHORT).show();
+            else {
+                int permissionCheck = ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                if(permissionCheck != PackageManager.PERMISSION_GRANTED) {
+                    activity.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+                }
+            }
+        } else {
+            openPicker();
+        }
     }
 
     public void onClickAddTag(View view) {
@@ -95,7 +108,18 @@ public class AddHandler {
                 .show();
     }
 
+    public void openPicker() {
+        PictureSelectionModel pictureSelectionModel = PictureSelector.create(activity)
+                .openGallery(PictureMimeType.ofImage())
+                .maxSelectNum(15)
+                .theme(R.style.pickerStyle);
+
+        pictureSelectionModel.forResult(PictureConfig.CHOOSE_REQUEST);
+    }
+
     public void addImage(List<LocalMedia> list) {
+        if(binding.pics.getVisibility() != View.VISIBLE)
+            binding.pics.setVisibility(View.VISIBLE);
         picAdapter.addPics(list);
         binding.scroller.fullScroll(View.FOCUS_DOWN);
     }
@@ -133,5 +157,10 @@ public class AddHandler {
         // TODO
         Toast.makeText(activity, "发布新动态", Toast.LENGTH_SHORT).show();
         // api
+    }
+
+    private boolean checkStoragePermission() {
+        int permissionCheck = ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        return permissionCheck == PackageManager.PERMISSION_GRANTED;
     }
 }

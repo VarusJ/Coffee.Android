@@ -1,11 +1,15 @@
 package studio.xmatrix.coffee.ui.add;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
@@ -55,6 +59,19 @@ public class AddActivity extends BaseActionBarActivity {
                     binding.getHandler().addImage(selectList);
                     break;
             }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode != 0 ) return;
+        if(grantResults.length == 0 ||
+                grantResults[0] != PackageManager.PERMISSION_GRANTED &&
+                        ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[0])){
+            Toast.makeText(this, "您关闭了存储权限，将无法添加图片。", Toast.LENGTH_SHORT).show();
+        } else if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            binding.getHandler().openPicker();
         }
     }
 }
