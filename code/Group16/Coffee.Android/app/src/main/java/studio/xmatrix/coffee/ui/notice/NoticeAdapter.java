@@ -63,8 +63,11 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder
     }
 
     public void setData(List<NotificationsResource.Notification> data) {
-        if (data == null) return;
-        this.data = data;
+        if (data == null) {
+            this.data.clear();
+        } else {
+            this.data = data;
+        }
         notifyDataSetChanged();
     }
 

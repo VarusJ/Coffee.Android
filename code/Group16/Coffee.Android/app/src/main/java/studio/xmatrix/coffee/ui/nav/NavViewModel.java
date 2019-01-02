@@ -2,6 +2,7 @@ package studio.xmatrix.coffee.ui.nav;
 
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.graphics.Bitmap;
 import studio.xmatrix.coffee.App;
 import studio.xmatrix.coffee.data.common.network.Resource;
 import studio.xmatrix.coffee.data.repository.UserRepository;
@@ -22,4 +23,12 @@ public class NavViewModel extends AndroidViewModel {
     LiveData<Resource<UserResource>>  getUserInfo() {
         return userRepository.getInfo();
     }
+
+    LiveData<Resource<Bitmap>>  getUserAvatar(String id) {
+        return userRepository.getAvatarByUrl(id);
+    }
+
+//    LiveData<Resource<UserRepository>> logout() {
+//        return userRepository.
+//    }
 }

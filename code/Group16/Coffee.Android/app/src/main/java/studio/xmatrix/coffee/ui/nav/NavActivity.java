@@ -20,6 +20,8 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.data.common.network.Status;
@@ -35,6 +37,7 @@ import studio.xmatrix.coffee.ui.notice.NoticeFragment;
 import studio.xmatrix.coffee.ui.person.PersonActivity;
 import studio.xmatrix.coffee.ui.setting.SettingsActivity;
 import studio.xmatrix.coffee.ui.square.SquareFragment;
+import studio.xmatrix.coffee.ui.user.UserActivity;
 
 import javax.inject.Inject;
 import java.util.Objects;
@@ -84,7 +87,7 @@ public class NavActivity extends AppCompatActivity
         }
 
         View header = navigationView.getHeaderView(0);
-        View headerLayout = header.findViewById(R.id.imageView);
+        View headerLayout = header.findViewById(R.id.head_user_avatar);
         headerLayout.setOnClickListener(v -> startActivity(new Intent(this, AdminActivity.class)));
 
         TabLayout tabLayout = findViewById(R.id.tabLayout);
@@ -135,18 +138,32 @@ public class NavActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-//        viewModel.getUserInfo().observe(this, resource -> {
-//            if (resource != null) {
-//                if (resource.getStatus() == Status.SUCCESS) {
-//                    User userInfo = Objects.requireNonNull(resource.getData()).getResource();
-//                    if (userInfo == null) return;
-//                    Toast.makeText(this, userInfo.getName(), Toast.LENGTH_SHORT).show();
-//                } else if (resource.getStatus() == Status.ERROR) {
-//                    Toast.makeText(this, resource.getMessage(), Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
+        viewModel.getUserInfo().observe(this, resource -> {
+            if (resource != null) {
+                if (resource.getStatus() == Status.SUCCESS) {
+                    User userInfo = Objects.requireNonNull(resource.getData()).getResource();
+                    if (userInfo == null) return;
+                    TextView userNameText = findViewById(R.id.head_user_name);
+                    userNameText.setText(userInfo.getName());
+                    TextView userText = findViewById(R.id.head_user_text);
+                    userText.setText(userInfo.getBio());
+                    ImageView userAvatar = findViewById(R.id.head_user_avatar);
+                    // todo
+//                    viewModel.getUserAvatar(userInfo.getId()).observe(this, res -> {
+//                        if (res != null && res.getStatus() == Status.SUCCESS) {
+//                            userAvatar.setImageBitmap(res.getData());
+//                        }
+//                    });
+                    userAvatar.setOnClickListener(v -> {
+                        startActivity(new Intent(this, UserActivity.class));
+                    });
 
+                    // Toast.makeText(this, userInfo.getName(), Toast.LENGTH_SHORT).show();
+                } else if (resource.getStatus() == Status.ERROR) {
+                    Toast.makeText(this, resource.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override
@@ -181,6 +198,7 @@ public class NavActivity extends AppCompatActivity
                 item.setTitle("夜间模式");
             }
             //需要recreate才能生效
+            drawer.closeDrawer(GravityCompat.START);
             recreate();
             // (new Handler()).postDelayed(this::recreate, 300);
         } else if (id == R.id.nav_logout) {

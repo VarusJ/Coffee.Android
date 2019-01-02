@@ -30,11 +30,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         this.onClickReply = onClickReply;
     }
 
-    public void setLikeData(List<String> likeData) {
-        if (likeData == null) return;
-        this.likeData = likeData;
-        notifyDataSetChanged();
-    }
 
     public interface OnClickComment {
         void onClickDelete(String id);
@@ -51,8 +46,20 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     }
 
     public void setData(List<CommentsResource.CommentForContent> data) {
-        if (data == null) return;
-        this.data = data;
+        if (data == null) {
+            this.data.clear();
+        } else {
+            this.data = data;
+        }
+        notifyDataSetChanged();
+    }
+
+    public void setLikeData(List<String> likeData) {
+        if (likeData == null) {
+            this.likeData.clear();
+        } else {
+            this.likeData = likeData;
+        }
         notifyDataSetChanged();
     }
 
@@ -88,6 +95,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                 binding.replyList.setAdapter(adapter);
                 binding.replyList.setLayoutManager(new LinearLayoutManager(activity));
             }
+            adapter.setLikeData(likeData);
             CommentsResource.CommentForContent itemData = data.get(pos);
             binding.commentLike.setOnClickListener(v-> {
                 onClickComment.onClickLike(itemData.getComment().getId());
