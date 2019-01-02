@@ -31,6 +31,7 @@ interface ImageService {
 
     @GET("{filename}")
     fun getByFilename(@Path("filename") filename: String): LiveData<ApiResponse<Bitmap>>
+
 }
 
 @Singleton

@@ -85,7 +85,7 @@ class ContentRepository @Inject constructor(
         public: Boolean,
         images: List<File>
     ): LiveData<Resource<CommonResource>> {
-        return object: NetworkDirectiveResource<CommonResource, CommonResource>(executors) {
+        return object : NetworkDirectiveResource<CommonResource, CommonResource>(executors) {
             override fun convertToResource(data: CommonResource) = data
 
             override fun createCall(): LiveData<ApiResponse<CommonResource>> {
@@ -203,11 +203,12 @@ class ContentRepository @Inject constructor(
     }
 
     fun getImageByIdAndPath(id: String, path: String): LiveData<Resource<Bitmap>> {
+        val newPath = path.replace('/', '|')
         return object : NetworkBoundResource<Bitmap, Bitmap>(executors) {
             override fun saveCallResult(item: Bitmap) = imageDatabase.saveById(id, item)
             override fun shouldFetch(data: Bitmap?) = data == null
             override fun loadFromDb() = imageDatabase.loadById(id)
-            override fun createCall() = service.getImageByIdAndPath(id, path)
+            override fun createCall() = service.getImageByIdAndPath(id, newPath)
         }.asLiveData()
     }
 }
