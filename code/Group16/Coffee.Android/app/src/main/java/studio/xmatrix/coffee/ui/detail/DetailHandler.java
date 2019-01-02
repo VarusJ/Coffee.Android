@@ -71,8 +71,7 @@ public class DetailHandler implements Injectable {
         AppInjector.Companion.inject(this);
         viewModel = ViewModelProviders.of(activity, viewModelFactory).get(DetailViewModel.class);
         initView();
-        initData();
-        refreshLike();
+        refreshData();
     }
 
     private void setLikeStatus() {
@@ -103,8 +102,9 @@ public class DetailHandler implements Injectable {
         });
     }
 
-    private void initData() {
+    private void refreshData() {
         // 刷新数据
+        refreshLike();
         viewModel.getDetail(id).observe(activity, resource -> {
             if (resource != null) {
                 switch (resource.getStatus()) {
@@ -168,7 +168,7 @@ public class DetailHandler implements Injectable {
                         Toast.makeText(activity, "网络错误", Toast.LENGTH_SHORT).show();
                         break;
                     case SUCCESS:
-                        initData();
+                        refreshData();
                         Intent intent = new Intent();
                         intent.putExtra("update", true);
                         activity.setResult(RESULT_OK, intent);
@@ -187,8 +187,7 @@ public class DetailHandler implements Injectable {
                         Toast.makeText(activity, "网络错误", Toast.LENGTH_SHORT).show();
                         break;
                     case SUCCESS:
-                        initData();
-                        refreshLike();
+                        refreshData();
                         Intent intent = new Intent();
                         intent.putExtra("update", true);
                         activity.setResult(RESULT_OK, intent);
@@ -207,8 +206,7 @@ public class DetailHandler implements Injectable {
                         Toast.makeText(activity, "网络错误", Toast.LENGTH_SHORT).show();
                         break;
                     case SUCCESS:
-                        initData();
-                        refreshLike();
+                        refreshData();
                         Intent intent = new Intent();
                         intent.putExtra("update", true);
                         activity.setResult(RESULT_OK, intent);
@@ -222,7 +220,7 @@ public class DetailHandler implements Injectable {
     private void initView() {
         Objects.requireNonNull(activity.getSupportActionBar()).setTitle("内容详情");
 
-        binding.detailStatus.statusError.setOnClickListener(v -> initData());
+        binding.detailStatus.statusError.setOnClickListener(v -> refreshData());
 
         // 评论列表
         binding.commentList.setLayoutManager(new LinearLayoutManager(activity));
@@ -370,7 +368,7 @@ public class DetailHandler implements Injectable {
                         switch (res.getStatus()) {
                             case SUCCESS:
                                 // Toast.makeText(activity, res.getData().getState(), Toast.LENGTH_SHORT).show();
-                                initData();
+                                refreshData();
                                 commentFragment.dismiss();
                                 Intent intent = new Intent();
                                 intent.putExtra("update", true);
