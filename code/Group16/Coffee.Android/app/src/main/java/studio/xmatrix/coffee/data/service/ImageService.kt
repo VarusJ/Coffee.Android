@@ -40,7 +40,7 @@ class ImageDatabase @Inject constructor(private val app: App, private val execut
     private val box: Box<ImageObjectId> = app.boxStore.boxFor()
 
     companion object {
-        private const val ImagePath = "/images/"
+        const val ImagePath = "/images/"
     }
 
     fun loadById(id: String): LiveData<Bitmap> {
@@ -53,12 +53,17 @@ class ImageDatabase @Inject constructor(private val app: App, private val execut
             } else {
                 val folder = File(app.cacheDir, ImagePath)
                 val file = File(folder, filename)
-                try {
-                    val options = BitmapFactory.Options()
-                    options.inPreferredConfig = Bitmap.Config.ARGB_4444
-                    val bitmap = BitmapFactory.decodeStream(FileInputStream(file), null, options)
-                    data.postValue(bitmap)
-                } catch (e: Exception) {
+                if (file.exists()) {
+                    try {
+                        val options = BitmapFactory.Options()
+                        options.inPreferredConfig = Bitmap.Config.ARGB_4444
+                        val bitmap = BitmapFactory.decodeStream(FileInputStream(file), null, options)
+                        data.postValue(bitmap)
+                    } catch (e: Exception) {
+                        data.postValue(null)
+                    }
+                } else {
+                    box.query { equal(ImageObjectId_.id, id) }.remove()
                     data.postValue(null)
                 }
             }
@@ -73,7 +78,7 @@ class ImageDatabase @Inject constructor(private val app: App, private val execut
                 return
             }
         }
-        if (box.query{ equal(ImageObjectId_.id, id) }.findFirst() == null) {
+        if (box.query { equal(ImageObjectId_.id, id) }.findFirst() == null) {
             val filename = box.put(ImageObjectId(id)).toString()
             File(folder, filename).outputStream().use {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)

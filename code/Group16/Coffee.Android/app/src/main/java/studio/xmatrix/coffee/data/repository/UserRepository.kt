@@ -43,6 +43,7 @@ class UserRepository @Inject constructor(
     }
 
     fun logout(): LiveData<Resource<CommonResource>> {
+        DefaultSharedPref.remove(DefaultSharedPref.Key.UserId)
         return object : NetworkDirectiveResource<CommonResource, CommonResource>(executors) {
             override fun convertToResource(data: CommonResource) = data
             override fun createCall() = service.logout()
