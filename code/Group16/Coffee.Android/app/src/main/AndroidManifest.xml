@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.admin.AdminActivity"
-+            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ui.admin.SignUpActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".ui.admin.ValidActivity"
