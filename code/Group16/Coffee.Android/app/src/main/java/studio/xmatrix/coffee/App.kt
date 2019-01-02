@@ -1,14 +1,11 @@
 package studio.xmatrix.coffee
 
 import android.app.Application
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
-import android.content.Context
 import android.support.v7.app.AppCompatDelegate
-import com.lzy.ninegrid.NineGridView
 import io.objectbox.BoxStore
 import io.objectbox.android.AndroidObjectBrowser
 import studio.xmatrix.coffee.data.model.MyObjectBox
+import studio.xmatrix.coffee.data.store.DefaultSharedPref
 import studio.xmatrix.coffee.ui.NightModeConfig
 import studio.xmatrix.coffee.inject.AppInjector
 import timber.log.Timber

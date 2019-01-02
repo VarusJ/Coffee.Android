@@ -151,12 +151,21 @@ public class NavActivity extends AppCompatActivity
         public void onDisplayImage(Context context, ImageView imageView, String url) {
             String[] data = url.split("@");
             if (data.length == 2) {
-                viewModel.getImage(data[1], data[0]).observe(NavActivity.this, res -> {
-                    if (res != null && res.getStatus() == Status.SUCCESS) {
-                        imageView.setImageBitmap(res.getData());
+                String path = data[0];
+                path =  path.replace('/', '|');
+                viewModel.getImage(data[1], path).observe(NavActivity.this, res -> {
+                    if (res != null) {
+                        switch (res.getStatus()) {
+                            case SUCCESS:
+                                imageView.setImageBitmap(res.getData());
+                                break;
+                            case ERROR:
+                                Toast.makeText(context, res.getMessage(), Toast.LENGTH_SHORT).show();
+                                break;
+                        }
                     }
-                });
 
+                });
             } else if (data.length == 1) {
                 viewModel.getThumb(data[0]).observe(NavActivity.this, res -> {
                     if (res != null && res.getStatus() == Status.SUCCESS) {
