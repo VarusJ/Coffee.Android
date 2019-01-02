@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName
 import io.objectbox.annotation.Convert
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
-import io.objectbox.annotation.Unique
 import io.objectbox.relation.ToMany
 import io.objectbox.relation.ToOne
 import studio.xmatrix.coffee.data.common.converter.StringsConverter
@@ -18,7 +17,6 @@ class Content constructor() {
     lateinit var userAvatar: String
     var userGender: Int = User.GenderUnknown
 
-    @Unique
     lateinit var id: String
     lateinit var name: String
     lateinit var detail: String

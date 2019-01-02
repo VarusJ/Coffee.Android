@@ -3,7 +3,11 @@ package studio.xmatrix.coffee.data.repository
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.graphics.Bitmap
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import studio.xmatrix.coffee.data.common.network.*
+import studio.xmatrix.coffee.data.model.Content
 import studio.xmatrix.coffee.data.service.ContentDatabase
 import studio.xmatrix.coffee.data.service.ContentService
 import studio.xmatrix.coffee.data.service.ImageDatabase
@@ -14,6 +18,7 @@ import studio.xmatrix.coffee.data.service.resource.ContentsResource
 import studio.xmatrix.coffee.data.service.response.ContentResponse
 import studio.xmatrix.coffee.data.service.response.ContentsResponse
 import studio.xmatrix.coffee.data.service.response.PublishContentsResponse
+import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -47,7 +52,7 @@ class ContentRepository @Inject constructor(
                 override fun saveCallResult(item: PublishContentsResponse) {
                     state = item.state
                     if (item.state == CommonResource.StatusSuccess) {
-                        database.saveContents(item.toContentsResource().resource)
+                        database.savePublicContents(item.toContentsResource().resource)
                     }
                 }
 
@@ -73,34 +78,120 @@ class ContentRepository @Inject constructor(
         }
     }
 
-    fun addAlbum(): LiveData<Resource<CommonResource>> {
-        TODO("not implemented")
+    fun addAlbum(
+        title: String,
+        detail: String,
+        tags: List<String>,
+        public: Boolean,
+        images: List<File>
+    ): LiveData<Resource<CommonResource>> {
+        return object: NetworkDirectiveResource<CommonResource, CommonResource>(executors) {
+            override fun convertToResource(data: CommonResource) = data
+
+            override fun createCall(): LiveData<ApiResponse<CommonResource>> {
+                val list = ArrayList<MultipartBody.Part>()
+                for ((i, image) in images.withIndex()) {
+                    val body = RequestBody.create(MediaType.parse("multipart/form-data"), image)
+                    val part = MultipartBody.Part.createFormData("file" + i.toString(), image.name, body)
+                    list.add(part)
+                    // val thumbBody = RequestBody.create(MediaType.parse("multipart/form-data"), )
+                }
+                TODO()
+            }
+        }.asLiveData()
     }
 
-    fun getAlbumsByUserId(id: String): LiveData<Resource<ContentsResource>> {
+    fun getAlbums(): LiveData<Resource<ContentsResource>> {
         var state = CommonResource.StatusSuccess
         return object : NetworkBoundResource<ContentsResource, ContentsResponse>(executors) {
             override fun saveCallResult(item: ContentsResponse) {
                 state = item.state
                 if (item.state == CommonResource.StatusSuccess) {
+                    database.saveContents(item.toContentsResource().resource)
                 }
             }
 
             override fun shouldFetch(data: ContentsResource?) = true
 
             override fun loadFromDb(): LiveData<ContentsResource> {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                return if (state == CommonResource.StatusSuccess) {
+                    database.loadContentsByType(Content.TypeAlbum)
+                } else {
+                    val data = MutableLiveData<ContentsResource>()
+                    executors.diskIO().execute { data.postValue(ContentsResource(state, null)) }
+                    data
+                }
             }
 
-            override fun createCall(): LiveData<ApiResponse<ContentsResponse>> {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
+            override fun createCall() = service.getAlbumsByUserId("self")
         }.asLiveData()
     }
 
-    fun getTextsByUserId() = {}
-    fun addText() = {}
-    fun updateContentById() = {}
+    fun getAlbumsByUserId(userId: String): LiveData<Resource<ContentsResource>> {
+        return object : NetworkDirectiveResource<ContentsResource, ContentsResponse>(executors) {
+            override fun convertToResource(data: ContentsResponse) = data.toContentsResource()
+            override fun createCall() = service.getAlbumsByUserId(userId)
+        }.asLiveData()
+    }
+
+    fun getTexts(): LiveData<Resource<ContentsResource>> {
+        var state = CommonResource.StatusSuccess
+        return object : NetworkBoundResource<ContentsResource, ContentsResponse>(executors) {
+            override fun saveCallResult(item: ContentsResponse) {
+                state = item.state
+                if (item.state == CommonResource.StatusSuccess) {
+                    database.saveContents(item.toContentsResource().resource)
+                }
+            }
+
+            override fun shouldFetch(data: ContentsResource?) = true
+
+            override fun loadFromDb(): LiveData<ContentsResource> {
+                return if (state == CommonResource.StatusSuccess) {
+                    database.loadContentsByType(Content.TypeText)
+                } else {
+                    val data = MutableLiveData<ContentsResource>()
+                    executors.diskIO().execute { data.postValue(ContentsResource(state, null)) }
+                    data
+                }
+            }
+
+            override fun createCall() = service.getTextsByUserId("self")
+        }.asLiveData()
+    }
+
+    fun getTextsByUserId(userId: String): LiveData<Resource<ContentsResource>> {
+        return object : NetworkDirectiveResource<ContentsResource, ContentsResponse>(executors) {
+            override fun convertToResource(data: ContentsResponse) = data.toContentsResource()
+            override fun createCall() = service.getTextsByUserId(userId)
+        }.asLiveData()
+    }
+
+    fun addText(
+        title: String,
+        detail: String,
+        tags: List<String>,
+        public: Boolean
+    ): LiveData<Resource<CommonResource>> {
+        return object : NetworkDirectiveResource<CommonResource, CommonResource>(executors) {
+            override fun convertToResource(data: CommonResource) = data
+            override fun createCall() = service.addText(ContentService.ContentRequestBody(title, detail, tags, public))
+        }.asLiveData()
+    }
+
+    fun updateContentById(
+        id: String,
+        title: String,
+        detail: String,
+        tags: List<String>,
+        public: Boolean
+    ): LiveData<Resource<CommonResource>> {
+        return object : NetworkDirectiveResource<CommonResource, CommonResource>(executors) {
+            override fun convertToResource(data: CommonResource) = data
+            override fun createCall() =
+                service.updateById(id, ContentService.ContentRequestBody(title, detail, tags, public))
+        }.asLiveData()
+    }
 
     fun getThumbByFilename(filename: String): LiveData<Resource<Bitmap>> {
         return object : NetworkBoundResource<Bitmap, Bitmap>(executors) {
