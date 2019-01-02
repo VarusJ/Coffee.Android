@@ -16,7 +16,7 @@ interface CommentService {
     @GET("{id}")
     fun getListByContentId(@Path("id") id: String): LiveData<ApiResponse<CommentsResource>>
 
-    @POST
+    @POST("$SERVICE_BASE_URL/comment")
     fun add(@Body body: CommentRequestBody): LiveData<ApiResponse<CommonResource>>
 
     @DELETE("{id}")

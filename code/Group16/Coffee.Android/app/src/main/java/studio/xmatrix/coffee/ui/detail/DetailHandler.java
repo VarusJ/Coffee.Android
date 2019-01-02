@@ -14,7 +14,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration;
-import studio.xmatrix.coffee.data.common.network.Status;
+import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.data.model.Content;
 import studio.xmatrix.coffee.data.service.LikeService;
 import studio.xmatrix.coffee.data.service.resource.CommentsResource;
@@ -42,6 +42,7 @@ public class DetailHandler implements Injectable {
     private CommentAdapter commentAdapter;
     private TagAdapter tagAdapter;
     private String id;
+    private Content detailData;
     private List<String> likeData;
     private String fatherId;
     private String contentId;
@@ -69,6 +70,16 @@ public class DetailHandler implements Injectable {
         refreshLike();
     }
 
+    private void setLikeStatus() {
+        if (likeData != null && detailData != null) {
+            if (likeData.contains(detailData.getId())) {
+                binding.detailContent.btnLike.setImageResource(R.drawable.ic_like);
+            } else {
+                binding.detailContent.btnLike.setImageResource(R.drawable.ic_like_none);
+            }
+        }
+    }
+
 
     private void refreshLike() {
         viewModel.getLikes().observe(activity, resource -> {
@@ -80,6 +91,7 @@ public class DetailHandler implements Injectable {
                     case SUCCESS:
                         likeData = Objects.requireNonNull(resource.getData()).getResource();
                         commentAdapter.setLikeData(likeData);
+                        setLikeStatus();
                         break;
                 }
             }
@@ -97,12 +109,14 @@ public class DetailHandler implements Injectable {
                             activity.finish();
                             return;
                         }
-                        Content data = Objects.requireNonNull(resource.getData()).getResource();
-                        if (data != null) {
-                            binding.detailContent.setModel(data);
-                            tagAdapter.setData(data.tags);
-                            binding.detailContent.contentTime.setText(getTime(data.getPublishDate()));
+                        detailData = Objects.requireNonNull(resource.getData()).getResource();
+                        if (detailData != null) {
+                            binding.detailContent.setModel(detailData);
+                            binding.detailContent.tagLayout.setAdapter(tagAdapter);
+                            tagAdapter.setData(detailData.tags);
+                            binding.detailContent.contentTime.setText(getTime(detailData.getPublishDate()));
                             setStatus(ListStatus.StatusType.Done);
+                            setLikeStatus();
                         } else {
                             setStatus(ListStatus.StatusType.Nothing);
                         }
@@ -187,6 +201,14 @@ public class DetailHandler implements Injectable {
 
         binding.detailStatus.statusError.setOnClickListener(v -> initData());
 
+        binding.detailContent.btnLike.setOnClickListener(v -> {
+            if (likeData.contains(detailData.getId())) {
+                unlike(detailData.getId(), LikeService.LikeType.Content);
+            } else {
+                like(detailData.getId(), LikeService.LikeType.Content);
+            }
+        });
+
         // 评论列表
         binding.commentList.setLayoutManager(new LinearLayoutManager(activity));
         commentAdapter = new CommentAdapter(activity);
@@ -210,7 +232,7 @@ public class DetailHandler implements Injectable {
                 DetailHandler.this.fatherId = fatherId;
                 DetailHandler.this.fatherName = fatherName;
                 DetailHandler.this.contentId = contentId;
-                DetailHandler.this.isReply = false;
+                DetailHandler.this.isReply = true;
                 onClickAddComment(null);
             }
         });
@@ -242,10 +264,23 @@ public class DetailHandler implements Injectable {
 
 
         // 底部栏
-        binding.addTitle.setOnClickListener(this::onClickAddComment);
+        binding.addTitle.setOnClickListener(v -> {
+            this.isReply = false;
+            this.fatherId = detailData.getOwnId();
+            this.fatherName = detailData.getUserName();
+            this.contentId = detailData.getId();
+            this.onClickAddComment(v);
+        });
 
         // 详情卡片
-        binding.detailContent.btnComment.setOnClickListener(this::onClickAddComment);
+        binding.detailContent.btnComment.setOnClickListener(v -> {
+            this.isReply = false;
+            this.fatherId = detailData.getOwnId();
+            this.fatherName = detailData.getUserName();
+            this.contentId = detailData.getId();
+            this.onClickAddComment(v);
+        });
+
         binding.detailContent.btnEdit.setVisibility(View.VISIBLE);
         binding.detailContent.btnRemove.setVisibility(View.VISIBLE);
         binding.detailContent.userAvatar.setOnClickListener(this::onClickUser);
@@ -286,7 +321,7 @@ public class DetailHandler implements Injectable {
         } else if (now - publish > 1000 * 60 * 60) {
             return Long.toString((now - publish) / (1000 * 60 * 60)) + "小时前";
         } else if (now - publish > 1000 * 60) {
-            return Long.toString((now - publish) / (1000 * 60 * 60)) + "分钟前";
+            return Long.toString((now - publish) / (1000 * 60)) + "分钟前";
         } else {
             return "刚刚";
         }
@@ -314,9 +349,11 @@ public class DetailHandler implements Injectable {
                 }
                 viewModel.addComment(contentId, fatherId, content, isReply).observe(activity, res -> {
                     if (res != null) {
-                        switch (res.getStatus()){
+                        switch (res.getStatus()) {
                             case SUCCESS:
+                                // Toast.makeText(activity, res.getData().getState(), Toast.LENGTH_SHORT).show();
                                 initData();
+                                commentFragment.dismiss();
                                 break;
                             case ERROR:
                                 Toast.makeText(activity, "网络错误", Toast.LENGTH_SHORT).show();

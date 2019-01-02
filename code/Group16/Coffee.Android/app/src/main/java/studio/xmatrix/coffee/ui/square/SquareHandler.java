@@ -15,6 +15,7 @@ import studio.xmatrix.coffee.inject.Injectable;
 import studio.xmatrix.coffee.ui.ListStatus;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,10 +38,11 @@ public class SquareHandler implements Injectable {
         this.activity = activity;
         this.binding = binding;
         this.hasMore = true;
+        this.likeData = new ArrayList<>();
+        setStatus(ListStatus.StatusType.Loading);
         initView();
         refreshData();
-        // TODO
-        // refreshLike();
+        refreshLike();
     }
 
     private void refreshLike() {
@@ -156,9 +158,6 @@ public class SquareHandler implements Injectable {
                 switch (resource.getStatus()) {
                     case SUCCESS:
                         setData(Objects.requireNonNull(resource.getData()).getResource());
-                        break;
-                    case LOADING:
-                        setStatus(ListStatus.StatusType.Loading);
                         break;
                     case ERROR:
                         setStatus(ListStatus.StatusType.Error);

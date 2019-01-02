@@ -23,8 +23,11 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
     }
 
     public void setData(List<String> data) {
-        if (data == null) return;
-        this.data = data;
+        if (data == null) {
+            this.data.clear();
+        } else {
+            this.data = data;
+        }
         notifyDataSetChanged();
     }
 

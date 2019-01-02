@@ -49,8 +49,11 @@ public class SquareAdapter extends RecyclerView.Adapter<SquareAdapter.ViewHolder
     }
 
     public void setData(List<Content> data) {
-        if (data == null) return;
-        this.data = data;
+        if (data == null) {
+            this.data.clear();
+        } else {
+            this.data = data;
+        }
         notifyDataSetChanged();
     }
 
@@ -78,8 +81,11 @@ public class SquareAdapter extends RecyclerView.Adapter<SquareAdapter.ViewHolder
     }
 
     public void setLikeData(List<String> likeData) {
-        if (likeData == null) return;
-        this.likeData = likeData;
+        if (likeData == null) {
+            this.likeData.clear();
+        } else {
+            this.likeData = likeData;
+        }
         notifyDataSetChanged();
     }
 
@@ -125,24 +131,24 @@ public class SquareAdapter extends RecyclerView.Adapter<SquareAdapter.ViewHolder
             // 点击事件
             binding.userAvatar.setOnClickListener(this);
             binding.userName.setOnClickListener(this);
-            binding.cardLayout.setOnClickListener(v -> {
-                DetailActivity.start(activity, itemData.id, ActivityOptionsCompat
-                        .makeSceneTransitionAnimation(activity,
-                                Pair.create(binding.contentCard, "contentCard"))
-                        .toBundle());
-            });
+            binding.btnComment.setOnClickListener(v -> gotoDetail(itemData.getId()));
+            binding.cardLayout.setOnClickListener(v -> gotoDetail(itemData.getId()));
+            binding.btnLike.setOnClickListener(v -> onClickLike.onClick(itemData.getId()));
+            // 数据
             binding.contentTime.setText(getTime(itemData.getPublishDate()));
             binding.setModel(itemData);
-
-            binding.btnLike.setOnClickListener(v -> {
-                onClickLike.onClick(itemData.getId());
-            });
-
             if (likeData.contains(itemData.getId())) {
                 binding.btnLike.setImageResource(R.drawable.ic_like);
             } else {
                 binding.btnLike.setImageResource(R.drawable.ic_like_none);
             }
+        }
+
+        public void gotoDetail(String id) {
+            DetailActivity.start(activity, id, ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(activity,
+                            Pair.create(binding.contentCard, "contentCard"))
+                    .toBundle());
         }
 
         @Override

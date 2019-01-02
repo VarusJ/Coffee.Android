@@ -28,8 +28,11 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
     }
 
     public void setLikeData(List<String> likeData) {
-        if (likeData == null) return;
-        this.likeData = likeData;
+        if (likeData == null) {
+            this.likeData.clear();
+        } else {
+            this.likeData = likeData;
+        }
         notifyDataSetChanged();
     }
 
@@ -46,8 +49,11 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
     }
 
     public void setData(List<CommentsResource.ReplyForComment> data) {
-        if (data == null) return;
-        this.data = data;
+        if (data == null) {
+            this.data.clear();
+        } else {
+            this.data = data;
+        }
         notifyDataSetChanged();
     }
 
