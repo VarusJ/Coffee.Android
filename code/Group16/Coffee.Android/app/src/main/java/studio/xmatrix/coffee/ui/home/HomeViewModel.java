@@ -13,10 +13,11 @@ import studio.xmatrix.coffee.data.service.resource.CommonResource;
 import studio.xmatrix.coffee.data.service.resource.ContentsResource;
 import studio.xmatrix.coffee.data.service.resource.LikeResource;
 import studio.xmatrix.coffee.data.service.resource.UserResource;
+import studio.xmatrix.coffee.ui.nav.ImageViewModel;
 
 import javax.inject.Inject;
 
-public class HomeViewModel extends AndroidViewModel {
+public class HomeViewModel extends AndroidViewModel implements ImageViewModel {
 
     private ContentRepository contentRepository;
     private LikeRepository likeRepository;
@@ -66,6 +67,11 @@ public class HomeViewModel extends AndroidViewModel {
         return userRepository.getAvatarByUrl(url);
     }
 
+    public LiveData<Resource<Bitmap>> getThumb(String file) {
+        return contentRepository.getThumbByFilename(file);
+    }
+
+    public LiveData<Resource<Bitmap>> getImage(String id, String path) { return contentRepository.getImageByIdAndPath(id, path); }
 
 }
 

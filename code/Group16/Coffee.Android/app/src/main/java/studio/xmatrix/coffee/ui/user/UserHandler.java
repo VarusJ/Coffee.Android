@@ -33,7 +33,7 @@ public class UserHandler implements AppBarLayout.OnOffsetChangedListener, Inject
     private UserActivity activity;
     private UserActivityBinding binding;
     private String id;
-    private HomeListManger listManger;
+    public HomeListManger listManger;
 
 
     @Inject

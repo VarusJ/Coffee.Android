@@ -12,7 +12,7 @@ import studio.xmatrix.coffee.data.service.resource.UserResource;
 
 import javax.inject.Inject;
 
-public class NavViewModel extends AndroidViewModel {
+public class NavViewModel extends AndroidViewModel implements ImageViewModel {
 
     private UserRepository userRepository;
     private ContentRepository contentRepository;
@@ -36,12 +36,10 @@ public class NavViewModel extends AndroidViewModel {
         return userRepository.logout();
     }
 
-    LiveData<Resource<Bitmap>> getThumb(String file) {
+    public LiveData<Resource<Bitmap>> getThumb(String file) {
         return contentRepository.getThumbByFilename(file);
     }
 
-    LiveData<Resource<Bitmap>> getImage(String id, String path) {
-        return contentRepository.getImageByIdAndPath(id, path);
-    }
+    public LiveData<Resource<Bitmap>> getImage(String id, String path) { return contentRepository.getImageByIdAndPath(id, path); }
 
 }

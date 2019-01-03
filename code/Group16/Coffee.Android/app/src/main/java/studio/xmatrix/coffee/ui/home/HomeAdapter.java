@@ -36,26 +36,23 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     private List<String> likeData;
     private OnClickHome onClickHome;
 
-    public void setOnClickHome(OnClickHome onClickHome) {
+    void setOnClickHome(OnClickHome onClickHome) {
         this.onClickHome = onClickHome;
     }
 
     public interface OnClickHome {
-        void onClick(String id);
+        void onClickLike(String id);
     }
 
 
-    public void resetData() {
-        this.data.clear();
-        notifyDataSetChanged();
-    }
-
-    public void addData(List<Content> data) {
-        if (data != null) {
-            this.data.addAll(data);
-            data.sort((o1, o2) -> (int) (o2.getPublishDate() - o1.getPublishDate()));
-            notifyDataSetChanged();
+    void setData(List<Content> data) {
+        if (data == null) {
+            this.data.clear();
+        } else {
+            data.sort((o1, o2) -> Long.compare(o2.getPublishDate(), o1.getPublishDate()));
+            this.data = data;
         }
+        notifyDataSetChanged();
     }
 
     public HomeAdapter(Activity activity) {
@@ -86,7 +83,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         return new ViewHolder(binding, viewType);
     }
 
-    public void setLikeData(List<String> likeData) {
+    void setLikeData(List<String> likeData) {
         if (likeData != null) {
             this.likeData = likeData;
         } else {
@@ -146,7 +143,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
             binding.homeClickLayout.setOnClickListener(v -> gotoDetail(itemData.getId()));
             binding.homeComment.setOnClickListener(v ->gotoDetail(itemData.getId()));
-            binding.homeLike.setOnClickListener(v -> onClickHome.onClick(itemData.getId()));
+            binding.homeLike.setOnClickListener(v -> onClickHome.onClickLike(itemData.getId()));
             binding.homeTime.setText(getTime(itemData.getPublishDate()));
             binding.setModel(itemData);
 
@@ -155,8 +152,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             } else {
                 binding.homeLike.setImageResource(R.drawable.ic_like_none);
             }
-
-
         }
 
         private void gotoDetail(String id) {

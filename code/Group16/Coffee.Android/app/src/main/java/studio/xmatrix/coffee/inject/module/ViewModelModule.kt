@@ -6,6 +6,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 import studio.xmatrix.coffee.inject.key.ViewModelKey
+import studio.xmatrix.coffee.ui.add.AddHandler
+import studio.xmatrix.coffee.ui.add.AddViewModel
 import studio.xmatrix.coffee.ui.admin.AdminViewModel
 import studio.xmatrix.coffee.ui.common.ViewModelFactory
 import studio.xmatrix.coffee.ui.detail.DetailViewModel
@@ -52,6 +54,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(NavViewModel::class)
     abstract fun bindNavViewModel(navViewModel: NavViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AddViewModel::class)
+    abstract fun bindAddViewModel(addViewModel: AddViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory

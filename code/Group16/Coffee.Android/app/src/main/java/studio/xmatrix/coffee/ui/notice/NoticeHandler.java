@@ -2,6 +2,7 @@ package studio.xmatrix.coffee.ui.notice;
 
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
@@ -12,6 +13,7 @@ import studio.xmatrix.coffee.databinding.NoticeFragmentBinding;
 import studio.xmatrix.coffee.inject.AppInjector;
 import studio.xmatrix.coffee.inject.Injectable;
 import studio.xmatrix.coffee.ui.ListStatus;
+import studio.xmatrix.coffee.ui.admin.AdminActivity;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -34,6 +36,7 @@ public class NoticeHandler implements Injectable {
         this.binding = binding;
         AppInjector.Companion.inject(this);
         viewModel = ViewModelProviders.of(activity, viewModelFactory).get(NoticeViewModel.class);
+        setStatus(ListStatus.StatusType.Loading);
         initView();
         refreshData();
     }
@@ -64,9 +67,6 @@ public class NoticeHandler implements Injectable {
                             setStatus(ListStatus.StatusType.Nothing);
                         }
                         adapter.setData(data);
-                        break;
-                    case LOADING:
-                        setStatus(ListStatus.StatusType.Loading);
                         break;
                     case ERROR:
                         setStatus(ListStatus.StatusType.Error);
@@ -128,6 +128,7 @@ public class NoticeHandler implements Injectable {
                 }
             }
         }));
+        binding.noticeStatus.statusLogin.setOnClickListener(v -> activity.startActivity(new Intent(activity, AdminActivity.class)));
     }
 
     private void setStatus(ListStatus.StatusType status) {
