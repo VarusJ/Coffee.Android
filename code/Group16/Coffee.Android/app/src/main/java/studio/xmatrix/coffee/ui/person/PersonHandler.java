@@ -3,6 +3,8 @@ package studio.xmatrix.coffee.ui.person;
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -18,6 +20,7 @@ import studio.xmatrix.coffee.ui.notice.NoticeViewModel;
 
 import javax.inject.Inject;
 
+import java.net.URL;
 import java.util.Objects;
 
 import static studio.xmatrix.coffee.data.service.resource.CommonResource.StatusSuccess;
@@ -61,10 +64,21 @@ public class PersonHandler implements AppBarLayout.OnOffsetChangedListener, Inje
                         String name = Objects.requireNonNull(Objects.requireNonNull(res.getData()).getResource()).getName();
                         float maxSize = Objects.requireNonNull(Objects.requireNonNull(res.getData()).getResource()).getMaxSize() / 1024 / 1024;
                         float usedSize =  Objects.requireNonNull(Objects.requireNonNull(res.getData()).getResource()).getUsedSize() / 1024 / 1024;
+                        String uri = Objects.requireNonNull(Objects.requireNonNull(res.getData()).getResource()).getAvatar();
+
+                        viewModel.getAvatarByUrl(uri).observe(activity, resource ->{
+                            assert resource != null;
+                            if (resource.getStatus() == Status.SUCCESS){
+                                Bitmap bitmap = resource.getData();
+                                binding.userBigAvatar.setImageBitmap(bitmap);
+                            } else if (res.getStatus() == Status.ERROR){
+                                Toast.makeText(activity, "请检查网络连接", Toast.LENGTH_SHORT).show();
+                            }
+                        });
 
                         binding.personTitle.setText(name);
                         binding.personBio.setText(bio);
-                        binding.personName.setText(name);
+                        binding.personName.setText(String.format("昵称: %s", name));
                         binding.personTextCap.setText(String.format("我的空间：%.1fMB/%.1fMB", usedSize, maxSize));
                         binding.circularFillableLoaders.setProgress(Math.round(usedSize/maxSize));
                         break;
@@ -75,7 +89,7 @@ public class PersonHandler implements AppBarLayout.OnOffsetChangedListener, Inje
         });
 
         binding.personNameEdit.setOnClickListener(v -> {
-            NameDialog dialog = new NameDialog(activity, binding.personName.getText().toString());
+            NameDialog dialog = new NameDialog(activity, binding.personTitle.getText().toString(), myListener);
             dialog.setCancelable(true);
             Objects.requireNonNull(dialog.getWindow()).setGravity(Gravity.CENTER);
             dialog.show();
@@ -113,14 +127,25 @@ public class PersonHandler implements AppBarLayout.OnOffsetChangedListener, Inje
     }
 
     interface MyInterface {
-        public void changName(String s);
+        void changName(String s);
     }
 
     private MyInterface myListener = new MyInterface(){
 
         @Override
         public void changName(String s) {
-            viewModel
+            viewModel.updateUserName(s).observe(activity, res->{
+                assert res != null;
+                if (res.getStatus() == Status.SUCCESS){
+                    switch (Objects.requireNonNull(res.getData()).getState()){
+                        case StatusSuccess:
+                            Toast.makeText(activity, "已修改" , Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+                } else if (res.getStatus() == Status.ERROR){
+                    Toast.makeText(activity, "请检查网络连接", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     };
 

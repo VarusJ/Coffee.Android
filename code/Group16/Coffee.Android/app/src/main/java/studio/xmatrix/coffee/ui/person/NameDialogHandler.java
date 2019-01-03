@@ -1,31 +1,20 @@
 package studio.xmatrix.coffee.ui.person;
 
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
+import android.widget.Toast;
 import studio.xmatrix.coffee.databinding.PersonalNameDialogBinding;
-import studio.xmatrix.coffee.inject.AppInjector;
-import studio.xmatrix.coffee.inject.Injectable;
 
-import javax.inject.Inject;
-
-public class NameDialogHandler implements Injectable {
+public class NameDialogHandler {
 
     private PersonActivity activity;
     private PersonalNameDialogBinding binding;
     private String name;
+    private PersonHandler.MyInterface myListener;
 
-    @Inject
-    private
-    ViewModelProvider.Factory viewModelFactory;
-    private PersonViewModel viewModel;
-
-    NameDialogHandler(PersonActivity activity, PersonalNameDialogBinding binding, String name){
+    NameDialogHandler(PersonActivity activity, PersonalNameDialogBinding binding, String name, PersonHandler.MyInterface myListener){
         this.activity = activity;
         this.binding = binding;
         this.name = name;
-
-        AppInjector.Companion.inject(this);
-        viewModel = ViewModelProviders.of(activity, viewModelFactory).get(PersonViewModel.class);
+        this.myListener = myListener;
 
         initView();
     }
@@ -38,9 +27,9 @@ public class NameDialogHandler implements Injectable {
     private void save() {
         String saveName = binding.name.getText().toString();
         if (saveName.equals(name)){
-
+            Toast.makeText(activity, "请修改昵称", Toast.LENGTH_SHORT).show();
         } else {
-
+            myListener.changName(saveName);
         }
     }
 }
