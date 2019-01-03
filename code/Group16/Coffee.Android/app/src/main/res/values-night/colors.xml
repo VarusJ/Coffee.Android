@@ -13,4 +13,5 @@
     <color name="colorTime">#3dffffff</color>
     <color name="colorAvatar">#e6e6e6</color>
     <color name="colorText">#e6cccccc</color>
+    <color name="colorIcon">#beababab</color>
 </resources>

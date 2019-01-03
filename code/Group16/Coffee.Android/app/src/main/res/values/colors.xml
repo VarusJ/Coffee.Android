@@ -18,4 +18,5 @@
     <color name="colorHint">#998C8C</color>
     <color name="colorGreen">#4BB464</color>
     <color name="colorGrey">#4BB464</color>
+    <color name="colorIcon">#737373</color>
 </resources>

@@ -1,10 +1,12 @@
 package studio.xmatrix.coffee.ui.nav;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -12,9 +14,11 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -62,6 +66,20 @@ public class NavActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+//                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+//                ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(
+//                    this,
+//                    new String[]{
+//                            Manifest.permission.READ_EXTERNAL_STORAGE,
+//                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//                            Manifest.permission.CAMERA
+//                    },
+//                    1
+//            );
+//        }
 
         AppInjector.Companion.inject(this);
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(NavViewModel.class);
@@ -197,6 +215,30 @@ public class NavActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case 1:
+                for (int i = 0; i < permissions.length; i++) {
+                    switch (permissions[i]) {
+                        case Manifest.permission.READ_EXTERNAL_STORAGE:
+                            if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                                Toast.makeText(this, "将无法使用相册功能", Toast.LENGTH_SHORT).show();
+                            }
+                            break;
+                        case Manifest.permission.WRITE_EXTERNAL_STORAGE:
+                        case Manifest.permission.CAMERA:
+                            if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                                Toast.makeText(this, "将无法使用相机功能", Toast.LENGTH_SHORT).show();
+                            }
+                            break;
+                    }
+                }
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     private void refreshData() {
         viewModel.getUserInfo().observe(this, resource -> {
@@ -212,7 +254,6 @@ public class NavActivity extends AppCompatActivity
                             userText.setText("Coffee");
                             userAvatar.setImageResource(R.mipmap.ic_launcher_round);
                             userAvatar.setOnClickListener(v -> startActivity(new Intent(this, AdminActivity.class)));
-                            DefaultSharedPref.INSTANCE.remove(DefaultSharedPref.Key.UserId);
                         } else {
                             userNameText.setText(userInfo.getName());
                             userText.setText(userInfo.getBio());
@@ -228,7 +269,7 @@ public class NavActivity extends AppCompatActivity
                                     .toBundle()));
                             DefaultSharedPref.INSTANCE.set(DefaultSharedPref.Key.UserId, userInfo.getId());
                         }
-                        if (noticeFragment != null)  noticeFragment.handler.refreshData();
+                        if (noticeFragment != null) noticeFragment.handler.refreshData();
                         if (homeFragment != null) homeFragment.handler.refreshData();
                         break;
                     case ERROR:
@@ -284,13 +325,15 @@ public class NavActivity extends AppCompatActivity
         } else if (id == R.id.nav_logout) {
             viewModel.logout().observe(this, res -> {
                 if (res != null && res.getStatus() == Status.SUCCESS) {
-                    DefaultSharedPref.INSTANCE.remove(DefaultSharedPref.Key.UserId);
                     refreshData();
                 }
             });
         } else if (id == R.id.nav_person) {
-            startActivity(new Intent(this, PersonActivity.class));
-            drawer.closeDrawer(GravityCompat.START);
+            if (DefaultSharedPref.INSTANCE.get(DefaultSharedPref.Key.UserId).isEmpty()) {
+                Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show();
+            } else {
+                startActivity(new Intent(this, PersonActivity.class));
+            }
         } else if (id == R.id.nav_setting) {
             startActivity(new Intent(this, SettingsActivity.class));
             drawer.closeDrawer(GravityCompat.START);

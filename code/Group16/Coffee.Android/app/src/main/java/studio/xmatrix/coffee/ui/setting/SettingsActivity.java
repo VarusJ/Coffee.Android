@@ -138,6 +138,17 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 || NotificationPreferenceFragment.class.getName().equals(fragmentName);
     }
 
+    @Override
+    public void onHeaderClick(Header header, int position) {
+        super.onHeaderClick(header, position);
+        if (header.id == R.id.about) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                    .setTitle("关于Coffee")
+                    .setMessage("\nv0.1.0.20190103\nPowered by Violet\nCopyRight (c) XMatrixStudio");
+            builder.create().show();
+        }
+    }
+
     /**
      * This fragment shows general preferences only. It is used when the
      * activity is showing a two-pane settings UI.
@@ -285,6 +296,5 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             }
             return super.onOptionsItemSelected(item);
         }
-
     }
 }

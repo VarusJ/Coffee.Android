@@ -2,7 +2,6 @@ package studio.xmatrix.coffee.ui.add;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -17,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-
 import com.cunoraz.tagview.Tag;
 import com.cunoraz.tagview.TagView;
 import com.luck.picture.lib.PictureSelectionModel;
@@ -26,12 +24,11 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import studio.xmatrix.coffee.R;
+import studio.xmatrix.coffee.databinding.AddActivityBinding;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import studio.xmatrix.coffee.R;
-import studio.xmatrix.coffee.databinding.AddActivityBinding;
 
 public class AddHandler {
     private AddActivity activity;
@@ -59,12 +56,12 @@ public class AddHandler {
         binding.pics.setAdapter(picAdapter);
 
         binding.toggle.setOnCheckedChangeListener((CompoundButton view, boolean isChecked) -> {
-            if(isChecked) binding.feed.setText(R.string.feed_public);
+            if (isChecked) binding.feed.setText(R.string.feed_public);
             else binding.feed.setText(R.string.feed_private);
         });
 
         binding.content.setOnTouchListener((View v, MotionEvent event) -> {
-            if(v == binding.content) {
+            if (v == binding.content) {
                 binding.content.getParent().requestDisallowInterceptTouchEvent(true);
             } else {
                 binding.content.getParent().requestDisallowInterceptTouchEvent(false);
@@ -74,12 +71,12 @@ public class AddHandler {
     }
 
     public void onClickAddImage(View view) {
-        if(!checkStoragePermission()) {
-            if(!ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+        if (!checkStoragePermission()) {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE))
                 Toast.makeText(activity, "请开启存储权限！", Toast.LENGTH_SHORT).show();
             else {
                 int permissionCheck = ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                if(permissionCheck != PackageManager.PERMISSION_GRANTED) {
+                if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
                     activity.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
                 }
             }
@@ -100,7 +97,7 @@ public class AddHandler {
 
         new AlertDialog.Builder(activity).setTitle("新标签")
                 .setPositiveButton("确定", (DialogInterface dialog, int which) -> {
-                    if(!addTag(edit.getText().toString()))
+                    if (!addTag(edit.getText().toString()))
                         Toast.makeText(activity, "该标签已存在！", Toast.LENGTH_SHORT).show();
                 })
                 .setNegativeButton("取消", null)
@@ -118,14 +115,14 @@ public class AddHandler {
     }
 
     public void addImage(List<LocalMedia> list) {
-        if(binding.pics.getVisibility() != View.VISIBLE)
+        if (binding.pics.getVisibility() != View.VISIBLE)
             binding.pics.setVisibility(View.VISIBLE);
         picAdapter.addPics(list);
         binding.scroller.fullScroll(View.FOCUS_DOWN);
     }
 
     private boolean addTag(String tagname) {
-        if(tagsList.indexOf(tagname) != -1) return false;
+        if (tagsList.indexOf(tagname) != -1) return false;
 
         tagsList.add(tagname);
 
@@ -149,7 +146,7 @@ public class AddHandler {
         ArrayList<String> tags = tagsList;
         ArrayList<Bitmap> bitmaps = picAdapter.getBitmaps();
 
-        if(title.isEmpty()) {
+        if (title.isEmpty()) {
             Toast.makeText(activity, "标题不能为空！", Toast.LENGTH_SHORT).show();
             return;
         }
