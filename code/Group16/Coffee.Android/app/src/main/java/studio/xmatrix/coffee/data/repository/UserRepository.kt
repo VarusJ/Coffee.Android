@@ -3,7 +3,6 @@ package studio.xmatrix.coffee.data.repository
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.graphics.Bitmap
-import android.preference.PreferenceManager
 import studio.xmatrix.coffee.App
 import studio.xmatrix.coffee.data.common.network.*
 import studio.xmatrix.coffee.data.service.ImageDatabase
@@ -122,6 +121,20 @@ class UserRepository @Inject constructor(
             override fun shouldFetch(data: Bitmap?) = data == null
             override fun loadFromDb() = imageDatabase.loadById(url)
             override fun createCall() = imageService.getByUrl(url)
+        }.asLiveData()
+    }
+
+    fun updateInfoFromViolet(): LiveData<Resource<CommonResource>> {
+        return object : NetworkDirectiveResource<CommonResource, CommonResource>(executors) {
+            override fun convertToResource(data: CommonResource) = data
+            override fun createCall() = service.update()
+        }.asLiveData()
+    }
+
+    fun updateUserName(name: String): LiveData<Resource<CommonResource>> {
+        return object : NetworkDirectiveResource<CommonResource, CommonResource>(executors) {
+            override fun convertToResource(data: CommonResource) = data
+            override fun createCall() = service.updateName(UserService.NameRequestBody(name))
         }.asLiveData()
     }
 }

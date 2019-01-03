@@ -46,9 +46,16 @@ interface UserService {
     @GET("info/{id}")
     fun getById(@Path("id") id: String): LiveData<ApiResponse<UserInfoResponse>>
 
+    @POST("info")
+    fun update(): LiveData<ApiResponse<CommonResource>>
+
+    @POST("info/name")
+    fun updateName(@Body body: NameRequestBody): LiveData<ApiResponse<CommonResource>>
+
     data class LoginRequestBody(val name: String, val password: String)
     data class RegisterRequestBody(val name: String, val email: String, val password: String)
     data class EmailValidRequestBody(val vCode: String)
+    data class NameRequestBody(val name: String)
 }
 
 @Singleton
