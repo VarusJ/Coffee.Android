@@ -33,7 +33,6 @@ public class PersonHandler implements AppBarLayout.OnOffsetChangedListener, Inje
     private PersonActivity activity;
     private PersonActivityBinding binding;
 
-
     @Inject
     ViewModelProvider.Factory viewModelFactory;
     private PersonViewModel viewModel;
@@ -112,5 +111,17 @@ public class PersonHandler implements AppBarLayout.OnOffsetChangedListener, Inje
             mIsTheTitleVisible = false;
         }
     }
+
+    interface MyInterface {
+        public void changName(String s);
+    }
+
+    private MyInterface myListener = new MyInterface(){
+
+        @Override
+        public void changName(String s) {
+            viewModel
+        }
+    };
 
 }
