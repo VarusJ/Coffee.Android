@@ -16,9 +16,9 @@ public class NameDialogHandler implements Injectable {
     private String name;
 
     @Inject
-    private
+
     ViewModelProvider.Factory viewModelFactory;
-    private PersonViewModel viewModel;
+    PersonViewModel viewModel;
 
     NameDialogHandler(PersonActivity activity, PersonalNameDialogBinding binding, String name){
         this.activity = activity;
