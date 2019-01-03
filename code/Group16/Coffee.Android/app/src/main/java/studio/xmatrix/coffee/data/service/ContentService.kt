@@ -73,8 +73,10 @@ interface ContentService {
             val list = ArrayList<MultipartBody.Part>()
             list.add(MultipartBody.Part.createFormData("title", title))
             list.add(MultipartBody.Part.createFormData("detail", detail))
-            list.add(MultipartBody.Part.createFormData("tags", tags.joinToString()))
             list.add(MultipartBody.Part.createFormData("isPublic", public.toString()))
+            for ((i, tag) in tags.withIndex()) {
+                list.add(MultipartBody.Part.createFormData("tags[$i]", tag))
+            }
             return list
         }
     }
