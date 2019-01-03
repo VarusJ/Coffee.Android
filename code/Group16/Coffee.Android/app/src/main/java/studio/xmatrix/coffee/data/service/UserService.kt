@@ -49,7 +49,7 @@ interface UserService {
     @POST("info")
     fun update(): LiveData<ApiResponse<CommonResource>>
 
-    @POST("info/name")
+    @POST("name")
     fun updateName(@Body body: NameRequestBody): LiveData<ApiResponse<CommonResource>>
 
     data class LoginRequestBody(val name: String, val password: String)
