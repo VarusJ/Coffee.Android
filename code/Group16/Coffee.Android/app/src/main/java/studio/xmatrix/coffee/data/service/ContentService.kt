@@ -40,6 +40,7 @@ interface ContentService {
     fun getPublicListByPage(@Query("page") page: Int, @Query("eachPage") eachPage: Int): LiveData<ApiResponse<PublishContentsResponse>>
 
     @Multipart
+    @JvmSuppressWildcards
     @POST("album")
     fun addAlbum(@PartMap form: Map<String, RequestBody>, @Part files: List<MultipartBody.Part>): LiveData<ApiResponse<CommonResource>>
 

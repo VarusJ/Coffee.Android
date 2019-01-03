@@ -3,6 +3,7 @@ package studio.xmatrix.coffee.inject
 import studio.xmatrix.coffee.App
 import studio.xmatrix.coffee.inject.component.AppComponent
 import studio.xmatrix.coffee.inject.component.DaggerAppComponent
+import studio.xmatrix.coffee.ui.add.AddHandler
 import studio.xmatrix.coffee.ui.admin.*
 import studio.xmatrix.coffee.ui.detail.DetailHandler
 import studio.xmatrix.coffee.ui.square.SquareHandler
@@ -36,6 +37,7 @@ class AppInjector private constructor() {
                 is NoticeHandler -> component.inject(injectable)
                 is PersonHandler -> component.inject(injectable)
                 is NavActivity -> component.inject(injectable)
+                is AddHandler -> component.inject(injectable)
                 else -> throw IllegalArgumentException("Class not found in AppComponent")
             }
         }
