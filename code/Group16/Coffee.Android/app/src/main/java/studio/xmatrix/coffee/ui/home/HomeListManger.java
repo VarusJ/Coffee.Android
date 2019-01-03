@@ -4,7 +4,6 @@ import android.support.v4.app.SupportActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.Toast;
-import com.lzy.ninegrid.NineGridView;
 import com.scwang.smartrefresh.header.DeliveryHeader;
 import studio.xmatrix.coffee.data.common.network.Resource;
 import studio.xmatrix.coffee.data.model.Content;
@@ -13,7 +12,6 @@ import studio.xmatrix.coffee.data.service.resource.ContentsResource;
 import studio.xmatrix.coffee.data.store.DefaultSharedPref;
 import studio.xmatrix.coffee.databinding.HomeContentBinding;
 import studio.xmatrix.coffee.ui.ListStatus;
-import studio.xmatrix.coffee.ui.nav.MyImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,14 +25,13 @@ public class HomeListManger {
     private HomeAdapter adapter;
     private List<String> likeData = new ArrayList<>();
     private List<Content> tempData = new ArrayList<>();
-    private String id = "";
+    private String id = "self";
     private AtomicBoolean finish = new AtomicBoolean(false);
 
     public HomeListManger(SupportActivity activity, HomeContentBinding contentBinding, HomeViewModel viewModel) {
         this.activity = activity;
         this.binding = contentBinding;
         this.viewModel = viewModel;
-        NineGridView.setImageLoader(new MyImageLoader(activity, viewModel));
         initView();
     }
 
@@ -61,7 +58,7 @@ public class HomeListManger {
             switch (id) {
                 case "self":
                     viewModel.getSelfText().observe(activity, this::setData);
-                    viewModel.getSelfAlbum().observe(activity,this::setData);
+                    viewModel.getSelfAlbum().observe(activity, this::setData);
                     refreshLayout.finishRefresh(200);
                     break;
                 case "":
@@ -83,19 +80,21 @@ public class HomeListManger {
             switch (res.getStatus()) {
                 case SUCCESS:
                     List<Content> data = Objects.requireNonNull(res.getData()).getResource();
-                    if (data != null && data.size() != 0) {
-                        if (finish.compareAndSet(false, true)) {
-                            tempData = data;
-                        } else if (finish.compareAndSet(true, false)) {
+                    if (finish.compareAndSet(false, true)) { // 第一次请求
+                        tempData.clear();
+                        if (data != null && data.size() != 0) {
                             tempData.addAll(data);
+                        }
+                    } else if (finish.compareAndSet(true, false)) { // 第二次请求
+                        if (data != null && data.size() != 0) {
+                            tempData.addAll(data);
+                        }
+                        if (tempData.size() == 0) {
+                            setStatus(ListStatus.StatusType.Nothing);
+                        } else {
                             adapter.setData(tempData);
                             setStatus(ListStatus.StatusType.Done);
                         }
-                    } else {
-                        if (adapter.getItemCount() == 0 && finish.compareAndSet(true, false)) {
-                            setStatus(ListStatus.StatusType.Nothing);
-                        }
-                        finish.compareAndSet(false, true);
                     }
                     break;
                 case ERROR:
@@ -111,7 +110,7 @@ public class HomeListManger {
         switch (id) {
             case "self":
                 viewModel.getSelfText().observe(activity, this::setData);
-                viewModel.getSelfAlbum().observe(activity,this::setData);
+                viewModel.getSelfAlbum().observe(activity, this::setData);
                 break;
             case "":
                 setStatus(ListStatus.StatusType.NotLogin);
@@ -135,7 +134,7 @@ public class HomeListManger {
                         break;
                     case SUCCESS:
                         List<String> data = Objects.requireNonNull(res.getData()).getResource();
-                        if (data != null)  {
+                        if (data != null) {
                             likeData = data;
                         } else {
                             likeData.clear();

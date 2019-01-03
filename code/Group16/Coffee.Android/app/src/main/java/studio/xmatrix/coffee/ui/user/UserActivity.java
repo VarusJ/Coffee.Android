@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import com.lzy.ninegrid.NineGridView;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.databinding.UserActivityBinding;
 import studio.xmatrix.coffee.ui.BaseActionBarActivity;
 import studio.xmatrix.coffee.ui.detail.DetailActivity;
+import studio.xmatrix.coffee.ui.nav.MyImageLoader;
 
 public class UserActivity extends BaseActionBarActivity {
     UserActivityBinding binding;
@@ -24,6 +26,12 @@ public class UserActivity extends BaseActionBarActivity {
         Intent intent = new Intent(activity, UserActivity.class);
         intent.putExtra("id", id);
         activity.startActivity(intent, bundle);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        handler.setImageLoader();
     }
 
     @Override

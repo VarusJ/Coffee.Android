@@ -12,11 +12,12 @@ import studio.xmatrix.coffee.ui.BaseActionBarActivity;
 public class DetailActivity extends BaseActionBarActivity {
     public static int REQUEST_CODE = 886;
     DetailActivityBinding binding;
+    DetailHandler handler;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.detail_activity);
-        DetailHandler handler = new DetailHandler(this, binding);
+        handler = new DetailHandler(this, binding);
     }
 
     public static void start(Activity activity, String id, Bundle bundle) {
@@ -29,4 +30,9 @@ public class DetailActivity extends BaseActionBarActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        handler.setImageLoader();
+    }
 }
