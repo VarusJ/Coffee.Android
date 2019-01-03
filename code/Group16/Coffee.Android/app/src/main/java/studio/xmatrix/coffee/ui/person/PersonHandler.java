@@ -1,12 +1,15 @@
 package studio.xmatrix.coffee.ui.person;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
 import studio.xmatrix.coffee.R;
+import studio.xmatrix.coffee.data.common.network.Status;
 import studio.xmatrix.coffee.databinding.PersonActivityBinding;
 import studio.xmatrix.coffee.inject.AppInjector;
 import studio.xmatrix.coffee.inject.Injectable;
@@ -15,6 +18,9 @@ import studio.xmatrix.coffee.ui.notice.NoticeViewModel;
 
 import javax.inject.Inject;
 
+import java.util.Objects;
+
+import static studio.xmatrix.coffee.data.service.resource.CommonResource.StatusSuccess;
 import static studio.xmatrix.coffee.ui.AvatarImageBehavior.startAlphaAnimation;
 
 public class PersonHandler implements AppBarLayout.OnOffsetChangedListener, Injectable {
@@ -40,15 +46,40 @@ public class PersonHandler implements AppBarLayout.OnOffsetChangedListener, Inje
         initView();
     }
 
+    @SuppressLint("DefaultLocale")
     private void initView() {
         Toolbar toolbar = binding.personToolbar;
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         toolbar.setTitle("");
         activity.setSupportActionBar(toolbar);
 
+        viewModel.getInfo().observe(activity, res ->{
+            assert res != null;
+            if (res.getStatus() == Status.SUCCESS){
+                switch (Objects.requireNonNull(res.getData()).getState()){
+                    case StatusSuccess:
+                        String bio = Objects.requireNonNull(Objects.requireNonNull(res.getData()).getResource()).getBio();
+                        String name = Objects.requireNonNull(Objects.requireNonNull(res.getData()).getResource()).getName();
+                        float maxSize = Objects.requireNonNull(Objects.requireNonNull(res.getData()).getResource()).getMaxSize() / 1024 / 1024;
+                        float usedSize =  Objects.requireNonNull(Objects.requireNonNull(res.getData()).getResource()).getUsedSize() / 1024 / 1024;
+
+                        binding.personTitle.setText(name);
+                        binding.personBio.setText(bio);
+                        binding.personName.setText(name);
+                        binding.personTextCap.setText(String.format("我的空间：%.1fMB/%.1fMB", usedSize, maxSize));
+                        binding.circularFillableLoaders.setProgress(Math.round(usedSize/maxSize));
+                        break;
+                }
+            } else if (res.getStatus() == Status.ERROR){
+                Toast.makeText(activity, "请检查网络连接", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         binding.personNameEdit.setOnClickListener(v -> {
-            Toast.makeText(activity, "修改昵称", Toast.LENGTH_SHORT).show();
-            // TODO
+            NameDialog dialog = new NameDialog(activity, binding.personName.getText().toString());
+            dialog.setCancelable(true);
+            Objects.requireNonNull(dialog.getWindow()).setGravity(Gravity.CENTER);
+            dialog.show();
         });
 
         binding.personAppBar.addOnOffsetChangedListener(this);

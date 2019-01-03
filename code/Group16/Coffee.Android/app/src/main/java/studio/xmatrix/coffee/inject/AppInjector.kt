@@ -10,6 +10,7 @@ import studio.xmatrix.coffee.ui.admin.AdminActivityHandler
 import studio.xmatrix.coffee.ui.home.HomeHandler
 import studio.xmatrix.coffee.ui.nav.NavActivity
 import studio.xmatrix.coffee.ui.notice.NoticeHandler
+import studio.xmatrix.coffee.ui.person.NameDialogHandler
 import studio.xmatrix.coffee.ui.person.PersonHandler
 import studio.xmatrix.coffee.ui.user.UserHandler
 
@@ -35,6 +36,7 @@ class AppInjector private constructor() {
                 is UserHandler -> component.inject(injectable)
                 is NoticeHandler -> component.inject(injectable)
                 is PersonHandler -> component.inject(injectable)
+                is NameDialogHandler -> component.inject(injectable)
                 is NavActivity -> component.inject(injectable)
                 else -> throw IllegalArgumentException("Class not found in AppComponent")
             }
