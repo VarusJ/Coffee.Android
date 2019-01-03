@@ -103,12 +103,13 @@ class ContentDatabase @Inject constructor(app: studio.xmatrix.coffee.App, privat
         return data
     }
 
-    fun loadContentsByType(type: String): LiveData<ContentsResource> {
+    fun loadContentsByUserIdAndType(userId: String, type: String): LiveData<ContentsResource> {
         val data = MutableLiveData<ContentsResource>()
         executors.diskIO().execute {
             val res = ContentsResource(CommonResource.StatusSuccess, box.query {
-                equal(Content_.userName, "")
+                equal(Content_.ownId, userId)
                 equal(Content_.type, type)
+                equal(Content_.userName, "")
                 orderDesc(Content_.publishDate)
             }.find())
             data.postValue(res)
@@ -190,10 +191,11 @@ class ContentDatabase @Inject constructor(app: studio.xmatrix.coffee.App, privat
         box.put(items)
     }
 
-    fun saveContents(items: List<Content>?) {
+    fun saveContents(userId: String, items: List<Content>?) {
         items?.forEach { item ->
             box.query {
                 equal(Content_.id, item.id)
+                equal(Content_.ownId, userId)
                 equal(Content_.userName, "")
             }.find().forEach {
                 if (!it.album.isNull) {
