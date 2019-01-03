@@ -3,6 +3,7 @@ package studio.xmatrix.coffee.data.service
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.graphics.Bitmap
+import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import io.objectbox.Box
 import io.objectbox.kotlin.boxFor
@@ -40,9 +41,8 @@ interface ContentService {
     fun getPublicListByPage(@Query("page") page: Int, @Query("eachPage") eachPage: Int): LiveData<ApiResponse<PublishContentsResponse>>
 
     @Multipart
-    @JvmSuppressWildcards
     @POST("album")
-    fun addAlbum(@PartMap form: Map<String, RequestBody>, @Part files: List<MultipartBody.Part>): LiveData<ApiResponse<CommonResource>>
+    fun addAlbum(@Part parts: List<MultipartBody.Part>): LiveData<ApiResponse<CommonResource>>
 
     // 当id为self时获取自身数据
     @GET("album/{id}")
@@ -69,13 +69,13 @@ interface ContentService {
         @SerializedName("isPublic")
         val public: Boolean
     ) {
-        fun toForm(): Map<String, RequestBody> {
-            val form = HashMap<String, RequestBody>()
-            form["title"] = RequestBody.create(MediaType.parse("multipart/form-data"), title)
-            form["detail"] = RequestBody.create(MediaType.parse("multipart/form-data"), detail)
-            form["tags"] = RequestBody.create(MediaType.parse("multipart/form-data"), tags.joinToString())
-            form["isPublic"] = RequestBody.create(MediaType.parse("multipart/form-data"), public.toString())
-            return form
+        fun toPartList(): List<MultipartBody.Part> {
+            val list = ArrayList<MultipartBody.Part>()
+            list.add(MultipartBody.Part.createFormData("title", title))
+            list.add(MultipartBody.Part.createFormData("detail", detail))
+            list.add(MultipartBody.Part.createFormData("tags", tags.joinToString()))
+            list.add(MultipartBody.Part.createFormData("isPublic", public.toString()))
+            return list
         }
     }
 }
@@ -90,6 +90,10 @@ class ContentDatabase @Inject constructor(app: studio.xmatrix.coffee.App, privat
     private val fileBox: Box<File> = app.boxStore.boxFor()
     private val imageBox: Box<Image> = app.boxStore.boxFor()
     private val movieBox: Box<Movie> = app.boxStore.boxFor()
+
+    fun deleteById(id: String) {
+        box.query { equal(Content_.id, id) }.remove()
+    }
 
     fun loadPublicContentsByNum(num: Int): LiveData<ContentsResource> {
         val data = MutableLiveData<ContentsResource>()
