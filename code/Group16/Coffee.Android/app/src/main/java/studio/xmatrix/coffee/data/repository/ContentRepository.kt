@@ -19,6 +19,7 @@ import studio.xmatrix.coffee.data.service.resource.ContentsResource
 import studio.xmatrix.coffee.data.service.response.ContentResponse
 import studio.xmatrix.coffee.data.service.response.ContentsResponse
 import studio.xmatrix.coffee.data.service.response.PublishContentsResponse
+import studio.xmatrix.coffee.data.store.DefaultSharedPref
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -120,12 +121,13 @@ class ContentRepository @Inject constructor(
     }
 
     fun getAlbums(): LiveData<Resource<ContentsResource>> {
+        var userId = DefaultSharedPref.get(DefaultSharedPref.Key.UserId)
         var state = CommonResource.StatusSuccess
         return object : NetworkBoundResource<ContentsResource, ContentsResponse>(executors) {
             override fun saveCallResult(item: ContentsResponse) {
                 state = item.state
                 if (item.state == CommonResource.StatusSuccess) {
-                    database.saveContents(item.toContentsResource().resource)
+                    database.saveContents(userId, item.toContentsResource().resource)
                 }
             }
 
@@ -133,7 +135,7 @@ class ContentRepository @Inject constructor(
 
             override fun loadFromDb(): LiveData<ContentsResource> {
                 return if (state == CommonResource.StatusSuccess) {
-                    database.loadContentsByType(Content.TypeAlbum)
+                    database.loadContentsByUserIdAndType(userId, Content.TypeAlbum)
                 } else {
                     val data = MutableLiveData<ContentsResource>()
                     executors.diskIO().execute { data.postValue(ContentsResource(state, null)) }
@@ -153,12 +155,13 @@ class ContentRepository @Inject constructor(
     }
 
     fun getTexts(): LiveData<Resource<ContentsResource>> {
+        var userId = DefaultSharedPref.get(DefaultSharedPref.Key.UserId)
         var state = CommonResource.StatusSuccess
         return object : NetworkBoundResource<ContentsResource, ContentsResponse>(executors) {
             override fun saveCallResult(item: ContentsResponse) {
                 state = item.state
                 if (item.state == CommonResource.StatusSuccess) {
-                    database.saveContents(item.toContentsResource().resource)
+                    database.saveContents(userId, item.toContentsResource().resource)
                 }
             }
 
@@ -166,7 +169,7 @@ class ContentRepository @Inject constructor(
 
             override fun loadFromDb(): LiveData<ContentsResource> {
                 return if (state == CommonResource.StatusSuccess) {
-                    database.loadContentsByType(Content.TypeText)
+                    database.loadContentsByUserIdAndType(userId, Content.TypeText)
                 } else {
                     val data = MutableLiveData<ContentsResource>()
                     executors.diskIO().execute { data.postValue(ContentsResource(state, null)) }
