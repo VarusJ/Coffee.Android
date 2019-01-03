@@ -14,11 +14,9 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -58,6 +56,7 @@ public class NavActivity extends AppCompatActivity
     private HomeFragment homeFragment;
     private NoticeFragment noticeFragment;
     private SquareFragment squareFragment;
+    private String oldId = "init";
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
@@ -85,14 +84,16 @@ public class NavActivity extends AppCompatActivity
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(NavViewModel.class);
 
 
-        NineGridView.setImageLoader(new MyImageLoader());
+
 
         setContentView(R.layout.nav_activity);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> startActivity(new Intent(this, AddActivity.class)));
+        fab.setOnClickListener(view -> {
+            startActivityForResult(new Intent(this, AddActivity.class), 886);
+        });
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -162,55 +163,13 @@ public class NavActivity extends AppCompatActivity
 
     }
 
-
-    private class MyImageLoader implements NineGridView.ImageLoader {
-        @Override
-        public void onDisplayImage(Context context, ImageView imageView, String url) {
-            String[] data = url.split("@");
-            if (data.length == 2) {
-                String path = data[0];
-                path = path.replace('/', '|');
-                viewModel.getImage(data[1], path).observe(NavActivity.this, res -> {
-                    if (res != null) {
-                        switch (res.getStatus()) {
-                            case SUCCESS:
-                                imageView.setImageBitmap(res.getData());
-                                break;
-                            case ERROR:
-                                Toast.makeText(context, res.getMessage(), Toast.LENGTH_SHORT).show();
-                                break;
-                        }
-                    }
-
-                });
-            } else if (data.length == 1) {
-                viewModel.getThumb(data[0]).observe(NavActivity.this, res -> {
-                    if (res != null && res.getStatus() == Status.SUCCESS) {
-                        imageView.setImageBitmap(res.getData());
-                    }
-                });
-            } else {
-                imageView.setImageDrawable(getDrawable(R.drawable.ic_like));
-            }
-
-
-        }
-
-        @Override
-        public Bitmap getCacheImage(String url) {
-            return null;
-        }
-    }
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null) {
             if (data.getBooleanExtra("update", false)) {
-                if (squareFragment != null) {
-                    squareFragment.handler.refreshData();
-                }
+                if (squareFragment != null) squareFragment.handler.refreshData();
+                if (homeFragment != null) homeFragment.handler.refreshData();
             }
         }
     }
@@ -249,12 +208,14 @@ public class NavActivity extends AppCompatActivity
                         TextView userNameText = findViewById(R.id.head_user_name);
                         TextView userText = findViewById(R.id.head_user_text);
                         ImageView userAvatar = findViewById(R.id.head_user_avatar);
+                        String currentId = "";
                         if (userInfo == null) {
                             userNameText.setText("点击头像登陆");
                             userText.setText("Coffee");
                             userAvatar.setImageResource(R.mipmap.ic_launcher_round);
                             userAvatar.setOnClickListener(v -> startActivity(new Intent(this, AdminActivity.class)));
                         } else {
+                            currentId = userInfo.getId();
                             userNameText.setText(userInfo.getName());
                             userText.setText(userInfo.getBio());
                             viewModel.getUserAvatar(userInfo.getAvatar()).observe(this, res -> {
@@ -269,8 +230,11 @@ public class NavActivity extends AppCompatActivity
                                     .toBundle()));
                             DefaultSharedPref.INSTANCE.set(DefaultSharedPref.Key.UserId, userInfo.getId());
                         }
-                        if (noticeFragment != null) noticeFragment.handler.refreshData();
-                        if (homeFragment != null) homeFragment.handler.refreshData();
+                        if (!currentId.equals(oldId)) {
+                            oldId = currentId;
+                            if (noticeFragment != null) noticeFragment.handler.refreshData();
+                            if (homeFragment != null) homeFragment.handler.refreshData();
+                        }
                         break;
                     case ERROR:
                         Toast.makeText(this, "网络错误", Toast.LENGTH_SHORT).show();
@@ -285,6 +249,7 @@ public class NavActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         refreshData();
+        NineGridView.setImageLoader(new MyImageLoader(this, viewModel));
     }
 
     @Override

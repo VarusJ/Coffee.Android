@@ -65,7 +65,6 @@ public class SquareHandler implements Injectable {
         });
     }
 
-
     private void like(String id) {
         viewModel.like(id, LikeService.LikeType.Content).observe(activity, res -> {
             if (res != null) {

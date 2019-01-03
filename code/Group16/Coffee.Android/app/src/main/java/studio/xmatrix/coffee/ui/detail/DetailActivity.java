@@ -9,8 +9,6 @@ import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.databinding.DetailActivityBinding;
 import studio.xmatrix.coffee.ui.BaseActionBarActivity;
 
-import java.util.Objects;
-
 public class DetailActivity extends BaseActionBarActivity {
     public static int REQUEST_CODE = 886;
     DetailActivityBinding binding;
@@ -24,7 +22,11 @@ public class DetailActivity extends BaseActionBarActivity {
     public static void start(Activity activity, String id, Bundle bundle) {
         Intent intent = new Intent(activity, DetailActivity.class);
         intent.putExtra("id", id);
-        activity.startActivityForResult(intent, REQUEST_CODE, bundle);
+        if (bundle != null) {
+            activity.startActivityForResult(intent, REQUEST_CODE, bundle);
+        } else {
+            activity.startActivityForResult(intent, REQUEST_CODE);
+        }
     }
 
 }

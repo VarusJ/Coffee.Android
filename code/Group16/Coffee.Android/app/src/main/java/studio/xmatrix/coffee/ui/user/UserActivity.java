@@ -11,17 +11,28 @@ import studio.xmatrix.coffee.ui.detail.DetailActivity;
 
 public class UserActivity extends BaseActionBarActivity {
     UserActivityBinding binding;
+    UserHandler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.user_activity);
-        UserHandler handler = new UserHandler(this, binding);
+        handler = new UserHandler(this, binding);
     }
 
     public static void start(Activity activity, String id, Bundle bundle) {
         Intent intent = new Intent(activity, UserActivity.class);
         intent.putExtra("id", id);
         activity.startActivity(intent, bundle);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null) {
+            if (data.getBooleanExtra("update", false)) {
+                handler.listManger.refreshData();
+            }
+        }
     }
 }

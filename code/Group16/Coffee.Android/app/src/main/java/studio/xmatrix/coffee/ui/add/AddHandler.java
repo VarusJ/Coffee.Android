@@ -2,7 +2,10 @@ package studio.xmatrix.coffee.ui.add;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.support.v4.app.ActivityCompat;
@@ -26,19 +29,30 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.databinding.AddActivityBinding;
+import studio.xmatrix.coffee.inject.AppInjector;
+import studio.xmatrix.coffee.inject.Injectable;
+import studio.xmatrix.coffee.ui.detail.DetailViewModel;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class AddHandler {
+public class AddHandler implements Injectable {
     private AddActivity activity;
     private AddActivityBinding binding;
     private PictureAdapter picAdapter;
     private ArrayList<String> tagsList;
 
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
+    private AddViewModel viewModel;
+
     public AddHandler(AddActivity activity, AddActivityBinding binding) {
         this.activity = activity;
         this.binding = binding;
+        AppInjector.Companion.inject(this);
+        viewModel = ViewModelProviders.of(activity, viewModelFactory).get(AddViewModel.class);
         initView();
     }
 
@@ -140,7 +154,7 @@ public class AddHandler {
 
     public void send() {
 
-        String title = binding.title.getText().toString();
+        String title = Objects.requireNonNull(binding.title.getText()).toString();
         String content = binding.content.getText().toString();
         boolean feedPublic = binding.toggle.isChecked();
         ArrayList<String> tags = tagsList;
@@ -151,9 +165,42 @@ public class AddHandler {
             return;
         }
 
-        // TODO
-        Toast.makeText(activity, "发布新动态", Toast.LENGTH_SHORT).show();
-        // api
+        if (bitmaps.size() == 0) {
+            viewModel.addText(title, content, tags, feedPublic).observe(activity, res -> {
+                if (res != null) {
+                    switch (res.getStatus()) {
+                        case ERROR:
+                            Toast.makeText(activity, "网络错误" + res.getMessage(), Toast.LENGTH_SHORT).show();
+                            break;
+                        case SUCCESS:
+                            Toast.makeText(activity, "发布成功", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent();
+                            intent.putExtra("update", true);
+                            activity.setResult(886 , intent);
+                            activity.finish();
+                            break;
+                    }
+                }
+            });
+        } else {
+            viewModel.addAlbum(title, content, tags, feedPublic, bitmaps).observe(activity, res -> {
+                if (res != null) {
+                    switch (res.getStatus()) {
+                        case ERROR:
+                            Toast.makeText(activity, "网络错误" + res.getMessage(), Toast.LENGTH_SHORT).show();
+                            break;
+                        case SUCCESS:
+                            Toast.makeText(activity, "发布成功", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent();
+                            intent.putExtra("update", true);
+                            activity.setResult(886 , intent);
+                            activity.finish();
+                            break;
+                    }
+                }
+            });
+        }
+
     }
 
     private boolean checkStoragePermission() {

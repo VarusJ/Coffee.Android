@@ -103,10 +103,9 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder
 
             binding.noticeLayout.setOnClickListener(v -> {
                 DetailActivity.start(activity, item.getData().getTargetId(), null);
-                activity.startActivity(new Intent(activity, DetailActivity.class));
             });
-            binding.noticeUserAvatar.setOnClickListener(this::goToUser);
-            binding.noticeUserName.setOnClickListener(this::goToUser);
+            binding.noticeUserAvatar.setOnClickListener(v -> goToUser(item.getData().getSourceId()));
+            binding.noticeUserName.setOnClickListener(v -> goToUser(item.getData().getSourceId()));
 
             binding.noticeSwipe.setShowMode(SwipeLayout.ShowMode.PullOut);
             binding.noticeSwipe.addDrag(SwipeLayout.DragEdge.Right, binding.removeLayout);
@@ -122,13 +121,12 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder
             });
         }
 
-        void goToUser(View v) {
-            Intent intent = new Intent(activity, UserActivity.class);
-            ActivityOptionsCompat options = ActivityOptionsCompat
+        void goToUser(String userId) {
+            UserActivity.start(activity, userId, ActivityOptionsCompat
                     .makeSceneTransitionAnimation(activity,
                             Pair.create(binding.noticeUserAvatar, "userAvatar"),
-                            Pair.create(binding.noticeUserName, "userName"));
-            activity.startActivity(intent, options.toBundle());
+                            Pair.create(binding.noticeUserName, "userName"))
+                    .toBundle());
         }
     }
 }
