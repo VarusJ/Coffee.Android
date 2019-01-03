@@ -36,7 +36,13 @@ class ContentRepository @Inject constructor(
 
     fun deleteContentById(id: String): LiveData<Resource<CommonResource>> {
         return object : NetworkDirectiveResource<CommonResource, CommonResource>(executors) {
-            override fun convertToResource(data: CommonResource) = data
+            override fun convertToResource(data: CommonResource) : CommonResource {
+                if (data.state == CommonResource.StatusSuccess) {
+                    database.deleteById(id)
+                }
+                return data
+            }
+
             override fun createCall() = service.deleteById(id)
         }.asLiveData()
     }
@@ -106,7 +112,7 @@ class ContentRepository @Inject constructor(
                     } else {
                         ThumbnailUtils.extractThumbnail(image, image.width, image.width)
                     }
-                    thumbImage = Bitmap.createScaledBitmap(thumbImage, thumbDimension, thumbDimension, true);
+                    thumbImage = Bitmap.createScaledBitmap(thumbImage, thumbDimension, thumbDimension, true)
                     ByteArrayOutputStream().use {
                         thumbImage.compress(Bitmap.CompressFormat.PNG, 100, it)
                         val body = RequestBody.create(MediaType.parse("multipart/form-data"), it.toByteArray())
@@ -121,7 +127,7 @@ class ContentRepository @Inject constructor(
     }
 
     fun getAlbums(): LiveData<Resource<ContentsResource>> {
-        var userId = DefaultSharedPref.get(DefaultSharedPref.Key.UserId)
+        val userId = DefaultSharedPref.get(DefaultSharedPref.Key.UserId)
         var state = CommonResource.StatusSuccess
         return object : NetworkBoundResource<ContentsResource, ContentsResponse>(executors) {
             override fun saveCallResult(item: ContentsResponse) {
@@ -155,7 +161,7 @@ class ContentRepository @Inject constructor(
     }
 
     fun getTexts(): LiveData<Resource<ContentsResource>> {
-        var userId = DefaultSharedPref.get(DefaultSharedPref.Key.UserId)
+        val userId = DefaultSharedPref.get(DefaultSharedPref.Key.UserId)
         var state = CommonResource.StatusSuccess
         return object : NetworkBoundResource<ContentsResource, ContentsResponse>(executors) {
             override fun saveCallResult(item: ContentsResponse) {

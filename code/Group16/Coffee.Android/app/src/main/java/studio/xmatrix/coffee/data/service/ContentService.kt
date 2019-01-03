@@ -90,6 +90,10 @@ class ContentDatabase @Inject constructor(app: studio.xmatrix.coffee.App, privat
     private val imageBox: Box<Image> = app.boxStore.boxFor()
     private val movieBox: Box<Movie> = app.boxStore.boxFor()
 
+    fun deleteById(id: String) {
+        box.query { equal(Content_.id, id) }.remove()
+    }
+
     fun loadPublicContentsByNum(num: Int): LiveData<ContentsResource> {
         val data = MutableLiveData<ContentsResource>()
         executors.diskIO().execute {
