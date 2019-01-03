@@ -19,4 +19,5 @@
     <color name="colorGreen">#4BB464</color>
     <color name="colorGrey">#4BB464</color>
     <color name="colorIcon">#737373</color>
+    <color name="colorPrimaryIcon">#997962</color>
 </resources>

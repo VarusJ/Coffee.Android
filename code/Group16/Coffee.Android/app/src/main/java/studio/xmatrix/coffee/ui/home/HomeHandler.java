@@ -39,6 +39,7 @@ public class HomeHandler implements Injectable {
         if (!userId.equals("")) {
             if (!id.equals(userId)) {
                 id = userId;
+                listManger.setId(userId);
             } else {
                 listManger.setId("self");
             }

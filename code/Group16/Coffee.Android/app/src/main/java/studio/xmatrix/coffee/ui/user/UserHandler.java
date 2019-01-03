@@ -7,6 +7,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import com.lzy.ninegrid.NineGridView;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.data.common.network.Status;
 import studio.xmatrix.coffee.data.model.User;
@@ -17,6 +18,7 @@ import studio.xmatrix.coffee.ui.home.HomeAdapter;
 import studio.xmatrix.coffee.ui.home.HomeHandler;
 import studio.xmatrix.coffee.ui.home.HomeListManger;
 import studio.xmatrix.coffee.ui.home.HomeViewModel;
+import studio.xmatrix.coffee.ui.nav.MyImageLoader;
 
 import javax.inject.Inject;
 
@@ -55,6 +57,10 @@ public class UserHandler implements AppBarLayout.OnOffsetChangedListener, Inject
         listManger =  new HomeListManger(activity, binding.userInclude, viewModel);
         listManger.setId(id);
         initData();
+    }
+
+    void setImageLoader() {
+        NineGridView.setImageLoader(new MyImageLoader(activity, viewModel));
     }
 
     private void initData() {

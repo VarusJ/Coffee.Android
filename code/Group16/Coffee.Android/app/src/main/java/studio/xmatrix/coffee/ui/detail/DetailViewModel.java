@@ -14,10 +14,11 @@ import studio.xmatrix.coffee.data.service.resource.CommentsResource;
 import studio.xmatrix.coffee.data.service.resource.CommonResource;
 import studio.xmatrix.coffee.data.service.resource.ContentResource;
 import studio.xmatrix.coffee.data.service.resource.LikeResource;
+import studio.xmatrix.coffee.ui.nav.ImageViewModel;
 
 import javax.inject.Inject;
 
-public class DetailViewModel extends AndroidViewModel {
+public class DetailViewModel extends AndroidViewModel implements ImageViewModel {
 
     private ContentRepository contentRepository;
     private CommentRepository commentRepository;
@@ -65,8 +66,15 @@ public class DetailViewModel extends AndroidViewModel {
     LiveData<Resource<CommonResource>> unlike(String id,LikeService.LikeType type) {
         return likeRepository.unlikeById(id, type);
     }
+
     LiveData<Resource<Bitmap>> getUserAvatar(String url) {
         return userRepository.getAvatarByUrl(url);
     }
+
+    public LiveData<Resource<Bitmap>> getThumb(String file) {
+        return contentRepository.getThumbByFilename(file);
+    }
+
+    public LiveData<Resource<Bitmap>> getImage(String id, String path) { return contentRepository.getImageByIdAndPath(id, path); }
 
 }

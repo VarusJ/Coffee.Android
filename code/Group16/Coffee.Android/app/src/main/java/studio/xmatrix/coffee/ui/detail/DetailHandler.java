@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration;
 import com.lzy.ninegrid.ImageInfo;
+import com.lzy.ninegrid.NineGridView;
 import com.lzy.ninegrid.preview.NineGridViewClickAdapter;
 import io.objectbox.relation.ToMany;
 import studio.xmatrix.coffee.R;
@@ -33,6 +34,7 @@ import studio.xmatrix.coffee.inject.AppInjector;
 import studio.xmatrix.coffee.inject.Injectable;
 import studio.xmatrix.coffee.ui.ListStatus;
 import studio.xmatrix.coffee.ui.add.AddActivity;
+import studio.xmatrix.coffee.ui.nav.MyImageLoader;
 import studio.xmatrix.coffee.ui.square.TagAdapter;
 import studio.xmatrix.coffee.ui.user.UserActivity;
 
@@ -74,6 +76,10 @@ public class DetailHandler implements Injectable {
         viewModel = ViewModelProviders.of(activity, viewModelFactory).get(DetailViewModel.class);
         initView();
         refreshData();
+    }
+
+    void setImageLoader() {
+        NineGridView.setImageLoader(new MyImageLoader(activity, viewModel));
     }
 
     private void setLikeStatus() {
