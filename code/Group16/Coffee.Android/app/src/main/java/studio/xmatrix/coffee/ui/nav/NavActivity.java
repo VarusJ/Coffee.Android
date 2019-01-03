@@ -14,9 +14,11 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -66,19 +68,18 @@ public class NavActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-//                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-//                ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(
-//                    this,
-//                    new String[]{
-//                            Manifest.permission.READ_EXTERNAL_STORAGE,
-//                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//                            Manifest.permission.CAMERA
-//                    },
-//                    1
-//            );
-//        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.CAMERA
+                    },
+                    1
+            );
+        }
 
         AppInjector.Companion.inject(this);
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(NavViewModel.class);
@@ -182,15 +183,14 @@ public class NavActivity extends AppCompatActivity
             case 1:
                 for (int i = 0; i < permissions.length; i++) {
                     switch (permissions[i]) {
-                        case Manifest.permission.READ_EXTERNAL_STORAGE:
+                        case Manifest.permission.WRITE_EXTERNAL_STORAGE:
                             if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                                Toast.makeText(this, "将无法使用相册功能", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "您关闭了存储权限，将无法添加图片。", Toast.LENGTH_SHORT).show();
                             }
                             break;
-                        case Manifest.permission.WRITE_EXTERNAL_STORAGE:
                         case Manifest.permission.CAMERA:
                             if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                                Toast.makeText(this, "将无法使用相机功能", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "您关闭了照相机权限，将无法使用照相机添加图片。", Toast.LENGTH_SHORT).show();
                             }
                             break;
                     }

@@ -24,7 +24,6 @@ import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 
-
 @Singleton
 class ContentRepository @Inject constructor(
     private val executors: AppExecutors,
@@ -36,7 +35,7 @@ class ContentRepository @Inject constructor(
 
     fun deleteContentById(id: String): LiveData<Resource<CommonResource>> {
         return object : NetworkDirectiveResource<CommonResource, CommonResource>(executors) {
-            override fun convertToResource(data: CommonResource) : CommonResource {
+            override fun convertToResource(data: CommonResource): CommonResource {
                 if (data.state == CommonResource.StatusSuccess) {
                     database.deleteById(id)
                 }
@@ -121,7 +120,14 @@ class ContentRepository @Inject constructor(
                         list.add(part)
                     }
                 }
-                return service.addAlbum(ContentService.ContentRequestBody(title, detail, tags, public).toForm(), list)
+                return service.addAlbum(
+                    ContentService.ContentRequestBody(
+                        title,
+                        detail,
+                        tags,
+                        public
+                    ).toPartList() + list
+                )
             }
         }.asLiveData()
     }
