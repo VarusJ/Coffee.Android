@@ -10,16 +10,7 @@ public class NameDialogHandler {
     private String name;
     private PersonHandler.MyInterface myListener;
 
-<<<<<<< HEAD
     NameDialogHandler(PersonActivity activity, PersonalNameDialogBinding binding, String name, PersonHandler.MyInterface myListener){
-=======
-    @Inject
-
-    ViewModelProvider.Factory viewModelFactory;
-    PersonViewModel viewModel;
-
-    NameDialogHandler(PersonActivity activity, PersonalNameDialogBinding binding, String name){
->>>>>>> upstream/master
         this.activity = activity;
         this.binding = binding;
         this.name = name;

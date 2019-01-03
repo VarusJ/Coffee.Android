@@ -80,7 +80,7 @@ public class PersonHandler implements AppBarLayout.OnOffsetChangedListener, Inje
                         binding.personBio.setText(bio);
                         binding.personName.setText(String.format("昵称: %s", name));
                         binding.personTextCap.setText(String.format("我的空间：%.1fMB/%.1fMB", usedSize, maxSize));
-                        binding.circularFillableLoaders.setProgress(Math.round(usedSize/maxSize));
+                        binding.circularFillableLoaders.setProgress(Math.round((maxSize-usedSize)/maxSize * 100));
                         break;
                 }
             } else if (res.getStatus() == Status.ERROR){
