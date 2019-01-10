@@ -238,9 +238,9 @@ class ContentRepository @Inject constructor(
     fun getImageByIdAndPath(id: String, path: String): LiveData<Resource<Bitmap>> {
         val newPath = path.replace('/', '|')
         return object : NetworkBoundResource<Bitmap, Bitmap>(executors) {
-            override fun saveCallResult(item: Bitmap) = imageDatabase.saveById(id, item)
+            override fun saveCallResult(item: Bitmap) = imageDatabase.saveById("$id/$newPath", item)
             override fun shouldFetch(data: Bitmap?) = data == null
-            override fun loadFromDb() = imageDatabase.loadById(id)
+            override fun loadFromDb() = imageDatabase.loadById("$id/$newPath")
             override fun createCall() = service.getImageByIdAndPath(id, newPath)
         }.asLiveData()
     }
