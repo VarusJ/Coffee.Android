@@ -1,6 +1,7 @@
 package studio.xmatrix.coffee.ui;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.util.AttributeSet;
@@ -44,18 +45,18 @@ public class AvatarImageBehavior extends CoordinatorLayout.Behavior<CircleImageV
 
     @Override
     public boolean layoutDependsOn(
-            final CoordinatorLayout parent,
-            final CircleImageView child,
-            final View dependency) {
+            @NonNull final CoordinatorLayout parent,
+            @NonNull final CircleImageView child,
+            @NonNull final View dependency) {
 
         return dependency instanceof AppBarLayout; // change if you want another sibling to depend on
     }
 
     @Override
     public boolean onDependentViewChanged(
-            final CoordinatorLayout parent,
-            final CircleImageView child,
-            final View dependency) {
+            @NonNull final CoordinatorLayout parent,
+            @NonNull final CircleImageView child,
+            @NonNull final View dependency) {
 
         // make child (avatar) change in relation to dependency (toolbar) in both size and position, init with properties from layout
         initProperties(child, dependency);

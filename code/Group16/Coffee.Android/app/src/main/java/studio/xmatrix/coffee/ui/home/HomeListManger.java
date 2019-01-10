@@ -7,7 +7,6 @@ import android.widget.Toast;
 import com.scwang.smartrefresh.header.DeliveryHeader;
 import studio.xmatrix.coffee.data.common.network.Resource;
 import studio.xmatrix.coffee.data.model.Content;
-import studio.xmatrix.coffee.data.service.LikeService;
 import studio.xmatrix.coffee.data.service.resource.ContentsResource;
 import studio.xmatrix.coffee.data.store.DefaultSharedPref;
 import studio.xmatrix.coffee.databinding.HomeContentBinding;
@@ -153,7 +152,7 @@ public class HomeListManger {
     }
 
     private void like(String id) {
-        viewModel.like(id, LikeService.LikeType.Content).observe(activity, res -> {
+        viewModel.like(id).observe(activity, res -> {
             if (res != null) {
                 switch (res.getStatus()) {
                     case ERROR:
@@ -168,7 +167,7 @@ public class HomeListManger {
     }
 
     private void unlike(String id) {
-        viewModel.unlike(id, LikeService.LikeType.Content).observe(activity, res -> {
+        viewModel.unlike(id).observe(activity, res -> {
             if (res != null) {
                 switch (res.getStatus()) {
                     case ERROR:

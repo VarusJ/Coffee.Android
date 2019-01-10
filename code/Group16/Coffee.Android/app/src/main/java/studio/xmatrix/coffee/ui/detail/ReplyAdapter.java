@@ -26,13 +26,12 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
     private List<CommentsResource.ReplyForComment> data;
     private OnClickReply onClickReply;
     private List<String> likeData;
-    private DetailViewModel viewModel;
 
-    public void setOnClickReply(ReplyAdapter.OnClickReply onClickReply) {
+    void setOnClickReply(ReplyAdapter.OnClickReply onClickReply) {
         this.onClickReply = onClickReply;
     }
 
-    public void setLikeData(List<String> likeData) {
+    void setLikeData(List<String> likeData) {
         if (likeData == null) {
             this.likeData.clear();
         } else {
@@ -49,9 +48,8 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
         void onClickDelete(String id);
     }
 
-    public ReplyAdapter(DetailActivity activity, DetailViewModel viewModel) {
+    ReplyAdapter(DetailActivity activity) {
         this.activity = activity;
-        this.viewModel = viewModel;
         this.data = new ArrayList<>();
         this.likeData = new ArrayList<>();
     }
@@ -96,9 +94,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
             CommentsResource.ReplyForComment itemData = data.get(pos);
             binding.setModel(itemData);
             binding.replyTime.setText(getTime(itemData.getReply().getDate()));
-            binding.replyLike.setOnClickListener(v -> {
-                onClickReply.onClickLike(itemData.getReply().getId());
-            });
+            binding.replyLike.setOnClickListener(v -> onClickReply.onClickLike(itemData.getReply().getId()));
             binding.replyContent.setOnLongClickListener(v -> {
                 if (DefaultSharedPref.INSTANCE.get(DefaultSharedPref.Key.UserId).equals(itemData.getReply().getUserId())) {
                     final AlertDialog.Builder normalDialog =
@@ -110,16 +106,12 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
                         onClickReply.onClickDelete(itemData.getReply().getId());
                         dialog.dismiss();
                     });
-                    normalDialog.setNegativeButton("取消", (dialog, which) -> {
-                        dialog.dismiss();
-                    });
+                    normalDialog.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
                     normalDialog.show();
                 }
                 return true;
             });
-            binding.replyContent.setOnClickListener(v -> {
-                onClickReply.onClickReply(itemData.getReply().getUserId(), itemData.getUser().getName(), itemData.getReply().getContentId());
-            });
+            binding.replyContent.setOnClickListener(v -> onClickReply.onClickReply(itemData.getReply().getUserId(), itemData.getUser().getName(), itemData.getReply().getContentId()));
 
             if (likeData.contains(itemData.getReply().getId())) {
                 binding.replyLike.setImageResource(R.drawable.ic_like);

@@ -7,11 +7,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Toast;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.databinding.ValidActivityBinding;
-
-import java.util.Objects;
 
 public class ValidActivity extends AppCompatActivity {
     ValidActivityBinding binding;

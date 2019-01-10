@@ -38,12 +38,12 @@ public class SquareViewModel extends AndroidViewModel {
         return likeRepository.getLikes();
     }
 
-    LiveData<Resource<CommonResource>> like(String id, LikeService.LikeType type) {
-        return likeRepository.likeById(id, type);
+    LiveData<Resource<CommonResource>> like(String id) {
+        return likeRepository.likeById(id, LikeService.LikeType.Content);
     }
 
-    LiveData<Resource<CommonResource>> unlike(String id,LikeService.LikeType type) {
-        return likeRepository.unlikeById(id, type);
+    LiveData<Resource<CommonResource>> unlike(String id) {
+        return likeRepository.unlikeById(id, LikeService.LikeType.Content);
     }
 
     LiveData<Resource<Bitmap>> getUserAvatar(String url) {

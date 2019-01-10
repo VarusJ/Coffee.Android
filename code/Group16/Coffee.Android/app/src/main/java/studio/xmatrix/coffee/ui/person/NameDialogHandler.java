@@ -1,5 +1,7 @@
 package studio.xmatrix.coffee.ui.person;
 
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.widget.Toast;
 import studio.xmatrix.coffee.databinding.PersonalNameDialogBinding;
 

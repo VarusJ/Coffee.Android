@@ -31,14 +31,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     private ReplyAdapter.OnClickReply onClickReply;
     private DetailViewModel viewModel;
 
-    public void setOnClickComment(OnClickComment onClickComment) {
+    void setOnClickComment(OnClickComment onClickComment) {
         this.onClickComment = onClickComment;
     }
 
-    public void setOnClickReply(ReplyAdapter.OnClickReply onClickReply) {
+    void setOnClickReply(ReplyAdapter.OnClickReply onClickReply) {
         this.onClickReply = onClickReply;
     }
-
 
     public interface OnClickComment {
         void onClickDelete(String id);
@@ -48,7 +47,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         void onClickReply(String fatherId, String fatherName, String contentId);
     }
 
-    public CommentAdapter(DetailActivity activity, DetailViewModel viewModel) {
+    CommentAdapter(DetailActivity activity, DetailViewModel viewModel) {
         this.activity = activity;
         this.viewModel = viewModel;
         data = new ArrayList<>();
@@ -64,7 +63,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         notifyDataSetChanged();
     }
 
-    public void setLikeData(List<String> likeData) {
+    void setLikeData(List<String> likeData) {
         if (likeData == null) {
             this.likeData.clear();
         } else {
@@ -100,19 +99,15 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
         public void bind(int pos) {
             if (adapter == null) {
-                adapter = new ReplyAdapter(activity, viewModel);
+                adapter = new ReplyAdapter(activity);
                 adapter.setOnClickReply(onClickReply);
                 binding.replyList.setAdapter(adapter);
                 binding.replyList.setLayoutManager(new LinearLayoutManager(activity));
             }
             adapter.setLikeData(likeData);
             CommentsResource.CommentForContent itemData = data.get(pos);
-            binding.commentLike.setOnClickListener(v-> {
-                onClickComment.onClickLike(itemData.getComment().getId());
-            });
-            binding.commentContentText.setOnClickListener(v -> {
-                onClickComment.onClickReply(itemData.getComment().getUserId(), itemData.getUser().getName(), itemData.getComment().getId());
-            });
+            binding.commentLike.setOnClickListener(v-> onClickComment.onClickLike(itemData.getComment().getId()));
+            binding.commentContentText.setOnClickListener(v -> onClickComment.onClickReply(itemData.getComment().getUserId(), itemData.getUser().getName(), itemData.getComment().getId()));
 
             // 删除按钮
             if (DefaultSharedPref.INSTANCE.get(DefaultSharedPref.Key.UserId).equals(itemData.getComment().getUserId())) {
@@ -131,9 +126,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                         onClickComment.onClickDelete(itemData.getComment().getId());
                         dialog.dismiss();
                     });
-                    normalDialog.setNegativeButton("取消", (dialog, which) -> {
-                        dialog.dismiss();
-                    });
+                    normalDialog.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
                     normalDialog.show();
                 }
             });

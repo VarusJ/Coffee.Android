@@ -9,7 +9,6 @@ import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.databinding.SignupActivityBinding;
 
 import javax.annotation.Nullable;
-import java.util.Objects;
 
 public class SignUpActivity extends AppCompatActivity {
 

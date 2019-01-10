@@ -2,7 +2,6 @@ package studio.xmatrix.coffee.ui.home;
 
 import android.app.Activity;
 import android.databinding.DataBindingUtil;
-import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
@@ -17,7 +16,6 @@ import com.lzy.ninegrid.ImageInfo;
 import com.lzy.ninegrid.preview.NineGridViewClickAdapter;
 import io.objectbox.relation.ToMany;
 import studio.xmatrix.coffee.R;
-import studio.xmatrix.coffee.data.common.network.Status;
 import studio.xmatrix.coffee.data.model.Album;
 import studio.xmatrix.coffee.data.model.Content;
 import studio.xmatrix.coffee.data.model.Image;
@@ -133,8 +131,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                 for (Image i : images) {
                     ImageInfo info = new ImageInfo();
                     info.setThumbnailUrl(i.getThumb());
-                    info.setBigImageUrl(i.getThumb());
-                    // info.setBigImageUrl(i.getFile().getTarget().getFile() + "@" + itemData.getId());
+                    // info.setBigImageUrl(i.getThumb());
+                    info.setBigImageUrl(i.getFile().getTarget().getFile() + "@" + itemData.getId());
                     imageInfo.add(info);
                 }
             }

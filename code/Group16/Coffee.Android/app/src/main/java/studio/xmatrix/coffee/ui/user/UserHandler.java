@@ -15,7 +15,6 @@ import studio.xmatrix.coffee.databinding.UserActivityBinding;
 import studio.xmatrix.coffee.inject.AppInjector;
 import studio.xmatrix.coffee.inject.Injectable;
 import studio.xmatrix.coffee.ui.home.HomeAdapter;
-import studio.xmatrix.coffee.ui.home.HomeHandler;
 import studio.xmatrix.coffee.ui.home.HomeListManger;
 import studio.xmatrix.coffee.ui.home.HomeViewModel;
 import studio.xmatrix.coffee.ui.nav.MyImageLoader;
@@ -35,7 +34,7 @@ public class UserHandler implements AppBarLayout.OnOffsetChangedListener, Inject
     private UserActivity activity;
     private UserActivityBinding binding;
     private String id;
-    public HomeListManger listManger;
+    HomeListManger listManger;
 
 
     @Inject
