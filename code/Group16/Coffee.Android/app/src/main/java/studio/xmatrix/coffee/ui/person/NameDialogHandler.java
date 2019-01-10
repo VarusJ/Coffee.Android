@@ -2,7 +2,6 @@ package studio.xmatrix.coffee.ui.person;
 
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
-import android.view.View;
 import studio.xmatrix.coffee.databinding.PersonalNameDialogBinding;
 import studio.xmatrix.coffee.inject.AppInjector;
 import studio.xmatrix.coffee.inject.Injectable;
@@ -18,7 +17,7 @@ public class NameDialogHandler implements Injectable {
     @Inject
 
     ViewModelProvider.Factory viewModelFactory;
-    PersonViewModel viewModel;
+    private PersonViewModel viewModel;
 
     NameDialogHandler(PersonActivity activity, PersonalNameDialogBinding binding, String name){
         this.activity = activity;

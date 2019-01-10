@@ -26,6 +26,7 @@ import studio.xmatrix.coffee.data.common.network.Status;
 import studio.xmatrix.coffee.data.model.Album;
 import studio.xmatrix.coffee.data.model.Content;
 import studio.xmatrix.coffee.data.model.Image;
+import studio.xmatrix.coffee.data.model.User;
 import studio.xmatrix.coffee.data.service.LikeService;
 import studio.xmatrix.coffee.data.service.resource.CommentsResource;
 import studio.xmatrix.coffee.data.store.DefaultSharedPref;
@@ -76,6 +77,19 @@ public class DetailHandler implements Injectable {
         viewModel = ViewModelProviders.of(activity, viewModelFactory).get(DetailViewModel.class);
         initView();
         refreshData();
+        viewModel.getUserInfo().observe(activity, res -> {
+            if (res != null && res.getStatus() != Status.SUCCESS) {
+                if (res.getData() == null) return;
+                User userInfo = res.getData().getResource();
+                if (userInfo != null) {
+                    viewModel.getUserAvatar(userInfo.avatar).observe(activity, bitmapResource -> {
+                        if (bitmapResource != null && bitmapResource.getStatus() == Status.SUCCESS) {
+                            binding.detailCommentAvatar.setImageBitmap(bitmapResource.getData());
+                        }
+                    });
+                }
+            }
+        });
     }
 
     void setImageLoader() {

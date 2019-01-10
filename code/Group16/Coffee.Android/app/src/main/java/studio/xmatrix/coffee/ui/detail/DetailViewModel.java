@@ -10,10 +10,7 @@ import studio.xmatrix.coffee.data.repository.ContentRepository;
 import studio.xmatrix.coffee.data.repository.LikeRepository;
 import studio.xmatrix.coffee.data.repository.UserRepository;
 import studio.xmatrix.coffee.data.service.LikeService;
-import studio.xmatrix.coffee.data.service.resource.CommentsResource;
-import studio.xmatrix.coffee.data.service.resource.CommonResource;
-import studio.xmatrix.coffee.data.service.resource.ContentResource;
-import studio.xmatrix.coffee.data.service.resource.LikeResource;
+import studio.xmatrix.coffee.data.service.resource.*;
 import studio.xmatrix.coffee.ui.nav.ImageViewModel;
 
 import javax.inject.Inject;
@@ -65,6 +62,10 @@ public class DetailViewModel extends AndroidViewModel implements ImageViewModel 
 
     LiveData<Resource<CommonResource>> unlike(String id,LikeService.LikeType type) {
         return likeRepository.unlikeById(id, type);
+    }
+
+    LiveData<Resource<UserResource>> getUserInfo() {
+        return userRepository.getInfo();
     }
 
     LiveData<Resource<Bitmap>> getUserAvatar(String url) {

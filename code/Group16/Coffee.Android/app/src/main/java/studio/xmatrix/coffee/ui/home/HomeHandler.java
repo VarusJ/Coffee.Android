@@ -8,7 +8,6 @@ import studio.xmatrix.coffee.data.store.DefaultSharedPref;
 import studio.xmatrix.coffee.databinding.HomeFragmentBinding;
 import studio.xmatrix.coffee.inject.AppInjector;
 import studio.xmatrix.coffee.inject.Injectable;
-import studio.xmatrix.coffee.ui.ListStatus;
 import studio.xmatrix.coffee.ui.admin.AdminActivity;
 
 import javax.inject.Inject;
@@ -21,14 +20,13 @@ public class HomeHandler implements Injectable {
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
-    private HomeViewModel viewModel;
 
     HomeHandler(FragmentActivity activity, HomeFragmentBinding binding) {
         this.activity = activity;
         this.binding = binding;
         initView();
         AppInjector.Companion.inject(this);
-        viewModel = ViewModelProviders.of(activity, viewModelFactory).get(HomeViewModel.class);
+        HomeViewModel viewModel = ViewModelProviders.of(activity, viewModelFactory).get(HomeViewModel.class);
         listManger = new HomeListManger(activity, binding.homeContent, viewModel);
         refreshData();
     }

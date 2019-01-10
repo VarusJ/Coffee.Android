@@ -15,7 +15,6 @@ import studio.xmatrix.coffee.databinding.UserActivityBinding;
 import studio.xmatrix.coffee.inject.AppInjector;
 import studio.xmatrix.coffee.inject.Injectable;
 import studio.xmatrix.coffee.ui.home.HomeAdapter;
-import studio.xmatrix.coffee.ui.home.HomeHandler;
 import studio.xmatrix.coffee.ui.home.HomeListManger;
 import studio.xmatrix.coffee.ui.home.HomeViewModel;
 import studio.xmatrix.coffee.ui.nav.MyImageLoader;

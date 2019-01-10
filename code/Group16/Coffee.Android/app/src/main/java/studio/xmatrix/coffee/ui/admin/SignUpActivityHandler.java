@@ -39,7 +39,7 @@ public class SignUpActivityHandler implements Injectable {
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
-    AdminViewModel viewModel;
+    private AdminViewModel viewModel;
 
     SignUpActivityHandler(SignUpActivity activity, SignupActivityBinding binding){
         this.activity = activity;

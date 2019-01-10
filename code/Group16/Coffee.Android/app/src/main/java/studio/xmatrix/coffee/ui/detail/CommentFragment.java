@@ -2,18 +2,14 @@ package studio.xmatrix.coffee.ui.detail;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.databinding.CommentFragmentBinding;
-
-import java.util.Objects;
 
 @SuppressLint("ValidFragment")
 public class CommentFragment extends BottomSheetDialogFragment {

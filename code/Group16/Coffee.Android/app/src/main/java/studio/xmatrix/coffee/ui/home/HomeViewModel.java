@@ -31,31 +31,31 @@ public class HomeViewModel extends AndroidViewModel implements ImageViewModel {
         this.userRepository = userRepository;
     }
 
-    public LiveData<Resource<LikeResource>> getLikes() {
+    LiveData<Resource<LikeResource>> getLikes() {
         return likeRepository.getLikes();
     }
 
-    public LiveData<Resource<CommonResource>> like(String id, LikeService.LikeType type) {
-        return likeRepository.likeById(id, type);
+    LiveData<Resource<CommonResource>> like(String id) {
+        return likeRepository.likeById(id, LikeService.LikeType.Content);
     }
 
-    public LiveData<Resource<CommonResource>> unlike(String id,LikeService.LikeType type) {
-        return likeRepository.unlikeById(id, type);
+    LiveData<Resource<CommonResource>> unlike(String id) {
+        return likeRepository.unlikeById(id, LikeService.LikeType.Content);
     }
 
-    public LiveData<Resource<ContentsResource>> getSelfText() {
+    LiveData<Resource<ContentsResource>> getSelfText() {
         return contentRepository.getTexts();
     }
 
-    public LiveData<Resource<ContentsResource>> getSelfAlbum() {
+    LiveData<Resource<ContentsResource>> getSelfAlbum() {
         return contentRepository.getAlbums();
     }
 
-    public LiveData<Resource<ContentsResource>> getText(String id) {
+    LiveData<Resource<ContentsResource>> getText(String id) {
         return contentRepository.getTextsByUserId(id);
     }
 
-    public LiveData<Resource<ContentsResource>> getAlbum(String id) {
+    LiveData<Resource<ContentsResource>> getAlbum(String id) {
         return contentRepository.getAlbumsByUserId(id);
     }
 
