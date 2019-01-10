@@ -13,6 +13,6 @@ public class PersonActivity extends BaseActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.person_activity);
-        PersonHandler handler = new PersonHandler(this, binding);
+        new PersonHandler(this, binding);
     }
 }

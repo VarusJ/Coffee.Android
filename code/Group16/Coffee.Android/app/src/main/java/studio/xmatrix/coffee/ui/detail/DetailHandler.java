@@ -165,8 +165,8 @@ public class DetailHandler implements Injectable {
                                 for (Image i :images) {
                                     ImageInfo info = new ImageInfo();
                                     info.setThumbnailUrl(i.getThumb());
-                                    info.setBigImageUrl(i.getThumb());
-                                    // info.setBigImageUrl(i.getFile().getTarget().getFile() + "@" + itemData.getId());
+                                    // info.setBigImageUrl(i.getThumb());
+                                    info.setBigImageUrl(i.getFile().getTarget().getFile() + "@" + detailData.getId());
                                     imageInfo.add(info);
                                 }
                             }

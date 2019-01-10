@@ -16,7 +16,6 @@ import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration;
 import com.lzy.ninegrid.ImageInfo;
 import com.lzy.ninegrid.preview.NineGridViewClickAdapter;
 import io.objectbox.relation.ToMany;
-import io.objectbox.relation.ToOne;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.data.common.network.Status;
 import studio.xmatrix.coffee.data.model.Album;
@@ -62,7 +61,7 @@ public class SquareAdapter extends RecyclerView.Adapter<SquareAdapter.ViewHolder
         notifyDataSetChanged();
     }
 
-    public void addData(List<Content> data) {
+    void addData(List<Content> data) {
         if (data == null) return;
         int len = this.data.size();
         this.data.addAll(data);
@@ -85,7 +84,7 @@ public class SquareAdapter extends RecyclerView.Adapter<SquareAdapter.ViewHolder
         return data.size();
     }
 
-    public void setLikeData(List<String> likeData) {
+    void setLikeData(List<String> likeData) {
         if (likeData == null) {
             this.likeData.clear();
         } else {
@@ -131,8 +130,8 @@ public class SquareAdapter extends RecyclerView.Adapter<SquareAdapter.ViewHolder
                 for (Image i :images) {
                     ImageInfo info = new ImageInfo();
                     info.setThumbnailUrl(i.getThumb());
-                    info.setBigImageUrl(i.getThumb());
-                    // info.setBigImageUrl(i.getFile().getTarget().getFile() + "@" + itemData.getId());
+                    // info.setBigImageUrl(i.getThumb());
+                    info.setBigImageUrl(i.getFile().getTarget().getFile() + "@" + itemData.getId());
                     imageInfo.add(info);
                 }
             }

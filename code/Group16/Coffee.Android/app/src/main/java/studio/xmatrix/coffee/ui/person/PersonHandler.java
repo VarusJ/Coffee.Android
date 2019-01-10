@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -15,12 +14,9 @@ import studio.xmatrix.coffee.data.common.network.Status;
 import studio.xmatrix.coffee.databinding.PersonActivityBinding;
 import studio.xmatrix.coffee.inject.AppInjector;
 import studio.xmatrix.coffee.inject.Injectable;
-import studio.xmatrix.coffee.ui.AvatarImageBehavior;
-import studio.xmatrix.coffee.ui.notice.NoticeViewModel;
 
 import javax.inject.Inject;
 
-import java.net.URL;
 import java.util.Objects;
 
 import static studio.xmatrix.coffee.data.service.resource.CommonResource.StatusSuccess;
@@ -35,6 +31,7 @@ public class PersonHandler implements AppBarLayout.OnOffsetChangedListener, Inje
 
     private PersonActivity activity;
     private PersonActivityBinding binding;
+    private NameDialog dialog;
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
@@ -89,7 +86,7 @@ public class PersonHandler implements AppBarLayout.OnOffsetChangedListener, Inje
         });
 
         binding.personNameEdit.setOnClickListener(v -> {
-            NameDialog dialog = new NameDialog(activity, binding.personTitle.getText().toString(), myListener);
+            dialog = new NameDialog(activity, binding.personTitle.getText().toString(), myListener);
             dialog.setCancelable(true);
             Objects.requireNonNull(dialog.getWindow()).setGravity(Gravity.CENTER);
             dialog.show();
@@ -140,6 +137,7 @@ public class PersonHandler implements AppBarLayout.OnOffsetChangedListener, Inje
                     switch (Objects.requireNonNull(res.getData()).getState()){
                         case StatusSuccess:
                             Toast.makeText(activity, "已修改" , Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
                             break;
                     }
                 } else if (res.getStatus() == Status.ERROR){
