@@ -9,11 +9,11 @@ import studio.xmatrix.coffee.databinding.PersonalNameDialogBinding;
 
 class NameDialog extends Dialog {
 
-    NameDialog(PersonActivity activity, String name) {
+    NameDialog(PersonActivity activity, String name,PersonHandler.MyInterface myListener) {
         super(activity, R.style.NameDialog);
         PersonalNameDialogBinding binding = DataBindingUtil.inflate(LayoutInflater.from(activity), R.layout.personal_name_dialog, null, false);
         setContentView(binding.getRoot());
-        binding.setHandler(new NameDialogHandler(activity, binding, name));
+        binding.setHandler(new NameDialogHandler(activity, binding, name, myListener));
     }
 
     @Override
