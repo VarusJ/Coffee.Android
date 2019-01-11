@@ -35,4 +35,17 @@ public class DetailActivity extends BaseActionBarActivity {
         super.onResume();
         handler.setImageLoader();
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null) {
+            if (data.getBooleanExtra("update", false)) {
+                handler.refreshData();
+                Intent intent = new Intent();
+                intent.putExtra("update", true);
+                this.setResult(RESULT_OK, intent);
+            }
+        }
+    }
 }

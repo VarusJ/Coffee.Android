@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -28,10 +29,12 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import studio.xmatrix.coffee.R;
+import studio.xmatrix.coffee.data.common.network.Status;
+import studio.xmatrix.coffee.data.model.Content;
+import studio.xmatrix.coffee.data.service.resource.ContentResource;
 import studio.xmatrix.coffee.databinding.AddActivityBinding;
 import studio.xmatrix.coffee.inject.AppInjector;
 import studio.xmatrix.coffee.inject.Injectable;
-import studio.xmatrix.coffee.ui.detail.DetailViewModel;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -43,6 +46,8 @@ public class AddHandler implements Injectable {
     private AddActivityBinding binding;
     private PictureAdapter picAdapter;
     private ArrayList<String> tagsList;
+    private boolean isEdit = false;
+    private String contentId;
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
@@ -53,11 +58,43 @@ public class AddHandler implements Injectable {
         this.binding = binding;
         AppInjector.Companion.inject(this);
         viewModel = ViewModelProviders.of(activity, viewModelFactory).get(AddViewModel.class);
-        initView();
+        initAddView();
+
+        Intent intent = activity.getIntent();
+        if (intent != null) {
+            Bundle bundle = intent.getExtras();
+            if (bundle != null) {
+               String id = bundle.getString("id", "");
+               if (!id.equals("")) {
+                   isEdit = true;
+                   contentId = id;
+                   initEditView(id);
+               }
+            }
+        }
+    }
+
+    private void initEditView(String id) {
+        binding.addImage.setVisibility(View.GONE);
+        viewModel.getDetail(id).observe(activity, res -> {
+            if (res != null && res.getStatus() == Status.SUCCESS) {
+                ContentResource data = res.getData();
+                if (data != null && data.getState().equals("success") && data.getResource() != null) {
+                    Content content = data.getResource();
+                    binding.title.setText(content.getName());
+                    binding.content.setText(content.getDetail());
+                    tagsList.clear();
+                    tagsList.addAll(content.getTags());
+                } else {
+                    Toast.makeText(activity, "网络错误", Toast.LENGTH_SHORT).show();
+                    activity.finish();
+                }
+            }
+        });
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void initView() {
+    private void initAddView() {
         tagsList = new ArrayList<>();
         binding.tags.setOnTagDeleteListener((TagView tagView, Tag tag, int i) -> {
             binding.tags.remove(i);
@@ -119,7 +156,7 @@ public class AddHandler implements Injectable {
                 .show();
     }
 
-    public void openPicker() {
+    void openPicker() {
         PictureSelectionModel pictureSelectionModel = PictureSelector.create(activity)
                 .openGallery(PictureMimeType.ofImage())
                 .maxSelectNum(15)
@@ -128,19 +165,19 @@ public class AddHandler implements Injectable {
         pictureSelectionModel.forResult(PictureConfig.CHOOSE_REQUEST);
     }
 
-    public void addImage(List<LocalMedia> list) {
+    void addImage(List<LocalMedia> list) {
         if (binding.pics.getVisibility() != View.VISIBLE)
             binding.pics.setVisibility(View.VISIBLE);
         picAdapter.addPics(list);
         binding.scroller.fullScroll(View.FOCUS_DOWN);
     }
 
-    private boolean addTag(String tagname) {
-        if (tagsList.indexOf(tagname) != -1) return false;
+    private boolean addTag(String tagName) {
+        if (tagsList.indexOf(tagName) != -1) return false;
 
-        tagsList.add(tagname);
+        tagsList.add(tagName);
 
-        Tag tag = new Tag(tagname);
+        Tag tag = new Tag(tagName);
         tag.isDeletable = true;
         tag.layoutColor = activity.getColor(R.color.colorTag);
         tag.tagTextColor = activity.getColor(R.color.colorBlack);
@@ -152,7 +189,7 @@ public class AddHandler implements Injectable {
         return true;
     }
 
-    public void send() {
+    void send() {
 
         String title = Objects.requireNonNull(binding.title.getText()).toString();
         String content = binding.content.getText().toString();
@@ -162,6 +199,26 @@ public class AddHandler implements Injectable {
 
         if (title.isEmpty()) {
             Toast.makeText(activity, "标题不能为空！", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (isEdit) {
+            viewModel.update(contentId, title, content, tags, feedPublic).observe(activity, res -> {
+                if (res != null) {
+                    switch (res.getStatus()) {
+                        case ERROR:
+                            Toast.makeText(activity, "网络错误" + res.getMessage(), Toast.LENGTH_SHORT).show();
+                            break;
+                        case SUCCESS:
+                            Toast.makeText(activity, "编辑成功", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent();
+                            intent.putExtra("update", true);
+                            activity.setResult(886 , intent);
+                            activity.finish();
+                            break;
+                    }
+                }
+            });
             return;
         }
 
