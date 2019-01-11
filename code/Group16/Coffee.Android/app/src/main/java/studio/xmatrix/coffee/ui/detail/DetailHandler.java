@@ -106,7 +106,6 @@ public class DetailHandler implements Injectable {
         }
     }
 
-
     private void refreshLike() {
         viewModel.getLikes().observe(activity, resource -> {
             if (resource != null) {
@@ -129,7 +128,7 @@ public class DetailHandler implements Injectable {
         });
     }
 
-    private void refreshData() {
+    void refreshData() {
         // 刷新数据
         refreshLike();
         viewModel.getDetail(id).observe(activity, resource -> {
@@ -442,9 +441,9 @@ public class DetailHandler implements Injectable {
             Toast.makeText(activity, "请先登陆", Toast.LENGTH_SHORT).show();
             return;
         }
-        // todo
-        // 获取旧内容填充
-        activity.startActivity(new Intent(activity, AddActivity.class));
+        Intent intent = new Intent(activity, AddActivity.class);
+        intent.putExtra("id", detailData.getId());
+        activity.startActivityForResult(intent, 886);
     }
 
     private void onClickDelete(View v) {
