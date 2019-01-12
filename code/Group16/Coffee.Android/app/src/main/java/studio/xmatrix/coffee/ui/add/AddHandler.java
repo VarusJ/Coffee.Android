@@ -101,8 +101,8 @@ public class AddHandler implements Injectable {
 
     public void onClickAddTag(View view) {
         MaterialEditText edit = new MaterialEditText(activity);
-        edit.setMaxCharacters(20);
-        edit.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
+        edit.setMaxCharacters(15);
+        edit.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)});
         FrameLayout container = new FrameLayout(activity);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.setMargins(100, 50, 100, 30);
