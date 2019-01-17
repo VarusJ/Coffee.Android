@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -15,6 +17,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.databinding.AddActivityBinding;
+import studio.xmatrix.coffee.databinding.PreviewActivityBinding;
 import studio.xmatrix.coffee.ui.BaseActionBarActivity;
 
 import java.util.List;
@@ -70,6 +73,25 @@ public class AddActivity extends BaseActionBarActivity {
             Toast.makeText(this, "您关闭了存储权限，将无法添加图片。", Toast.LENGTH_SHORT).show();
         } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             binding.getHandler().openPicker();
+        }
+    }
+
+    public class PreviewActivity extends FragmentActivity {
+        PreviewActivityBinding binding;
+        PreviewHandler handler;
+
+        public PreviewActivity() {
+            super();
+        }
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            int pos = getIntent().getIntExtra("pos", 0);
+
+            binding = DataBindingUtil.setContentView(this, R.layout.preview_activity);
+            handler = new PreviewHandler(this, binding, AddActivity.this.binding.getHandler().getOriginBitmaps(), pos);
         }
     }
 }

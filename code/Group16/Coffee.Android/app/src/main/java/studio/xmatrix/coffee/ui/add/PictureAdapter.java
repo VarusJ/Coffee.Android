@@ -1,5 +1,6 @@
 package studio.xmatrix.coffee.ui.add;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -75,7 +76,11 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.ViewHold
         thumbnails.remove(pos);
         notifyDataSetChanged();
     }
-    
+
+    public ArrayList<Bitmap> getOriginBitmaps() {
+        return originBitmaps;
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
         private final AddPicItemBinding binding;
 
@@ -105,6 +110,11 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.ViewHold
                 bmp = thumbnails.get(pos);
             }
             binding.pic.setImageBitmap(bmp);
+            binding.pic.setOnClickListener((View v) -> {
+                Intent intent = new Intent(activity, AddActivity.PreviewActivity.class);
+                intent.putExtra("pos", pos);
+                activity.startActivity(intent);
+            });
             binding.remove.setOnClickListener((View v) -> {
                 removePic(pos);
             });

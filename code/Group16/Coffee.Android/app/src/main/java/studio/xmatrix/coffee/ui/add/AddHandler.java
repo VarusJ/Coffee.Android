@@ -203,6 +203,10 @@ public class AddHandler implements Injectable {
 
     }
 
+    public ArrayList<Bitmap> getOriginBitmaps() {
+        return picAdapter.getOriginBitmaps();
+    }
+
     private boolean checkStoragePermission() {
         int permissionCheck = ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         return permissionCheck == PackageManager.PERMISSION_GRANTED;
