@@ -8,7 +8,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
@@ -31,7 +35,6 @@ import studio.xmatrix.coffee.R;
 import studio.xmatrix.coffee.databinding.AddActivityBinding;
 import studio.xmatrix.coffee.inject.AppInjector;
 import studio.xmatrix.coffee.inject.Injectable;
-import studio.xmatrix.coffee.ui.detail.DetailViewModel;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -43,6 +46,7 @@ public class AddHandler implements Injectable {
     private AddActivityBinding binding;
     private PictureAdapter picAdapter;
     private ArrayList<String> tagsList;
+    private PreviewAllFragment previewAllFragment;
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
@@ -133,6 +137,7 @@ public class AddHandler implements Injectable {
             binding.pics.setVisibility(View.VISIBLE);
         picAdapter.addPics(list);
         binding.scroller.fullScroll(View.FOCUS_DOWN);
+        //binding.preview.getAdapter().notifyDataSetChanged();
     }
 
     private boolean addTag(String tagname) {
@@ -201,6 +206,16 @@ public class AddHandler implements Injectable {
             });
         }
 
+    }
+
+    public void preview(int pos) {
+        Objects.requireNonNull(activity.getSupportActionBar()).hide();
+        activity.getWindow().setStatusBarColor(Color.BLACK);
+        previewAllFragment = new PreviewAllFragment(activity, getOriginBitmaps(), pos);
+        FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.preview, previewAllFragment, "previewAll");
+        transaction.addToBackStack("previewAll");
+        transaction.commit();
     }
 
     public ArrayList<Bitmap> getOriginBitmaps() {

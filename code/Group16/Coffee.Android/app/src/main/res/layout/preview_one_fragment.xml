@@ -3,15 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <variable
+            name="handler"
+            type="studio.xmatrix.coffee.ui.add.PreviewOneFragmentHandler" />
     </data>
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorBackground">
+        android:layout_height="match_parent">
 
-        <com.luck.picture.lib.photoview.PhotoView
-            android:id="@+id/photoView"
+        <uk.co.senab.photoview.PhotoView
+            android:id="@+id/photo_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

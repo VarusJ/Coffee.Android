@@ -8,9 +8,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
@@ -76,22 +76,12 @@ public class AddActivity extends BaseActionBarActivity {
         }
     }
 
-    public class PreviewActivity extends FragmentActivity {
-        PreviewActivityBinding binding;
-        PreviewHandler handler;
-
-        public PreviewActivity() {
-            super();
+    @Override
+    public void onBackPressed() {
+        if(!Objects.requireNonNull(getSupportActionBar()).isShowing()) {
+            Objects.requireNonNull(getSupportActionBar()).show();
+            getWindow().setStatusBarColor(getColor(R.color.colorPrimaryDark));
         }
-
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-
-            int pos = getIntent().getIntExtra("pos", 0);
-
-            binding = DataBindingUtil.setContentView(this, R.layout.preview_activity);
-            handler = new PreviewHandler(this, binding, AddActivity.this.binding.getHandler().getOriginBitmaps(), pos);
-        }
+        super.onBackPressed();
     }
 }
