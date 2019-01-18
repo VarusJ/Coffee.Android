@@ -26,7 +26,6 @@ import java.util.Objects;
 public class AddActivity extends BaseActionBarActivity {
     AddActivityBinding binding;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

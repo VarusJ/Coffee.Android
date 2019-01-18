@@ -22,24 +22,24 @@ public class MyImageLoader implements NineGridView.ImageLoader {
         String[] data = url.split("@");
         if (data.length == 2) {
             String path = data[0];
-            path = path.replace('/', '|');
+            final ImageView currentImage = imageView;
             viewModel.getImage(data[1], path).observe(activity, res -> {
                 if (res != null) {
                     switch (res.getStatus()) {
                         case SUCCESS:
-                            imageView.setImageBitmap(res.getData());
+                            currentImage.setImageBitmap(res.getData());
                             break;
                         case ERROR:
                             Toast.makeText(context, res.getMessage(), Toast.LENGTH_SHORT).show();
                             break;
                     }
                 }
-
             });
         } else if (data.length == 1) {
+            final ImageView currentImage = imageView;
             viewModel.getThumb(data[0]).observe(activity, res -> {
                 if (res != null && res.getStatus() == Status.SUCCESS) {
-                    imageView.setImageBitmap(res.getData());
+                    currentImage.setImageBitmap(res.getData());
                 }
             });
         } else {
