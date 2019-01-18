@@ -45,7 +45,7 @@ public class PreviewAllFragmentHandler {
 
             @Override
             public void onPageSelected(int i) {
-                updateHeader(i + 1, pics.size());
+                updateHeader(i, pics.size());
             }
 
             @Override
@@ -53,9 +53,11 @@ public class PreviewAllFragmentHandler {
 
             }
         });
+        updateHeader(pos, pics.size());
     }
 
     public void updateHeader(int pos, int total) {
+        ++pos;
         String str = pos + "/" + total;
         binding.order.setText(str);
     }

@@ -126,14 +126,7 @@ public class AddHandler implements Injectable {
 
     public void onClickAddImage(View view) {
         if (!checkStoragePermission()) {
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE))
-                Toast.makeText(activity, "请开启存储权限！", Toast.LENGTH_SHORT).show();
-            else {
-                int permissionCheck = ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-                    activity.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
-                }
-            }
+            Toast.makeText(activity, "请开启存储权限！", Toast.LENGTH_SHORT).show();
         } else {
             openPicker();
         }

@@ -63,19 +63,6 @@ public class AddActivity extends BaseActionBarActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode != 0) return;
-        if (grantResults.length == 0 ||
-                grantResults[0] != PackageManager.PERMISSION_GRANTED &&
-                        ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[0])) {
-            Toast.makeText(this, "您关闭了存储权限，将无法添加图片。", Toast.LENGTH_SHORT).show();
-        } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            binding.getHandler().openPicker();
-        }
-    }
-
-    @Override
     public void onBackPressed() {
         if(!Objects.requireNonNull(getSupportActionBar()).isShowing()) {
             Objects.requireNonNull(getSupportActionBar()).show();
