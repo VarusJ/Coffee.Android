@@ -70,12 +70,20 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.ViewHold
         recyclerView.scrollToPosition(originBitmaps.size() - 1);
     }
 
+    public Bitmap get(int pos) {
+        return originBitmaps.get(pos);
+    }
+
     private void removePic(int pos) {
         originBitmaps.remove(pos);
         thumbnails.remove(pos);
         notifyDataSetChanged();
     }
-    
+
+    public ArrayList<Bitmap> getOriginBitmaps() {
+        return originBitmaps;
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
         private final AddPicItemBinding binding;
 
@@ -105,6 +113,9 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.ViewHold
                 bmp = thumbnails.get(pos);
             }
             binding.pic.setImageBitmap(bmp);
+            binding.pic.setOnClickListener((View v) -> {
+                activity.binding.getHandler().preview(pos);
+            });
             binding.remove.setOnClickListener((View v) -> {
                 removePic(pos);
             });

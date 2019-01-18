@@ -8,8 +8,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
@@ -46,6 +48,7 @@ public class AddHandler implements Injectable {
     private AddActivityBinding binding;
     private PictureAdapter picAdapter;
     private ArrayList<String> tagsList;
+    private PreviewAllFragment previewAllFragment;
     private boolean isEdit = false;
     private String contentId;
 
@@ -123,14 +126,7 @@ public class AddHandler implements Injectable {
 
     public void onClickAddImage(View view) {
         if (!checkStoragePermission()) {
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE))
-                Toast.makeText(activity, "请开启存储权限！", Toast.LENGTH_SHORT).show();
-            else {
-                int permissionCheck = ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-                    activity.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
-                }
-            }
+            Toast.makeText(activity, "请开启存储权限！", Toast.LENGTH_SHORT).show();
         } else {
             openPicker();
         }
@@ -138,8 +134,9 @@ public class AddHandler implements Injectable {
 
     public void onClickAddTag(View view) {
         MaterialEditText edit = new MaterialEditText(activity);
-        edit.setMaxCharacters(20);
-        edit.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
+        edit.setMaxCharacters(15);
+        edit.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)});
+        edit.setTextColor(activity.getColor(R.color.colorBlack));
         FrameLayout container = new FrameLayout(activity);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.setMargins(100, 50, 100, 30);
@@ -258,6 +255,20 @@ public class AddHandler implements Injectable {
             });
         }
 
+    }
+
+    public void preview(int pos) {
+        Objects.requireNonNull(activity.getSupportActionBar()).hide();
+        activity.getWindow().setStatusBarColor(Color.BLACK);
+        previewAllFragment = new PreviewAllFragment(activity, getOriginBitmaps(), pos);
+        FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.preview, previewAllFragment, "previewAll");
+        transaction.addToBackStack("previewAll");
+        transaction.commit();
+    }
+
+    public ArrayList<Bitmap> getOriginBitmaps() {
+        return picAdapter.getOriginBitmaps();
     }
 
     private boolean checkStoragePermission() {
