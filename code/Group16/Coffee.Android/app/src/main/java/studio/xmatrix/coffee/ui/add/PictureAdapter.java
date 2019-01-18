@@ -1,6 +1,5 @@
 package studio.xmatrix.coffee.ui.add;
 
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.net.Uri;

@@ -10,8 +10,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -138,7 +136,6 @@ public class AddHandler implements Injectable {
             binding.pics.setVisibility(View.VISIBLE);
         picAdapter.addPics(list);
         binding.scroller.fullScroll(View.FOCUS_DOWN);
-        //binding.preview.getAdapter().notifyDataSetChanged();
     }
 
     private boolean addTag(String tagname) {
