@@ -107,6 +107,7 @@ public class AddHandler implements Injectable {
         MaterialEditText edit = new MaterialEditText(activity);
         edit.setMaxCharacters(15);
         edit.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)});
+        edit.setTextColor(activity.getColor(R.color.colorBlack));
         FrameLayout container = new FrameLayout(activity);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.setMargins(100, 50, 100, 30);
