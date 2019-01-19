@@ -10,7 +10,6 @@ import studio.xmatrix.coffee.ui.NightModeConfig
 import studio.xmatrix.coffee.inject.AppInjector
 import timber.log.Timber
 
-
 class App : Application() {
 
     lateinit var boxStore: BoxStore
