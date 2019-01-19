@@ -90,7 +90,13 @@ public class NavActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> startActivityForResult(new Intent(this, AddActivity.class), 886));
+        fab.setOnClickListener(view -> {
+            if (DefaultSharedPref.INSTANCE.get(DefaultSharedPref.Key.UserId).isEmpty()) {
+                Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show();
+            } else {
+                startActivityForResult(new Intent(this, AddActivity.class), 886);
+            }
+        });
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

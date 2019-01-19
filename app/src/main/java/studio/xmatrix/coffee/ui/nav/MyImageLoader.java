@@ -30,7 +30,8 @@ public class MyImageLoader implements NineGridView.ImageLoader {
                             currentImage.setImageBitmap(res.getData());
                             break;
                         case ERROR:
-                            Toast.makeText(context, res.getMessage(), Toast.LENGTH_SHORT).show();
+                            // Toast.makeText(context, res.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "请登录以查看原始图片", Toast.LENGTH_SHORT).show();
                             break;
                     }
                 }

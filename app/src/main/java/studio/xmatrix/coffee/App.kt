@@ -33,10 +33,10 @@ class App : Application() {
 
 
         boxStore = MyObjectBox.builder().androidContext(this).build()
-        if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
-            AndroidObjectBrowser(boxStore).start(this)
-        }
+//        if (BuildConfig.DEBUG) {
+//            Timber.plant(Timber.DebugTree())
+//            AndroidObjectBrowser(boxStore).start(this)
+//        }
 
         DefaultSharedPref.init(this)
         AppInjector.init(this)

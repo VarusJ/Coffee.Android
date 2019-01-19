@@ -144,7 +144,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         if (header.id == R.id.about) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this)
                     .setTitle("关于Coffee")
-                    .setMessage("\nv0.1.0.20190103\nPowered by Violet\nCopyRight (c) XMatrixStudio");
+                    .setMessage("\nv0.1.0.20190119\nPowered by Violet\nCopyRight (c) XMatrixStudio");
             builder.create().show();
         }
     }
